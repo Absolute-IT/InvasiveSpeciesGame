@@ -1,0 +1,210 @@
+[gd_scene load_steps=4 format=3 uid="uid://cq33ixdfpdcxq"]
+
+[ext_resource type="Script" path="res://scripts/Settings.cs" id="bhy1uns51jap5"]
+[ext_resource type="Theme" path="res://assets/MainTheme.tres" id="2_theme"]
+[ext_resource type="Script" path="res://scripts/ui/CustomCheckBox.cs" id="3_custom_checkbox"]
+
+[node name="Settings" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource("2_theme")
+script = ExtResource("bhy1uns51jap5")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.1, 0.15, 0.2, 0.95)
+
+[node name="Panel" type="Panel" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -700.0
+offset_top = -500.0
+offset_right = 700.0
+offset_bottom = 500.0
+
+[node name="Title" type="Label" parent="Panel"]
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 30.0
+offset_right = 200.0
+offset_bottom = 100.0
+theme_override_font_sizes/font_size = 64
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="ContentContainer" type="MarginContainer" parent="Panel"]
+anchor_left = 0.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 60.0
+offset_top = 120.0
+offset_right = -60.0
+offset_bottom = -120.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel/ContentContainer"]
+layout_mode = 2
+theme_override_constants/separation = 40
+
+[node name="DisplaySection" type="VBoxContainer" parent="Panel/ContentContainer/VBoxContainer"]
+theme_override_constants/separation = 20
+
+[node name="DisplayLabel" type="Label" parent="Panel/ContentContainer/VBoxContainer/DisplaySection"]
+theme_override_font_sizes/font_size = 42
+text = "Display Settings"
+
+[node name="HSeparator" type="HSeparator" parent="Panel/ContentContainer/VBoxContainer/DisplaySection"]
+theme_override_constants/separation = 10
+
+[node name="SettingsGrid" type="GridContainer" parent="Panel/ContentContainer/VBoxContainer/DisplaySection"]
+columns = 3
+theme_override_constants/h_separation = 60
+theme_override_constants/v_separation = 15
+
+[node name="ResolutionLabel" type="Label" parent="Panel/ContentContainer/VBoxContainer/DisplaySection/SettingsGrid"]
+theme_override_font_sizes/font_size = 28
+text = "Resolution"
+
+[node name="ScaleLabel" type="Label" parent="Panel/ContentContainer/VBoxContainer/DisplaySection/SettingsGrid"]
+theme_override_font_sizes/font_size = 28
+text = "UI Scale"
+
+[node name="FullscreenLabel" type="Label" parent="Panel/ContentContainer/VBoxContainer/DisplaySection/SettingsGrid"]
+theme_override_font_sizes/font_size = 28
+text = "Fullscreen"
+
+[node name="ResolutionOption" type="OptionButton" parent="Panel/ContentContainer/VBoxContainer/DisplaySection/SettingsGrid"]
+custom_minimum_size = Vector2(300, 50)
+theme_override_font_sizes/font_size = 24
+
+[node name="ScaleOption" type="OptionButton" parent="Panel/ContentContainer/VBoxContainer/DisplaySection/SettingsGrid"]
+custom_minimum_size = Vector2(300, 50)
+theme_override_font_sizes/font_size = 24
+
+[node name="FullscreenContainer" type="HBoxContainer" parent="Panel/ContentContainer/VBoxContainer/DisplaySection/SettingsGrid"]
+custom_minimum_size = Vector2(300, 50)
+
+[node name="FullscreenCheckBox" type="Control" parent="Panel/ContentContainer/VBoxContainer/DisplaySection/SettingsGrid/FullscreenContainer"]
+custom_minimum_size = Vector2(48, 48)
+script = ExtResource("3_custom_checkbox")
+
+[node name="AudioSection" type="VBoxContainer" parent="Panel/ContentContainer/VBoxContainer"]
+theme_override_constants/separation = 20
+
+[node name="AudioLabel" type="Label" parent="Panel/ContentContainer/VBoxContainer/AudioSection"]
+theme_override_font_sizes/font_size = 42
+text = "Audio Settings"
+
+[node name="HSeparator" type="HSeparator" parent="Panel/ContentContainer/VBoxContainer/AudioSection"]
+theme_override_constants/separation = 10
+
+[node name="MasterVolumeContainer" type="VBoxContainer" parent="Panel/ContentContainer/VBoxContainer/AudioSection"]
+theme_override_constants/separation = 10
+
+[node name="MasterVolumeLabel" type="Label" parent="Panel/ContentContainer/VBoxContainer/AudioSection/MasterVolumeContainer"]
+theme_override_font_sizes/font_size = 28
+text = "Master Volume"
+
+[node name="MasterVolumeRow" type="HBoxContainer" parent="Panel/ContentContainer/VBoxContainer/AudioSection/MasterVolumeContainer"]
+theme_override_constants/separation = 20
+
+[node name="MasterVolumeSlider" type="HSlider" parent="Panel/ContentContainer/VBoxContainer/AudioSection/MasterVolumeContainer/MasterVolumeRow"]
+custom_minimum_size = Vector2(600, 50)
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="MasterVolumeValue" type="Label" parent="Panel/ContentContainer/VBoxContainer/AudioSection/MasterVolumeContainer/MasterVolumeRow"]
+custom_minimum_size = Vector2(100, 0)
+theme_override_font_sizes/font_size = 28
+text = "100%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MusicContainer" type="VBoxContainer" parent="Panel/ContentContainer/VBoxContainer/AudioSection"]
+theme_override_constants/separation = 10
+
+[node name="MusicLabel" type="Label" parent="Panel/ContentContainer/VBoxContainer/AudioSection/MusicContainer"]
+theme_override_font_sizes/font_size = 28
+text = "Music"
+
+[node name="MusicRow" type="HBoxContainer" parent="Panel/ContentContainer/VBoxContainer/AudioSection/MusicContainer"]
+theme_override_constants/separation = 20
+
+[node name="MusicVolumeSlider" type="HSlider" parent="Panel/ContentContainer/VBoxContainer/AudioSection/MusicContainer/MusicRow"]
+custom_minimum_size = Vector2(600, 50)
+max_value = 1.0
+step = 0.01
+value = 0.8
+
+[node name="MusicVolumeValue" type="Label" parent="Panel/ContentContainer/VBoxContainer/AudioSection/MusicContainer/MusicRow"]
+custom_minimum_size = Vector2(100, 0)
+theme_override_font_sizes/font_size = 28
+text = "80%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MusicEnabledCheckBox" type="Control" parent="Panel/ContentContainer/VBoxContainer/AudioSection/MusicContainer/MusicRow"]
+custom_minimum_size = Vector2(180, 48)
+script = ExtResource("3_custom_checkbox")
+text = "Enabled"
+button_pressed = true
+
+[node name="SfxContainer" type="VBoxContainer" parent="Panel/ContentContainer/VBoxContainer/AudioSection"]
+theme_override_constants/separation = 10
+
+[node name="SfxLabel" type="Label" parent="Panel/ContentContainer/VBoxContainer/AudioSection/SfxContainer"]
+theme_override_font_sizes/font_size = 28
+text = "Sound Effects"
+
+[node name="SfxRow" type="HBoxContainer" parent="Panel/ContentContainer/VBoxContainer/AudioSection/SfxContainer"]
+theme_override_constants/separation = 20
+
+[node name="SfxVolumeSlider" type="HSlider" parent="Panel/ContentContainer/VBoxContainer/AudioSection/SfxContainer/SfxRow"]
+custom_minimum_size = Vector2(600, 50)
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="SfxVolumeValue" type="Label" parent="Panel/ContentContainer/VBoxContainer/AudioSection/SfxContainer/SfxRow"]
+custom_minimum_size = Vector2(100, 0)
+theme_override_font_sizes/font_size = 28
+text = "100%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="SfxEnabledCheckBox" type="Control" parent="Panel/ContentContainer/VBoxContainer/AudioSection/SfxContainer/SfxRow"]
+custom_minimum_size = Vector2(180, 48)
+script = ExtResource("3_custom_checkbox")
+text = "Enabled"
+button_pressed = true
+
+[node name="ButtonContainer" type="HBoxContainer" parent="Panel"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -100.0
+offset_right = 250.0
+offset_bottom = -40.0
+theme_override_constants/separation = 50
+
+[node name="BackButton" type="Button" parent="Panel/ButtonContainer"]
+custom_minimum_size = Vector2(200, 60)
+theme_override_font_sizes/font_size = 32
+text = "Back"
+
+[node name="ApplyButton" type="Button" parent="Panel/ButtonContainer"]
+custom_minimum_size = Vector2(200, 60)
+theme_override_font_sizes/font_size = 32
+text = "Apply"
+disabled = true 

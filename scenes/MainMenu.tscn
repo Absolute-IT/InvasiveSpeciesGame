@@ -1,0 +1,224 @@
+[gd_scene load_steps=10 format=3 uid="uid://dtry50cq2kosw"]
+
+[ext_resource type="Script" uid="uid://3xhnemyeyey4" path="res://scripts/MainMenu.cs" id="1_1xvqb"]
+[ext_resource type="Texture2D" uid="uid://d1dpeakn3gx0k" path="res://assets/art/environments/wetlands.png" id="2_bg123"]
+[ext_resource type="Theme" uid="uid://ddxao1fdqotgm" path="res://assets/MainTheme.tres" id="3_theme1"]
+[ext_resource type="FontFile" uid="uid://b7shu43yd5h6b" path="res://assets/fonts/Nunito/Nunito-Bold.ttf" id="4_826wr"]
+[ext_resource type="Script" uid="uid://xdtbgjt780on" path="res://scripts/ui/RibbonButton.cs" id="4_ribbon"]
+[ext_resource type="FontFile" uid="uid://b2gr4eqsme8s4" path="res://assets/fonts/Nunito/Nunito-Regular.ttf" id="5_ucygd"]
+[ext_resource type="Texture2D" uid="uid://bem15mgd8gy3" path="res://assets/branding/logo.png" id="8_8a8k8"]
+[ext_resource type="Script" uid="uid://dec3h2w2ao12u" path="res://scripts/ui/ParallaxTiltEffect.cs" id="9_parallax"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_settings"]
+bg_color = Color(0.2, 0.3, 0.35, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0.8, 0.8, 0.6)
+corner_radius_top_left = 40
+corner_radius_top_right = 40
+corner_radius_bottom_right = 40
+corner_radius_bottom_left = 40
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_theme1")
+script = ExtResource("1_1xvqb")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+texture = ExtResource("2_bg123")
+stretch_mode = 6
+
+[node name="ColorOverlay" type="ColorRect" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.3)
+
+[node name="LogoContainer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 256.0
+offset_top = -552.0
+offset_right = 840.0
+offset_bottom = 32.0
+grow_vertical = 0
+script = ExtResource("9_parallax")
+TiltIntensity = 20.0
+ScaleAmount = 0.05
+PerspectiveStrength = 0.4
+DepthScale = 0.08
+
+[node name="Logo" type="TextureRect" parent="LogoContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -128.0
+offset_top = 198.0
+offset_right = 158.0
+offset_bottom = -156.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("8_8a8k8")
+stretch_mode = 5
+
+[node name="TitleContainer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 200.0
+offset_top = 100.0
+offset_right = -200.0
+offset_bottom = 300.0
+grow_horizontal = 2
+script = ExtResource("9_parallax")
+TiltIntensity = 12.0
+SmoothingSpeed = 10.0
+PerspectiveStrength = 0.25
+DepthScale = 0.04
+
+[node name="Title" type="Label" parent="TitleContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0.1, 0.15, 0.12, 0.9)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = ExtResource("4_826wr")
+theme_override_font_sizes/font_size = 180
+text = "Invasive Species Australia"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SubtitleContainer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -600.0
+offset_top = 360.0
+offset_right = 600.0
+offset_bottom = 470.0
+grow_horizontal = 2
+script = ExtResource("9_parallax")
+TiltIntensity = 8.0
+SmoothingSpeed = 10.0
+ScaleAmount = 0.015
+PerspectiveStrength = 0.2
+DepthScale = 0.03
+
+[node name="Subtitle" type="Label" parent="SubtitleContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.9, 0.9)
+theme_override_colors/font_shadow_color = Color(0.1, 0.15, 0.12, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = ExtResource("5_ucygd")
+theme_override_font_sizes/font_size = 80
+text = "Learn • Identify • Protect"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RibbonContainer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SettingsRibbonButton" type="Control" parent="RibbonContainer"]
+visible = false
+anchors_preset = 0
+anchor_top = 0.76
+anchor_bottom = 0.76
+offset_top = -72.0
+offset_right = 1400.0
+offset_bottom = 72.0
+script = ExtResource("4_ribbon")
+Text = "Settings"
+
+[node name="StoriesButton" type="Control" parent="RibbonContainer"]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -1400.0
+offset_top = -72.0
+offset_bottom = 72.0
+script = ExtResource("4_ribbon")
+Text = "Stories"
+IsLeftSide = false
+
+[node name="SpeciesGuideButton" type="Control" parent="RibbonContainer"]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_top = 0.63
+anchor_right = 1.0
+anchor_bottom = 0.63
+offset_left = -1400.0
+offset_top = -72.0
+offset_bottom = 72.0
+script = ExtResource("4_ribbon")
+Text = "Species Guide"
+IsLeftSide = false
+
+[node name="BugSquashButton" type="Control" parent="RibbonContainer"]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_top = 0.76
+anchor_right = 1.0
+anchor_bottom = 0.76
+offset_left = -1400.0
+offset_top = -72.0
+offset_bottom = 72.0
+script = ExtResource("4_ribbon")
+Text = "Bug Squash!"
+IsLeftSide = false
+
+[node name="MemoryMatchButton" type="Control" parent="RibbonContainer"]
+anchors_preset = 0
+anchor_left = 1.0
+anchor_top = 0.89
+anchor_right = 1.0
+anchor_bottom = 0.89
+offset_left = -1400.0
+offset_top = -72.0
+offset_bottom = 72.0
+script = ExtResource("4_ribbon")
+Text = "Memory Match"
+IsLeftSide = false
+
+[node name="SettingsButton" type="Button" parent="."]
+layout_mode = 0
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -120.0
+offset_top = 40.0
+offset_right = -40.0
+offset_bottom = 120.0
+theme_override_font_sizes/font_size = 60
+theme_override_styles/normal = SubResource("StyleBoxFlat_settings")
+text = "⚙"

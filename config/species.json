@@ -1,0 +1,386 @@
+[
+	{
+		"id": "black-rat",
+		"name": "Black Rat",
+		"scientific_name": "Rattus rattus",
+		"type": "animals",
+		"history": "Black rats are thought to have arrived in Australia with the First Fleet, and subsequently spread to many coastal regions in the country.",
+		"habitat": "Found in many coastal regions in the country.",
+		"diet": "Has successfully adapted to human urbanisation partly because it eats just about anything.",
+		"identification": [
+			"Long pointed head",
+			"Large thin ears which reach middle of eye when bent forward",
+			"Charcoal grey to black or light brown above, cream or white below; sleek smooth coat.",
+			"Scaly tail, much longer than head and body."
+		],
+		"identification_images": [
+			"assets/identification/black-rat-1.jpg",
+			"assets/identification/black-rat-2.jpg",
+			"assets/identification/black-rat-3.jpg"
+		],
+		"image": "assets/art/species-transparent/animals/black-rat.png",
+		"environment_image": "assets/art/environments/hilly-woods.png",
+		"card_image": "assets/art/match-game/cards/black-rat-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Black_rat",
+		"australian_museum": "https://australian.museum/learn/animals/mammals/black-rat/",
+		"references": []
+	},
+	{
+		"id": "cane-toad",
+		"name": "Cane Toad",
+		"scientific_name": "Rhinella marina",
+		"type": "animals",
+		"history": "Introduced in 1935 from Hawaii to control cane beetles in Queensland sugar cane crops. The release of 102 toads quickly expanded to millions, spreading across northern Australia.",
+		"habitat": "Found across Queensland, Northern Territory, northern New South Wales and Western Australia. Prefers wet tropical areas but adapts to various environments including urban areas.",
+		"diet": "Opportunistic feeder consuming insects, small vertebrates, pet food, and carrion. Will eat almost anything that fits in their mouth.",
+		"identification": [
+			"Large, warty skin ranging from grey to yellow-brown",
+			"Distinctive large parotoid glands behind eyes that secrete toxin",
+			"Can grow up to 23cm and weigh over 1kg",
+			"Short legs relative to body size",
+			"No webbing between front toes"
+		],
+		"image": "assets/art/species/animals/cane-toad.png",
+		"environment_image": "assets/art/environments/wetlands.png",
+		"card_image": "assets/art/match-game/cards/cane-toad-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Cane_toad",
+		"australian_museum": "https://australian.museum/learn/animals/amphibians/cane-toad/",
+		"references": []
+	},
+	{
+		"id": "common-carp",
+		"name": "Common Carp",
+		"scientific_name": "Cyprinus carpio",
+		"type": "animals",
+		"history": "Multiple introductions from 1850s-1960s. The Boolara strain released in 1960s triggered massive population expansion throughout Murray-Darling Basin.",
+		"habitat": "Occupies Murray-Darling Basin and many coastal river systems. Prefers slow-moving or still waters including rivers, lakes, and wetlands.",
+		"diet": "Bottom feeder consuming aquatic plants, insects, crustaceans, and organic matter. Feeding behavior stirs up sediment.",
+		"identification": [
+			"Large scales with dark edging creating net-like pattern",
+			"Four barbels (whiskers) around mouth",
+			"Can exceed 1m length and 40kg weight",
+			"Color varies from gold to dark brown",
+			"Long dorsal fin with serrated spine"
+		],
+		"image": "assets/art/species/animals/common-carp.png",
+		"environment_image": "assets/art/environments/wetlands.png",
+		"card_image": "assets/art/match-game/cards/common-carp-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Common_carp",
+		"australian_museum": "",
+		"references": [
+			{
+				"field": "history",
+				"reference": "Gilligan D (2005) Carp in Australian rivers. Pages 30 – 39, In: Lunney, D, Eby, P., Hutchings, P. and Burgin, S. (eds). Pest or Guest: the zoology of overabundance. Proceedings of the Royal Zoological Society of New South Wales Forum held in October 2005. 270 pp. ISBN 978 0 9803272 1 2."
+			}
+		]
+	},
+	{
+		"id": "european-rabbit",
+		"name": "European Rabbit",
+		"scientific_name": "Oryctolagus cuniculus",
+		"type": "animals",
+		"history": "Introduced in 1859 by Thomas Austin in Victoria for hunting. Within 50 years, spread across most of Australia in the fastest mammalian invasion recorded.",
+		"habitat": "Found across most of Australia except tropical north. Lives in warrens in various habitats from grasslands to woodlands.",
+		"diet": "Herbivore feeding on grasses, crops, young trees, and shrubs. One rabbit eats as much as seven sheep.",
+		"identification": [
+			"Grey-brown fur with lighter underside",
+			"Long ears (6-8cm)",
+			"Powerful hind legs for jumping",
+			"Body length 35-50cm",
+			"White tail underside visible when running"
+		],
+		"image": "assets/art/species/animals/european-rabbit.png",
+		"environment_image": "assets/art/environments/grasslands.png",
+		"card_image": "assets/art/match-game/cards/european-rabbit-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/European_rabbit",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "feral-camel",
+		"name": "Feral Camel",
+		"scientific_name": "Camelus dromedarius",
+		"type": "animals",
+		"history": "Introduced 1840s-1907 for transport in arid regions. Released into wild when replaced by motorized transport. Now world's largest wild camel population.",
+		"habitat": "Central and western Australian deserts. Population estimated at 300,000 covering 3.3 million km².",
+		"diet": "Browses on shrubs, trees, and grasses. Can survive without water for extended periods. Damages vegetation during droughts.",
+		"identification": [
+			"Single hump (dromedary)",
+			"Height up to 2.1m at shoulder",
+			"Weight 450-650kg",
+			"Sandy brown to dark brown color",
+			"Long curved neck and legs"
+		],
+		"image": "assets/art/species/animals/feral-camel.png",
+		"environment_image": "assets/art/environments/desert.png",
+		"card_image": "assets/art/match-game/cards/feral-camel-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Australian_feral_camel",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "feral-cat",
+		"name": "Feral Cat",
+		"scientific_name": "Felis catus",
+		"type": "animals",
+		"history": "Arrived with European settlement in 1788. Spread across entire continent within 70 years. Now present across 99.9% of Australia.",
+		"habitat": "Found in all habitats across Australia from deserts to forests. Density varies with prey availability.",
+		"diet": "Skilled predator consuming small mammals, birds, reptiles, amphibians, and insects. Each cat kills 740 animals per year on average.",
+		"identification": [
+			"Similar to domestic cats but often larger and more muscular",
+			"Various colors: tabby, black, ginger, tortoiseshell",
+			"Body length 40-60cm plus tail",
+			"Weight typically 3-5kg but can reach 7kg",
+			"Often has scarred ears and face from fighting"
+		],
+		"image": "assets/art/species/animals/feral-cat.png",
+		"environment_image": "assets/art/environments/arid.png",
+		"card_image": "assets/art/match-game/cards/feral-cat-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Feral_cat",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "feral-pig",
+		"name": "Feral Pig",
+		"scientific_name": "Sus scrofa",
+		"type": "animals",
+		"history": "Multiple introductions from 1788 with First Fleet. Deliberate releases and escapes from farms established wild populations across northern and eastern Australia.",
+		"habitat": "Widespread across northern and eastern Australia. Prefers areas with water access and dense vegetation cover.",
+		"diet": "Omnivorous, eating roots, tubers, grasses, fruits, eggs, small animals, and carrion. Causes damage through rooting behavior.",
+		"identification": [
+			"Coarse hair ranging from black to brown or ginger",
+			"Narrow head with elongated snout",
+			"Weight 50-175kg",
+			"Tusks visible in adult males",
+			"Straight tail with tuft at end"
+		],
+		"image": "assets/art/species/animals/feral-pig.png",
+		"environment_image": "assets/art/environments/jungle.png",
+		"card_image": "assets/art/match-game/cards/feral-pig-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Feral_pig",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "fire-ant",
+		"name": "Red Imported Fire Ant",
+		"scientific_name": "Solenopsis invicta",
+		"type": "animals",
+		"history": "First detected in Brisbane in 2001. Believed to have arrived in shipping containers from USA. Subject to major eradication program.",
+		"habitat": "Currently restricted to southeast Queensland due to eradication efforts. Prefers open sunny areas including lawns, parks, and roadsides.",
+		"diet": "Omnivorous, feeding on insects, seeds, honeydew, and small vertebrates. Aggressive foragers that dominate food sources.",
+		"identification": [
+			"Reddish-brown color",
+			"Size varies: 2-6mm length",
+			"Aggressive behavior when disturbed",
+			"Forms dome-shaped mounds up to 40cm high",
+			"Painful sting causes burning sensation and pustules"
+		],
+		"image": "assets/art/species/animals/fire-ant.png",
+		"environment_image": "assets/art/environments/ant-dirt.png",
+		"card_image": "assets/art/match-game/cards/fire-ant-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Red_imported_fire_ant",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "indian-myna",
+		"name": "Common Myna / Indian Myna",
+		"scientific_name": "Acridotheres tristis",
+		"type": "animals",
+		"history": "Introduced to Melbourne in 1862 to control insects in market gardens. Spread along east coast and voted Australia's most hated pest.",
+		"habitat": "Urban and agricultural areas along eastern Australia. Forms large communal roosts in trees.",
+		"diet": "Omnivorous, eating insects, fruits, grains, food scraps, eggs, and nestlings. Competes with native birds for food.",
+		"identification": [
+			"Brown body with black head",
+			"Bright yellow beak, eye patches, and legs",
+			"White wing patches visible in flight",
+			"Length about 23cm",
+			"Loud, raucous calls"
+		],
+		"image": "assets/art/species/animals/indian-myna.png",
+		"environment_image": "assets/art/environments/grasslands.png",
+		"card_image": "assets/art/match-game/cards/indian-myna-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Common_myna",
+		"australian_museum": "https://australian.museum/learn/animals/birds/common-myna/",
+		"references": []
+	},
+	{
+		"id": "red-fox",
+		"name": "Red Fox",
+		"scientific_name": "Vulpes vulpes",
+		"type": "animals",
+		"history": "Introduced near Melbourne around 1845 for recreational hunting. Spread across most of Australia within 100 years.",
+		"habitat": "Found across most of mainland Australia except tropical north. Adapts to various habitats from deserts to urban areas.",
+		"diet": "Opportunistic predator and scavenger eating small mammals, birds, reptiles, insects, fruits, and human food waste.",
+		"identification": [
+			"Reddish-brown fur with white chest and black legs",
+			"Bushy tail with white tip",
+			"Pointed muzzle and erect ears",
+			"Body length 45-90cm plus 30-55cm tail",
+			"Weight 4-8kg"
+		],
+		"identification_images": [
+			"assets/identification/red-fox-1.jpg",
+			"assets/identification/red-fox-2.jpg",
+			"assets/identification/red-fox-3.jpg"
+		],
+		"image": "assets/art/species-transparent/animals/red-fox.png",
+		"environment_image": "assets/art/environments/hilly-woods.png",
+		"card_image": "assets/art/match-game/cards/red-fox-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Red_fox",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "bitou-bush",
+		"name": "Bitou Bush",
+		"scientific_name": "Chrysanthemoides monilifera subsp. rotundata",
+		"type": "plants",
+		"history": "Introduced from South Africa in 1908 for dune stabilization. Now invades 80% of NSW coastline and is a major coastal weed.",
+		"habitat": "Coastal areas from Queensland to Tasmania. Forms dense stands on beaches, dunes, and coastal bushland.",
+		"diet": "",
+		"identification": [
+			"Sprawling shrub 1-2m high, can spread 5-6m",
+			"Bright green oval leaves with toothed edges",
+			"Bright yellow daisy flowers in clusters",
+			"Black berry-like fruit 6-8mm diameter",
+			"Flowers autumn to spring"
+		],
+		"identification_images": [
+
+		],
+		"image": "assets/art/species/plants/bitou-bush.png",
+		"environment_image": "assets/art/environments/mangroves.png",
+		"card_image": "assets/art/match-game/cards/bitou-bush-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Chrysanthemoides_monilifera",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "blackberry",
+		"name": "Blackberry",
+		"scientific_name": "Rubus fruticosus aggregate",
+		"type": "plants",
+		"history": "Introduced in 1830s for fruit production and hedging. Now widespread across southern Australia forming impenetrable thickets.",
+		"habitat": "Temperate regions with moderate to high rainfall. Invades pastures, forests, and waterways.",
+		"diet": "",
+		"identification": [
+			"Scrambling shrub with arching canes up to 7m long",
+			"Stems covered in sharp thorns",
+			"Leaves with 3-5 leaflets, white underneath",
+			"White or pink flowers in clusters",
+			"Red turning black aggregate berries"
+		],
+		"identification_images": [
+			
+		],
+		"image": "assets/art/species/plants/black-berry.png",
+		"environment_image": "assets/art/environments/vineyards.png",
+		"card_image": "assets/art/match-game/cards/black-berry-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Rubus_fruticosus",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "boneseed",
+		"name": "Boneseed",
+		"scientific_name": "Chrysanthemoides monilifera subsp. monilifera",
+		"type": "plants",
+		"history": "Introduced from South Africa as an ornamental plant. Now a major environmental weed in southern Australia.",
+		"habitat": "Invades native bushland, particularly after fire. Common in coastal and inland areas of southern Australia.",
+		"diet": "",
+		"identification": [
+			"Erect shrub 1-3m high",
+			"Dull green oval leaves",
+			"Bright yellow daisy flowers",
+			"Produces thousands of seeds annually",
+			"Seeds remain viable in soil for 10+ years"
+		],
+		"identification_images": [
+			
+		],
+		"image": "assets/art/species/plants/boneseed.png",
+		"environment_image": "assets/art/environments/hilly-woods.png",
+		"card_image": "assets/art/match-game/cards/boneseed-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Chrysanthemoides_monilifera",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "lantana",
+		"name": "Lantana",
+		"scientific_name": "Lantana camara",
+		"type": "plants",
+		"history": "Introduced as ornamental plant in 1841. Now covers 4 million hectares and is one of Australia's worst weeds.",
+		"habitat": "Tropical and subtropical areas of eastern Australia. Forms dense thickets in disturbed areas and forest edges.",
+		"diet": "",
+		"identification": [
+			"Scrambling shrub 2-4m high",
+			"Square stems with small prickles",
+			"Opposite leaves with strong odor when crushed",
+			"Flowers in clusters changing color from yellow to red",
+			"Small black berries toxic to livestock"
+		],
+		"identification_images": [
+			
+		],
+		"image": "assets/art/species/plants/lantana.png",
+		"environment_image": "assets/art/environments/jungle.png",
+		"card_image": "assets/art/match-game/cards/lantana-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Lantana_camara",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "prickly-pear",
+		"name": "Prickly Pear",
+		"scientific_name": "Opuntia species",
+		"type": "plants",
+		"history": "Introduced with First Fleet in 1788. By 1920s covered 25 million hectares. Successfully controlled by Cactoblastis moth - classic biological control success.",
+		"habitat": "Semi-arid and subtropical regions. Some species still problematic in Queensland and NSW.",
+		"diet": "",
+		"identification": [
+			"Succulent cacti with flattened pad-like segments",
+			"Covered in clusters of spines",
+			"Yellow flowers on pad edges",
+			"Purple or red edible fruit",
+			"Height varies by species from 1-5m"
+		],
+		"identification_images": [
+			
+		],
+		"image": "assets/art/species/plants/prickly-pear.png",
+		"environment_image": "assets/art/environments/arid.png",
+		"card_image": "assets/art/match-game/cards/prickly-pear-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Opuntia",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "phytophthora",
+		"name": "Phytophthora Root Rot",
+		"scientific_name": "Phytophthora cinnamomi",
+		"type": "plants",
+		"history": "Origin uncertain but likely introduced early 1900s. Now widespread soil-borne pathogen causing dieback in native vegetation.",
+		"habitat": "Moist soils across southern Australia. Spreads through water movement and infected soil.",
+		"diet": "",
+		"identification": [
+			"Microscopic pathogen not visible to naked eye",
+			"Symptoms include yellowing leaves",
+			"Branch dieback starting from tips",
+			"Death of susceptible plants",
+			"Dark lesions on roots and stems"
+		],
+		"identification_images": [
+			
+		],
+		"image": "assets/art/species/plants/phytophthora-blight.png",
+		"environment_image": "assets/art/environments/barren-dirt.png",
+		"card_image": "assets/art/match-game/cards/phytophthora-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Phytophthora_cinnamomi",
+		"australian_museum": "",
+		"references": []
+	}
+]

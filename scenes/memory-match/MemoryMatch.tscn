@@ -1,0 +1,189 @@
+[gd_scene load_steps=5 format=3 uid="uid://b4xvwfmgqhxvr"]
+
+[ext_resource type="Script" uid="uid://d03ufwfqyc6wf" path="res://scripts/memory-match/MemoryMatchGame.cs" id="1_qw8ng"]
+[ext_resource type="Texture2D" uid="uid://dn3ncqc4cimba" path="res://assets/art/match-game/neutral-background.png" id="2_3k8yl"]
+[ext_resource type="FontFile" uid="uid://dr8xha02hdl5b" path="res://assets/fonts/Nunito/Nunito-Bold.ttf" id="3_nunito_bold"]
+[ext_resource type="FontFile" uid="uid://c2x1wbw6iviyo" path="res://assets/fonts/Nunito/Nunito-Regular.ttf" id="4_nunito_regular"]
+
+[node name="MemoryMatch" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qw8ng")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_3k8yl")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="Header" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 40
+
+[node name="StageLabel" type="Label" parent="VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 48
+text = "Stage 1"
+
+[node name="TimerLabel" type="Label" parent="VBoxContainer/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Time: 03:00"
+
+[node name="HomeButton" type="Button" parent="VBoxContainer/Header"]
+custom_minimum_size = Vector2(150, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Home"
+
+[node name="GameArea" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="CardGrid" type="GridContainer" parent="VBoxContainer/GameArea"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 20
+columns = 4
+
+[node name="IdentificationPanel" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="IdentificationPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="IdentificationPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1100.0
+offset_top = -525.0
+offset_right = 1100.0
+offset_bottom = 525.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 50
+
+[node name="SpeciesImage" type="TextureRect" parent="IdentificationPanel/HBoxContainer"]
+custom_minimum_size = Vector2(800, 1050)
+layout_mode = 2
+size_flags_horizontal = 4
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="IdentificationPanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 30
+
+[node name="SpeciesName" type="Label" parent="IdentificationPanel/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_nunito_bold")
+theme_override_font_sizes/font_size = 96
+text = "Species Name"
+horizontal_alignment = 0
+autowrap_mode = 2
+
+[node name="IdentificationText" type="RichTextLabel" parent="IdentificationPanel/HBoxContainer/VBoxContainer"]
+custom_minimum_size = Vector2(1200, 600)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/normal_font = ExtResource("4_nunito_regular")
+theme_override_fonts/bold_font = ExtResource("3_nunito_bold")
+theme_override_font_sizes/normal_font_size = 56
+bbcode_enabled = true
+text = "[b]How to identify:[/b]
+• Trait 1
+• Trait 2
+• Trait 3"
+
+[node name="GameOverPanel" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="GameOverPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameOverPanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -150.0
+offset_right = 300.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 40
+
+[node name="GameOverText" type="Label" parent="GameOverPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Game Over!
+Better luck next time!"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="HomeButton" type="Button" parent="GameOverPanel/VBoxContainer"]
+custom_minimum_size = Vector2(200, 80)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 36
+text = "Home" 

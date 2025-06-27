@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8exjlkbyi7w7"]
+
+[ext_resource type="Script" uid="uid://l8vsfgfspjsm" path="res://scripts/bug-squash/BugSquashGame.cs" id="1_pqtyx"]
+
+[node name="BugSquash" type="Node2D"]
+script = ExtResource("1_pqtyx")

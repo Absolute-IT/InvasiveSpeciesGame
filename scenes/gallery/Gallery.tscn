@@ -1,0 +1,371 @@
+[gd_scene load_steps=9 format=3 uid="uid://jhcc1d1y8xkg"]
+
+[ext_resource type="Script" uid="uid://c25rsmq2y5jah" path="res://scripts/gallery/Gallery.cs" id="1_gallery"]
+[ext_resource type="Theme" uid="uid://ddxao1fdqotgm" path="res://assets/MainTheme.tres" id="2_theme"]
+[ext_resource type="FontFile" uid="uid://b2gr4eqsme8s4" path="res://assets/fonts/Nunito/Nunito-Regular.ttf" id="3_nunito_reg"]
+[ext_resource type="FontFile" uid="uid://b7shu43yd5h6b" path="res://assets/fonts/Nunito/Nunito-Bold.ttf" id="4_nunito_bold"]
+[ext_resource type="Texture2D" path="res://assets/art/match-game/neutral-background.png" id="5_neutral_bg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+bg_color = Color(0.2, 0.3, 0.35, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0.8, 0.8, 0.6)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
+bg_color = Color(0.3, 0.4, 0.45, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.9, 0.9, 0.9, 0.8)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.05, 0.05, 0.05, 0.85)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.3, 0.3, 0.3, 0.8)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_photo"]
+bg_color = Color(0.15, 0.15, 0.15, 0.8)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.4, 0.4, 0.6)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="Gallery" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_theme")
+script = ExtResource("1_gallery")
+
+[node name="SelectionContainer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="SelectionContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_neutral_bg")
+stretch_mode = 6
+
+[node name="Title" type="Label" parent="SelectionContainer"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -400.0
+offset_top = 60.0
+offset_right = 400.0
+offset_bottom = 160.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("4_nunito_bold")
+theme_override_font_sizes/font_size = 80
+text = "Species Guide"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="SelectionContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 150.0
+offset_top = 200.0
+offset_right = -150.0
+offset_bottom = -100.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SelectionContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 60
+
+[node name="AnimalsLabel" type="Label" parent="SelectionContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_nunito_bold")
+theme_override_font_sizes/font_size = 60
+text = "Animals"
+
+[node name="AnimalsGrid" type="GridContainer" parent="SelectionContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PlantsLabel" type="Label" parent="SelectionContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_nunito_bold")
+theme_override_font_sizes/font_size = 60
+text = "Plants"
+
+[node name="PlantsGrid" type="GridContainer" parent="SelectionContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="DetailContainer" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BackgroundImage" type="TextureRect" parent="DetailContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch_mode = 6
+
+[node name="DarkOverlay" type="ColorRect" parent="DetailContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.3)
+
+[node name="SpeciesImageContainer" type="VBoxContainer" parent="DetailContainer"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 100.0
+offset_right = 1620.0
+offset_top = 150.0
+offset_bottom = -150.0
+grow_vertical = 2
+theme_override_constants/separation = 20
+
+[node name="SpeciesImage" type="TextureRect" parent="DetailContainer/SpeciesImageContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+stretch_mode = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="DetailContainer/SpeciesImageContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 20
+
+[node name="NavigationContainer" type="HBoxContainer" parent="DetailContainer/SpeciesImageContainer/MarginContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 100)
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="PreviousAnimalButton" type="Button" parent="DetailContainer/SpeciesImageContainer/MarginContainer/NavigationContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(350, 80)
+theme_override_fonts/font = ExtResource("3_nunito_reg")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "← Previous"
+
+[node name="NextAnimalButton" type="Button" parent="DetailContainer/SpeciesImageContainer/MarginContainer/NavigationContainer"]
+layout_mode = 2
+custom_minimum_size = Vector2(350, 80)
+theme_override_fonts/font = ExtResource("3_nunito_reg")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Next →"
+
+[node name="TextPanel" type="VBoxContainer" parent="DetailContainer"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -2220.0
+offset_right = -100.0
+offset_top = 150.0
+offset_bottom = -150.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_constants/separation = 40
+
+[node name="PanelContainer" type="PanelContainer" parent="DetailContainer/TextPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DetailContainer/TextPanel/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="MarginContainer" type="MarginContainer" parent="DetailContainer/TextPanel/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 50
+
+[node name="InnerVBox" type="VBoxContainer" parent="DetailContainer/TextPanel/PanelContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="SpeciesName" type="Label" parent="DetailContainer/TextPanel/PanelContainer/VBoxContainer/MarginContainer/InnerVBox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_nunito_bold")
+theme_override_font_sizes/font_size = 96
+text = "Species Name"
+
+[node name="ScientificName" type="Label" parent="DetailContainer/TextPanel/PanelContainer/VBoxContainer/MarginContainer/InnerVBox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_nunito_reg")
+theme_override_font_sizes/font_size = 64
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+text = "Scientific Name"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="DetailContainer/TextPanel/PanelContainer/VBoxContainer/MarginContainer/InnerVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 300)
+
+[node name="ContentText" type="Label" parent="DetailContainer/TextPanel/PanelContainer/VBoxContainer/MarginContainer/InnerVBox/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("3_nunito_reg")
+theme_override_font_sizes/font_size = 56
+autowrap_mode = 3
+text = "Content will be displayed here"
+
+[node name="ButtonMarginContainer" type="MarginContainer" parent="DetailContainer/TextPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_right = 60
+
+[node name="ButtonContainer" type="HBoxContainer" parent="DetailContainer/TextPanel/ButtonMarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="OverviewButton" type="Button" parent="DetailContainer/TextPanel/ButtonMarginContainer/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 100)
+theme_override_fonts/font = ExtResource("3_nunito_reg")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Overview"
+
+[node name="IdentificationButton" type="Button" parent="DetailContainer/TextPanel/ButtonMarginContainer/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 100)
+theme_override_fonts/font = ExtResource("3_nunito_reg")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Identification"
+
+[node name="HabitatButton" type="Button" parent="DetailContainer/TextPanel/ButtonMarginContainer/ButtonContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 100)
+theme_override_fonts/font = ExtResource("3_nunito_reg")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "Habitat"
+
+[node name="PhotoMarginContainer" type="MarginContainer" parent="DetailContainer/TextPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_right = 60
+
+[node name="PhotoContainer" type="HBoxContainer" parent="DetailContainer/TextPanel/PhotoMarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 350)
+theme_override_constants/separation = 20
+
+[node name="Photo1" type="Panel" parent="DetailContainer/TextPanel/PhotoMarginContainer/PhotoContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 350)
+theme_override_styles/panel = SubResource("StyleBoxFlat_photo")
+
+[node name="Photo2" type="Panel" parent="DetailContainer/TextPanel/PhotoMarginContainer/PhotoContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 350)
+theme_override_styles/panel = SubResource("StyleBoxFlat_photo")
+
+[node name="Photo3" type="Panel" parent="DetailContainer/TextPanel/PhotoMarginContainer/PhotoContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 350)
+theme_override_styles/panel = SubResource("StyleBoxFlat_photo")
+
+[node name="BackButton" type="Button" parent="DetailContainer"]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 50.0
+offset_right = 250.0
+offset_bottom = 130.0
+theme_override_fonts/font = ExtResource("3_nunito_reg")
+theme_override_font_sizes/font_size = 36
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "← Back"
+
+[node name="HomeButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -150.0
+offset_right = -50.0
+offset_bottom = -50.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("3_nunito_reg")
+theme_override_font_sizes/font_size = 60
+theme_override_styles/normal = SubResource("StyleBoxFlat_button")
+theme_override_styles/hover = SubResource("StyleBoxFlat_button_hover")
+text = "🏠" 
