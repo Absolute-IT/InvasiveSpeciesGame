@@ -25,8 +25,19 @@ namespace InvasiveSpeciesAustralia
         private Button _homeButton;
         private RichTextLabel _interactionDescLabel;
         private HBoxContainer _speciesContainer;
+        
+        // Effects
+        private ShockwaveEffect _shockwaveEffect;
+        
+        // Camera and screen shake
+        private Camera2D _camera;
+        private float _shakeTimer = 0f;
+        private float _shakeIntensity = 0f;
+        private Vector2 _originalCameraPosition;
 
         private const float FOOD_RESPAWN_DELAY = 3f;
+        private const float SCREEN_SHAKE_DURATION = 0.3f;
+        private const float SCREEN_SHAKE_INTENSITY = 30f;
 
         public override void _Ready()
         {
@@ -47,6 +58,14 @@ namespace InvasiveSpeciesAustralia
 
         private void CreateUI()
         {
+            // Add Camera2D for screen shake effect
+            _camera = new Camera2D();
+            _camera.Enabled = true;
+            _camera.MakeCurrent();
+            _camera.Position = new Vector2(1920, 1080); // Center of screen
+            AddChild(_camera);
+            _originalCameraPosition = _camera.Position;
+            
             // Background - add as a child of the game scene with negative Z-index
             var bgSprite = new Sprite2D();
             bgSprite.Centered = false;
@@ -59,8 +78,6 @@ namespace InvasiveSpeciesAustralia
             // Create CanvasLayer for UI elements (renders on top but doesn't block input)
             _uiLayer = new CanvasLayer();
             AddChild(_uiLayer);
-
-
 
             // Game screen (hidden initially) - add to UI layer
             _gameScreen = new Control();
@@ -88,8 +105,26 @@ namespace InvasiveSpeciesAustralia
 
             // Instruction screen
             CreateInstructionScreen();
+            
+            // Add multi-touch debugger
+            AddMultiTouchDebugger();
+            
+            // Create shockwave effect on its own CanvasLayer to render after UI
+            var effectLayer = new CanvasLayer();
+            effectLayer.Layer = 2; // Higher than UI layer (which is default 1)
+            AddChild(effectLayer);
+            
+            _shockwaveEffect = new ShockwaveEffect();
+            effectLayer.AddChild(_shockwaveEffect);
         }
 
+        private void AddMultiTouchDebugger()
+        {
+            var debugger = new Systems.MultiTouchDebugger();
+            debugger.Name = "MultiTouchDebugger";
+            _uiLayer.AddChild(debugger);
+        }
+        
         private void CreateInstructionScreen()
         {
             _instructionScreen = new Control();
@@ -107,7 +142,7 @@ namespace InvasiveSpeciesAustralia
             container.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.Center);
             container.Position = new Vector2(-1200, -800);
             container.Size = new Vector2(2400, 1600);
-            container.AddThemeConstantOverride("separation", 80);
+            container.AddThemeConstantOverride("separation", 60);
             _instructionScreen.AddChild(container);
 
             // Title
@@ -130,7 +165,8 @@ namespace InvasiveSpeciesAustralia
             // Species container
             _speciesContainer = new HBoxContainer();
             _speciesContainer.Name = "SpeciesContainer";
-            _speciesContainer.AddThemeConstantOverride("separation", 100);
+            // Increase separation for larger entities
+            _speciesContainer.AddThemeConstantOverride("separation", 220);
             container.AddChild(_speciesContainer);
 
             // Start button
@@ -195,11 +231,11 @@ namespace InvasiveSpeciesAustralia
         private Control CreateSpeciesDisplay(BugSquashSpecies species)
         {
             var container = new VBoxContainer();
-            container.AddThemeConstantOverride("separation", 20);
+            container.AddThemeConstantOverride("separation", 0); // No global separation
 
             // Entity visual
             var entityContainer = new Control();
-            entityContainer.CustomMinimumSize = new Vector2(240, 240);
+            entityContainer.CustomMinimumSize = new Vector2(400, 400);
             container.AddChild(entityContainer);
 
             // Colored ring
@@ -208,19 +244,21 @@ namespace InvasiveSpeciesAustralia
             ring.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
             ring.Modulate = new Color(species.Color);
             ring.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.Center);
-            ring.Size = new Vector2(200, 200);
-            ring.Position = new Vector2(-100, -100);
+            // Double the size: 400x400 ring
+            ring.Size = new Vector2(400, 400);
+            ring.Position = new Vector2(-200, -200);
             
             // Create a white circle texture for the ring
-            var image = Image.CreateEmpty(200, 200, false, Image.Format.Rgba8);
-            for (int x = 0; x < 200; x++)
+            var image = Image.CreateEmpty(400, 400, false, Image.Format.Rgba8);
+            for (int x = 0; x < 400; x++)
             {
-                for (int y = 0; y < 200; y++)
+                for (int y = 0; y < 400; y++)
                 {
-                    float dx = x - 100;
-                    float dy = y - 100;
+                    float dx = x - 200;
+                    float dy = y - 200;
                     float dist = Mathf.Sqrt(dx * dx + dy * dy);
-                    if (dist < 100 && dist > 80)
+                    // Double the outline thickness: 20px
+                    if (dist < 200 && dist > 180)
                     {
                         image.SetPixel(x, y, Colors.White);
                     }
@@ -238,24 +276,47 @@ namespace InvasiveSpeciesAustralia
                 sprite.ExpandMode = TextureRect.ExpandModeEnum.FitWidthProportional;
                 sprite.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
                 sprite.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.Center);
-                sprite.Size = new Vector2(160, 160);
-                sprite.Position = new Vector2(-80, -80);
+                // Double the image size to fit the new ring (364x364, 10px border)
+                sprite.Size = new Vector2(370, 370);
+                sprite.Position = new Vector2(-185, -185);
+                
+                // Apply circular clipping shader to match the in-game entities
+                var clipShaderPath = "res://shaders/circular_clip.gdshader";
+                if (ResourceLoader.Exists(clipShaderPath))
+                {
+                    var shader = GD.Load<Shader>(clipShaderPath);
+                    var shaderMaterial = new ShaderMaterial();
+                    shaderMaterial.Shader = shader;
+                    sprite.Material = shaderMaterial;
+                }
+                
                 entityContainer.AddChild(sprite);
             }
 
-            // Name label
+            // Add a fixed-size spacer for image-to-label gap
+            var imageLabelSpacer = new Control();
+            imageLabelSpacer.CustomMinimumSize = new Vector2(0, 40); // 80px vertical space
+            container.AddChild(imageLabelSpacer);
+
+            // Group the name and behaviour labels in their own VBox with small separation
+            var labelBox = new VBoxContainer();
+            labelBox.AddThemeConstantOverride("separation", 10); // Small gap between labels
+
             var nameLabel = new Label();
             nameLabel.Text = species.Name;
-            nameLabel.AddThemeFontSizeOverride("font_size", 48);
+            nameLabel.AddThemeFontSizeOverride("font_size", 64);
             nameLabel.AddThemeColorOverride("font_color", Colors.White);
-            container.AddChild(nameLabel);
+            nameLabel.HorizontalAlignment = HorizontalAlignment.Center;
+            labelBox.AddChild(nameLabel);
 
-            // Behavior label
             var behaviorLabel = new Label();
             behaviorLabel.Text = $"({species.Behavior})";
-            behaviorLabel.AddThemeFontSizeOverride("font_size", 40);
+            behaviorLabel.AddThemeFontSizeOverride("font_size", 48);
             behaviorLabel.AddThemeColorOverride("font_color", new Color(0.8f, 0.8f, 0.8f));
-            container.AddChild(behaviorLabel);
+            behaviorLabel.HorizontalAlignment = HorizontalAlignment.Center;
+            labelBox.AddChild(behaviorLabel);
+
+            container.AddChild(labelBox);
 
             return container;
         }
@@ -364,7 +425,27 @@ namespace InvasiveSpeciesAustralia
 
         private void OnEntityClicked(BugSquashEntity entity)
         {
+            // Spawn pop text effect at entity position
+            var popText = new PopTextEffect();
+            AddChild(popText);
+            popText.Initialize(entity.GlobalPosition, entity.Behavior);
+            
+            // Trigger screen shake
+            StartScreenShake();
+            
+            // Only trigger shockwave for non-fatal hits on invasive species
+            if (_shockwaveEffect != null && entity.Behavior == EntityBehavior.Predator && entity.IsAlive)
+            {
+                _shockwaveEffect.TriggerShockwave(entity.GlobalPosition);
+            }
+            
             // Play click sound effect if available
+        }
+        
+        private void StartScreenShake()
+        {
+            _shakeTimer = SCREEN_SHAKE_DURATION;
+            _shakeIntensity = SCREEN_SHAKE_INTENSITY;
         }
 
         private void UpdateScore()
@@ -451,10 +532,31 @@ namespace InvasiveSpeciesAustralia
         {
             if (!_gameScreen.Visible) return;
 
+            var deltaF = (float)delta;
+            
+            // Handle screen shake
+            if (_shakeTimer > 0)
+            {
+                _shakeTimer -= deltaF;
+                
+                // Calculate shake offset
+                var shakeAmount = _shakeIntensity * (_shakeTimer / SCREEN_SHAKE_DURATION);
+                var shakeX = (GD.Randf() - 0.5f) * 2f * shakeAmount;
+                var shakeY = (GD.Randf() - 0.5f) * 2f * shakeAmount;
+                
+                _camera.Position = _originalCameraPosition + new Vector2(shakeX, shakeY);
+                
+                if (_shakeTimer <= 0)
+                {
+                    // Reset camera position
+                    _camera.Position = _originalCameraPosition;
+                }
+            }
+
             // Handle food respawning
             if (_foodCount < _maxFoodCount && _foodSpecies.Count > 0)
             {
-                _foodRespawnTimer += (float)delta;
+                _foodRespawnTimer += deltaF;
                 if (_foodRespawnTimer >= FOOD_RESPAWN_DELAY)
                 {
                     _foodRespawnTimer = 0;

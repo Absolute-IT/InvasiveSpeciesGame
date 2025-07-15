@@ -11,7 +11,6 @@ public partial class MemoryCard : Control
     
     private Species _species;
     private TextureRect _cardImage;
-    private Button _cardButton;
     
     public bool IsFaceUp { get; private set; }
     public bool IsMatched { get; private set; }
@@ -22,20 +21,10 @@ public partial class MemoryCard : Control
         // Create the card structure
         CustomMinimumSize = new Vector2(200, 263); // Default size (800:1050 ratio)
         
-        // Create button for interaction
-        _cardButton = new Button();
-        _cardButton.Flat = true;
-        _cardButton.MouseDefaultCursorShape = CursorShape.PointingHand;
-        _cardButton.AnchorLeft = 0;
-        _cardButton.AnchorTop = 0;
-        _cardButton.AnchorRight = 1;
-        _cardButton.AnchorBottom = 1;
-        _cardButton.OffsetLeft = 0;
-        _cardButton.OffsetTop = 0;
-        _cardButton.OffsetRight = 0;
-        _cardButton.OffsetBottom = 0;
-        _cardButton.Pressed += OnCardPressed;
-        AddChild(_cardButton);
+        // Enable GUI input for touch handling
+        GuiInput += OnGuiInput;
+        MouseFilter = MouseFilterEnum.Stop;
+        MouseDefaultCursorShape = CursorShape.PointingHand;
         
         // Create texture rect for the card image
         _cardImage = new TextureRect();
@@ -115,11 +104,25 @@ public partial class MemoryCard : Control
         tween.Parallel().TweenProperty(this, "modulate:a", 0.8f, 0.3f);
     }
     
-    private void OnCardPressed()
+    private void OnGuiInput(InputEvent @event)
     {
-        if (!IsMatched && !IsFaceUp)
+        // Handle touch input first for better responsiveness on multi-touch screens
+        if (@event is InputEventScreenTouch touchEvent)
         {
-            EmitSignal(SignalName.CardClicked, this);
+            if (touchEvent.Pressed && !IsMatched && !IsFaceUp)
+            {
+                EmitSignal(SignalName.CardClicked, this);
+                // Don't consume the event to allow multiple simultaneous touches
+            }
+        }
+        // Handle mouse input (including synthetic mouse events from touch)
+        else if (@event is InputEventMouseButton mouseEvent)
+        {
+            if (mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left && !IsMatched && !IsFaceUp)
+            {
+                EmitSignal(SignalName.CardClicked, this);
+                // Don't consume the event to allow multiple simultaneous touches
+            }
         }
     }
 } 

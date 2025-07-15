@@ -38,6 +38,7 @@ public partial class SettingsManager : Node
     public float SfxVolume { get; private set; } = 1.0f;
     public bool MusicEnabled { get; private set; } = true;
     public bool SfxEnabled { get; private set; } = true;
+    public bool ShowTouchDebugger { get; private set; } = false;
     
     // Audio bus indices
     private int _masterBusIndex;
@@ -106,6 +107,9 @@ public partial class SettingsManager : Node
         MusicEnabled = (bool)_config.GetValue("audio", "music_enabled", MusicEnabled);
         SfxEnabled = (bool)_config.GetValue("audio", "sfx_enabled", SfxEnabled);
         
+        // Load debug settings
+        ShowTouchDebugger = (bool)_config.GetValue("debug", "show_touch_debugger", ShowTouchDebugger);
+        
         // Apply loaded settings
         ApplyAllSettings();
     }
@@ -124,6 +128,9 @@ public partial class SettingsManager : Node
         _config.SetValue("audio", "sfx_volume", SfxVolume);
         _config.SetValue("audio", "music_enabled", MusicEnabled);
         _config.SetValue("audio", "sfx_enabled", SfxEnabled);
+        
+        // Save debug settings
+        _config.SetValue("debug", "show_touch_debugger", ShowTouchDebugger);
         
         var error = _config.Save(ConfigPath);
         if (error != Error.Ok)
@@ -186,6 +193,26 @@ public partial class SettingsManager : Node
         SfxEnabled = enabled;
         ApplyAudioSettings();
         SaveSettings();
+    }
+    
+    public void SetShowTouchDebugger(bool show)
+    {
+        ShowTouchDebugger = show;
+        SaveSettings();
+        
+        // Update all active debuggers
+        var tree = GetTree();
+        if (tree != null)
+        {
+            var debuggers = tree.GetNodesInGroup("touch_debuggers");
+            foreach (Node node in debuggers)
+            {
+                if (node is MultiTouchDebugger debugger)
+                {
+                    debugger.SetEnabled(show);
+                }
+            }
+        }
     }
     
     private void ApplyAllSettings()

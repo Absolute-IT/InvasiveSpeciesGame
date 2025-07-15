@@ -130,8 +130,43 @@ Each entity is represented by:
 - Detection via position distance checks
 
 ### Visual Effects
-- **Stun Effect**: Gray tint (0.5, 0.5, 0.5, 0.7) + blink animation
-- **Blink Animation**: Alpha oscillates between 1.0 and 0.3
+
+The bug squash game includes several visual effects to enhance player feedback:
+
+1. **Shockwave Effect** (`ShockwaveEffect.cs`)
+   - Triggered when invasive species (predators) are hit but not killed
+   - Creates a circular ripple effect emanating from the hit entity
+   - Uses a custom shader (`shockwave_ripple.gdshader`) for the visual effect
+   - Duration: 0.5 seconds with fade-out
+
+2. **Paint Splatter Effect** (`PaintSplatterEffect.cs`)
+   - *(Currently disabled but available for future use)*
+   - Creates a paint splatter when entities die
+   - Uses the entity's color for the splatter
+   - Fades out over 2 seconds
+
+3. **Screen Shake Effect** 
+   - Triggered on every entity click (native or invasive)
+   - Duration: 0.3 seconds
+   - Intensity: 30 pixel displacement
+   - Implemented using Camera2D offset manipulation
+   - Adds visceral feedback to player interactions
+
+4. **Pop Text Effect** (`PopTextEffect.cs`)
+   - Spawns animated text when any entity is clicked
+   - Text varies based on entity behavior:
+     - **Predators (invasive species)**: Action words like "SQUASH!", "BAM!", "POW!", "ZAP!", "WHAM!", "BOOM!", "SNAP!", "POP!", "CRASH!", "SMASH!"
+     - **Prey/Food (native species)**: Mistake feedback like "NOPE!", "OH NO!", "OOPS!", "WAIT!", "NO NO!", "STOP!", "WRONG!", "MISTAKE!", "SORRY!", "ACK!"
+   - Color schemes:
+     - **Predators**: Bright colors (red, orange, yellow, green, blue, magenta, cyan)
+     - **Native species**: Darker warning colors (dark red, purple, brown)
+   - Animation includes:
+     - Upward movement with angle variance (±45° for predators, ±90° for mistakes)
+     - Scale animation (grow then shrink)
+     - Fade out after 0.5 seconds
+     - Total lifetime: 1.5 seconds
+     - Mistakes have larger font size (84 vs 72) and more dramatic rotation
+   - Text has drop shadow for better visibility
 
 ### Performance Considerations
 - Entities update behavior every 0.5 seconds

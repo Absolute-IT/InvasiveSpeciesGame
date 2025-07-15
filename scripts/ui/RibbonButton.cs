@@ -267,7 +267,30 @@ public partial class RibbonButton : Control
     
     private void OnGuiInput(InputEvent @event)
     {
-        if (@event is InputEventMouseButton mouseButton)
+        // Handle touch input first for better responsiveness on multi-touch screens
+        if (@event is InputEventScreenTouch touchEvent)
+        {
+            if (touchEvent.Pressed)
+            {
+                _isPressed = true;
+                QueueRedraw();
+            }
+            else if (_isPressed)
+            {
+                _isPressed = false;
+                QueueRedraw();
+                
+                // Check if touch is still over the button
+                var touchPos = GetLocalMousePosition();
+                if (touchPos.X >= 0 && touchPos.X <= Size.X &&
+                    touchPos.Y >= 0 && touchPos.Y <= Size.Y)
+                {
+                    EmitSignal(SignalName.Pressed);
+                }
+            }
+        }
+        // Handle mouse input (including synthetic mouse events from touch)
+        else if (@event is InputEventMouseButton mouseButton)
         {
             if (mouseButton.ButtonIndex == MouseButton.Left)
             {

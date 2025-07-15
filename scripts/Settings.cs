@@ -26,13 +26,20 @@ public partial class Settings : Control
     private Label _sfxVolumeLabel;
     private CustomCheckBox _sfxEnabledCheckBox;
     
+    // Debug controls
+    private CustomCheckBox _showTouchDebuggerCheckBox;
+    
     // Pending settings (not applied until Apply button is pressed)
     private Vector2I _pendingResolution;
     private float _pendingScale;
     private bool _pendingFullscreen;
+    private bool _pendingShowTouchDebugger;
     
     // Track if any changes have been made
     private bool _hasChanges = false;
+    
+    // Track if we're fully initialized
+    private bool _isInitialized = false;
     
     public override void _Ready()
     {
@@ -57,11 +64,32 @@ public partial class Settings : Control
         _sfxVolumeLabel = GetNode<Label>("Panel/ContentContainer/VBoxContainer/AudioSection/SfxContainer/SfxRow/SfxVolumeValue");
         _sfxEnabledCheckBox = GetNode<CustomCheckBox>("Panel/ContentContainer/VBoxContainer/AudioSection/SfxContainer/SfxRow/SfxEnabledCheckBox");
         
-        // Connect signals first
+        // Debug controls
+        _showTouchDebuggerCheckBox = GetNode<CustomCheckBox>("Panel/ContentContainer/VBoxContainer/DebugSection/TouchDebuggerContainer/TouchDebuggerCheckBox");
+        
+        // Add multi-touch debugger
+        AddMultiTouchDebugger();
+        
+        // Connect signals
         ConnectSignals();
         
-        // Defer population to ensure SettingsManager is ready
-        CallDeferred(nameof(InitializeSettings));
+        // Initialize settings immediately if SettingsManager is ready
+        if (SettingsManager.Instance != null)
+        {
+            InitializeSettings();
+        }
+        else
+        {
+            // Wait for next frame to ensure SettingsManager is ready
+            CallDeferred(nameof(InitializeSettings));
+        }
+    }
+    
+    private void AddMultiTouchDebugger()
+    {
+        var debugger = new Systems.MultiTouchDebugger();
+        debugger.Name = "MultiTouchDebugger";
+        AddChild(debugger);
     }
     
     private void InitializeSettings()
@@ -72,6 +100,8 @@ public partial class Settings : Control
         
         // Load current settings
         LoadCurrentSettings();
+        
+        _isInitialized = true;
     }
     
     private void PopulateResolutionOptions()
@@ -101,6 +131,9 @@ public partial class Settings : Control
         _pendingScale = settings.CurrentScale;
         _pendingFullscreen = settings.IsFullscreen;
         
+        // Debug settings
+        _pendingShowTouchDebugger = settings.ShowTouchDebugger;
+        
         _resolutionOption.Selected = settings.GetResolutionIndex(settings.CurrentResolution);
         _scaleOption.Selected = settings.GetScaleIndex(settings.CurrentScale);
         _fullscreenCheckBox.ButtonPressed = settings.IsFullscreen;
@@ -118,6 +151,9 @@ public partial class Settings : Control
         _sfxVolumeLabel.Text = $"{Mathf.RoundToInt(settings.SfxVolume * 100)}%";
         _sfxEnabledCheckBox.ButtonPressed = settings.SfxEnabled;
         _sfxVolumeSlider.Editable = settings.SfxEnabled;
+        
+        // Debug settings
+        _showTouchDebuggerCheckBox.ButtonPressed = settings.ShowTouchDebugger;
         
         // Disable apply button initially
         _hasChanges = false;
@@ -140,6 +176,9 @@ public partial class Settings : Control
         _musicEnabledCheckBox.Toggled += OnMusicEnabledToggled;
         _sfxVolumeSlider.ValueChanged += OnSfxVolumeChanged;
         _sfxEnabledCheckBox.Toggled += OnSfxEnabledToggled;
+        
+        // Debug signals - these require Apply button
+        _showTouchDebuggerCheckBox.Toggled += OnShowTouchDebuggerToggled;
     }
     
     private void OnBackPressed()
@@ -156,6 +195,16 @@ public partial class Settings : Control
         settings.SetResolution(_pendingResolution);
         settings.SetScale(_pendingScale);
         settings.SetFullscreen(_pendingFullscreen);
+        
+        // Apply pending debug settings
+        settings.SetShowTouchDebugger(_pendingShowTouchDebugger);
+        
+        // Update the touch debugger in the current scene
+        var debugger = GetNode<Systems.MultiTouchDebugger>("MultiTouchDebugger");
+        if (debugger != null)
+        {
+            debugger.SetEnabled(_pendingShowTouchDebugger);
+        }
         
         // Reset changes flag and disable apply button
         _hasChanges = false;
@@ -182,10 +231,22 @@ public partial class Settings : Control
     
     private void UpdateApplyButton()
     {
-        // Enable the apply button when any setting is changed
-        // Even though audio settings apply immediately, users expect an Apply button
-        _hasChanges = true;
-        _applyButton.Disabled = false;
+        if (!_isInitialized)
+            return;
+            
+        var settings = SettingsManager.Instance;
+        
+        // Check if display settings have changed
+        var displayChanged = _pendingResolution != settings.CurrentResolution ||
+                            !Mathf.IsEqualApprox(_pendingScale, settings.CurrentScale) ||
+                            _pendingFullscreen != settings.IsFullscreen;
+        
+        // Check if debug settings have changed
+        var debugChanged = _pendingShowTouchDebugger != settings.ShowTouchDebugger;
+        
+        // Enable the apply button if any settings changed
+        _hasChanges = displayChanged || debugChanged;
+        _applyButton.Disabled = !_hasChanges;
     }
     
     // Audio settings apply immediately
@@ -194,7 +255,6 @@ public partial class Settings : Control
         var volume = (float)value;
         SettingsManager.Instance.SetMasterVolume(volume);
         _masterVolumeLabel.Text = $"{Mathf.RoundToInt(volume * 100)}%";
-        UpdateApplyButton();
     }
     
     private void OnMusicVolumeChanged(double value)
@@ -202,7 +262,6 @@ public partial class Settings : Control
         var volume = (float)value;
         SettingsManager.Instance.SetMusicVolume(volume);
         _musicVolumeLabel.Text = $"{Mathf.RoundToInt(volume * 100)}%";
-        UpdateApplyButton();
     }
     
     private void OnMusicEnabledToggled(bool pressed)
@@ -212,7 +271,6 @@ public partial class Settings : Control
         
         // Update visual state
         _musicVolumeSlider.Modulate = pressed ? Colors.White : new Color(1, 1, 1, 0.5f);
-        UpdateApplyButton();
     }
     
     private void OnSfxVolumeChanged(double value)
@@ -220,7 +278,6 @@ public partial class Settings : Control
         var volume = (float)value;
         SettingsManager.Instance.SetSfxVolume(volume);
         _sfxVolumeLabel.Text = $"{Mathf.RoundToInt(volume * 100)}%";
-        UpdateApplyButton();
     }
     
     private void OnSfxEnabledToggled(bool pressed)
@@ -230,6 +287,11 @@ public partial class Settings : Control
         
         // Update visual state
         _sfxVolumeSlider.Modulate = pressed ? Colors.White : new Color(1, 1, 1, 0.5f);
+    }
+    
+    private void OnShowTouchDebuggerToggled(bool pressed)
+    {
+        _pendingShowTouchDebugger = pressed;
         UpdateApplyButton();
     }
     
@@ -258,5 +320,7 @@ public partial class Settings : Control
             _sfxVolumeSlider.ValueChanged -= OnSfxVolumeChanged;
         if (_sfxEnabledCheckBox != null)
             _sfxEnabledCheckBox.Toggled -= OnSfxEnabledToggled;
+        if (_showTouchDebuggerCheckBox != null)
+            _showTouchDebuggerCheckBox.Toggled -= OnShowTouchDebuggerToggled;
     }
 } 

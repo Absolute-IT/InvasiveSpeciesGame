@@ -382,5 +382,26 @@
 		"wikipedia": "https://en.wikipedia.org/wiki/Phytophthora_cinnamomi",
 		"australian_museum": "",
 		"references": []
+	},
+	{
+		"id": "dutchmans-pipe",
+		"name": "Dutchman's Pipe",
+		"scientific_name": "Aristolochia elegans",
+		"type": "plants",
+		"history": "",
+		"habitat": "",
+		"diet": "",
+		"identification": [
+			
+		],
+		"identification_images": [
+			
+		],
+		"image": "assets/art/species/plants/phytophthora-blight.png",
+		"environment_image": "assets/art/environments/barren-dirt.png",
+		"card_image": "assets/art/match-game/cards/phytophthora-card.png",
+		"wikipedia": "https://en.wikipedia.org/wiki/Phytophthora_cinnamomi",
+		"australian_museum": "",
+		"references": []
 	}
 ]

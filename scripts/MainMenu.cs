@@ -33,6 +33,9 @@ public partial class MainMenu : BaseUIControl
         // Initialize configuration loader
         InitializeConfigLoader();
         
+        // Add multi-touch debugger for testing (remove this after testing)
+        AddMultiTouchDebugger();
+        
         // Get button references
         _storiesButton = GetNode<RibbonButton>("RibbonContainer/StoriesButton");
         _speciesGuideButton = GetNode<RibbonButton>("RibbonContainer/SpeciesGuideButton");
@@ -54,6 +57,14 @@ public partial class MainMenu : BaseUIControl
         
         // Set up background rotation
         SetupBackgroundRotation();
+    }
+    
+    private void AddMultiTouchDebugger()
+    {
+        var debugger = new Systems.MultiTouchDebugger();
+        debugger.Name = "MultiTouchDebugger";
+        AddChild(debugger);
+        GD.Print("Multi-touch debugger added to scene");
     }
     
     private void InitializeConfigLoader()

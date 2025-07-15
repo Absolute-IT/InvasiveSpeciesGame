@@ -45,6 +45,9 @@ namespace InvasiveSpeciesAustralia
             Monitoring = true;
             Monitorable = true;
             
+            // IMPORTANT: Set process mode to ensure we receive all input events
+            ProcessMode = ProcessModeEnum.Always;
+            
             // Ensure proper Z ordering - above background
             ZIndex = 0; // Default Z-index, will be above background which is -100
             
@@ -60,7 +63,7 @@ namespace InvasiveSpeciesAustralia
             // Create the visual structure after collision
             CreateVisuals();
 
-            // Connect input
+            // Connect input - use regular input event for Area2D
             InputEvent += OnInputEvent;
             MouseEntered += OnMouseEntered;
             MouseExited += OnMouseExited;
@@ -474,10 +477,21 @@ namespace InvasiveSpeciesAustralia
 
         private void OnInputEvent(Node viewport, InputEvent @event, long shapeIdx)
         {
-            if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
+            // Handle touch input first for better responsiveness on multi-touch screens
+            if (@event is InputEventScreenTouch touchEvent && touchEvent.Pressed)
+            {
+                GD.Print($"Touch {touchEvent.Index} detected on entity: {_species?.Name}");
+                HandleClick();
+                // Don't consume the event - allow other entities to receive the same touch
+                return;
+            }
+            // Handle mouse input (including synthetic mouse events from touch)
+            else if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
             {
                 GD.Print($"Click detected on entity: {_species?.Name}");
                 HandleClick();
+                // Don't consume the event - allow other entities to receive the same click
+                return;
             }
         }
         
@@ -493,6 +507,13 @@ namespace InvasiveSpeciesAustralia
 
         private void HandleClick()
         {
+            // Don't process clicks while stunned
+            if (_isStunned)
+            {
+                GD.Print($"Entity {_species?.Name} is stunned, ignoring click");
+                return;
+            }
+            
             GD.Print($"Entity clicked: {_species?.Name} ({_behavior})");
             EmitSignal(SignalName.EntityClicked, this);
 
@@ -528,7 +549,17 @@ namespace InvasiveSpeciesAustralia
 
             IsAlive = false;
             EmitSignal(SignalName.EntityDied, this);
-            QueueFree();
+            
+            // Create paint splatter effect before removing entity
+            // var splatterEffect = new PaintSplatterEffect();
+            // GetParent().AddChild(splatterEffect);
+            // splatterEffect.TriggerSplatter(this);
+            
+            // Hide the entity immediately (splatter effect will show instead)
+            Visible = false;
+            
+            // Queue free after a short delay to ensure splatter effect has captured the entity
+            GetTree().CreateTimer(0.1).Timeout += () => QueueFree();
         }
     }
 } 

@@ -38,8 +38,7 @@ public partial class MemoryMatchGame : Control
     
     // Card Management
     private List<MemoryCard> _cards = new();
-    private MemoryCard _firstSelectedCard;
-    private MemoryCard _secondSelectedCard;
+    private List<MemoryCard> _selectedCards = new();  // Changed from individual card references
     private bool _canSelectCard = false;
     private int _matchedPairs = 0;
     
@@ -113,6 +112,16 @@ public partial class MemoryMatchGame : Control
         
         // Start the game
         StartGame();
+        
+        // Add multi-touch debugger
+        AddMultiTouchDebugger();
+    }
+    
+    private void AddMultiTouchDebugger()
+    {
+        var debugger = new InvasiveSpeciesAustralia.Systems.MultiTouchDebugger();
+        debugger.Name = "MultiTouchDebugger";
+        AddChild(debugger);
     }
     
     public override void _Process(double delta)
@@ -431,27 +440,34 @@ public partial class MemoryMatchGame : Control
         if (!_canSelectCard || card.IsMatched || card.IsFaceUp)
             return;
         
-        card.ShowFace();
-        
-        if (_firstSelectedCard == null)
+        // Add card to selected list if not already there
+        if (!_selectedCards.Contains(card))
         {
-            _firstSelectedCard = card;
-        }
-        else if (_secondSelectedCard == null)
-        {
-            _secondSelectedCard = card;
-            _canSelectCard = false;
-            CheckMatch();
+            _selectedCards.Add(card);
+            card.ShowFace();
+            
+            // Check if we have two cards selected
+            if (_selectedCards.Count == 2)
+            {
+                _canSelectCard = false;
+                CheckMatch();
+            }
         }
     }
     
     private void CheckMatch()
     {
-        if (_firstSelectedCard.SpeciesId == _secondSelectedCard.SpeciesId)
+        if (_selectedCards.Count != 2)
+            return;
+            
+        var firstCard = _selectedCards[0];
+        var secondCard = _selectedCards[1];
+        
+        if (firstCard.SpeciesId == secondCard.SpeciesId)
         {
             // Match!
-            _firstSelectedCard.SetMatched();
-            _secondSelectedCard.SetMatched();
+            firstCard.SetMatched();
+            secondCard.SetMatched();
             _matchedPairs++;
             _matchesSinceLastBonus++;
             
@@ -480,15 +496,17 @@ public partial class MemoryMatchGame : Control
     
     private void OnMismatchTimeout()
     {
-        _firstSelectedCard.ShowBack();
-        _secondSelectedCard.ShowBack();
+        if (_selectedCards.Count >= 2)
+        {
+            _selectedCards[0].ShowBack();
+            _selectedCards[1].ShowBack();
+        }
         ResetSelection();
     }
     
     private void ResetSelection()
     {
-        _firstSelectedCard = null;
-        _secondSelectedCard = null;
+        _selectedCards.Clear();
         _canSelectCard = true;
     }
     

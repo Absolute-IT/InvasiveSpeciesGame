@@ -110,6 +110,16 @@ public partial class Gallery : BaseUIControl
         
         // Show selection view initially
         ShowSelectionView();
+        
+        // Add multi-touch debugger
+        AddMultiTouchDebugger();
+    }
+    
+    private void AddMultiTouchDebugger()
+    {
+        var debugger = new Systems.MultiTouchDebugger();
+        debugger.Name = "MultiTouchDebugger";
+        AddChild(debugger);
     }
     
     private void LoadSpeciesData()
@@ -225,7 +235,13 @@ public partial class Gallery : BaseUIControl
         
         container.GuiInput += (InputEvent @event) =>
         {
-            if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
+            // Handle touch input first for better responsiveness on multi-touch screens
+            if (@event is InputEventScreenTouch touchEvent && touchEvent.Pressed)
+            {
+                ShowSpeciesDetail(species, index, isAnimal);
+            }
+            // Handle mouse input (including synthetic mouse events from touch)
+            else if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
             {
                 ShowSpeciesDetail(species, index, isAnimal);
             }

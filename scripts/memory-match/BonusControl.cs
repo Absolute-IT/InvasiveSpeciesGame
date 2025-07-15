@@ -436,34 +436,47 @@ public partial class BonusControl : Control
     
     private void OnGuiInput(InputEvent @event)
     {
-        if (@event is InputEventMouseButton mouseEvent)
+        // Handle touch input first for better responsiveness on multi-touch screens
+        if (@event is InputEventScreenTouch touchEvent)
         {
-            if (mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
+            if (touchEvent.Pressed)
             {
-                EmitSignal(SignalName.BonusCollected);
-                
-                // Disable further input
-                MouseFilter = MouseFilterEnum.Ignore;
-                
-                // Stop emitting new particles but let existing ones finish
-                if (_particles != null)
-                {
-                    _particles.Emitting = false;
-                }
-                
-                // Create explosion effect
-                CreateExplosionEffect();
-                
-                // Add a simple disappear effect
-                var tween = CreateTween();
-                tween.TweenProperty(this, "scale", Vector2.Zero, 0.2f);
-                tween.TweenProperty(this, "modulate:a", 0.0f, 0.2f);
-                tween.TweenCallback(Callable.From(() => QueueFree()));
-                
-                // Mark event as handled
+                HandleBonusCollection();
                 AcceptEvent();
             }
         }
+        // Handle mouse input (including synthetic mouse events from touch)
+        else if (@event is InputEventMouseButton mouseEvent)
+        {
+            if (mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
+            {
+                HandleBonusCollection();
+                AcceptEvent();
+            }
+        }
+    }
+    
+    private void HandleBonusCollection()
+    {
+        EmitSignal(SignalName.BonusCollected);
+        
+        // Disable further input
+        MouseFilter = MouseFilterEnum.Ignore;
+        
+        // Stop emitting new particles but let existing ones finish
+        if (_particles != null)
+        {
+            _particles.Emitting = false;
+        }
+        
+        // Create explosion effect
+        CreateExplosionEffect();
+        
+        // Add a simple disappear effect
+        var tween = CreateTween();
+        tween.TweenProperty(this, "scale", Vector2.Zero, 0.2f);
+        tween.TweenProperty(this, "modulate:a", 0.0f, 0.2f);
+        tween.TweenCallback(Callable.From(() => QueueFree()));
     }
     
     private void CreateExplosionEffect()

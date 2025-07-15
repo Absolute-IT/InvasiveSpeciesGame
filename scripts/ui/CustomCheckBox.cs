@@ -21,6 +21,7 @@ public partial class CustomCheckBox : Control
     public int FontSize { get; set; } = 28;
     
     private bool _isHovered = false;
+    private bool _isPressed = false;
     private StyleBoxFlat _normalStyle;
     private StyleBoxFlat _checkedStyle;
     private StyleBoxFlat _hoverStyle;
@@ -29,6 +30,7 @@ public partial class CustomCheckBox : Control
     {
         CustomMinimumSize = new Vector2(64, 64);
         MouseFilter = MouseFilterEnum.Stop;
+        FocusMode = FocusModeEnum.All;
         
         // Create styles
         CreateStyles();
@@ -69,7 +71,9 @@ public partial class CustomCheckBox : Control
         
         // Draw checkbox background
         StyleBoxFlat currentStyle;
-        if (_isHovered && !ButtonPressed)
+        if (_isPressed)
+            currentStyle = _checkedStyle;
+        else if (_isHovered && !ButtonPressed)
             currentStyle = _hoverStyle;
         else if (ButtonPressed)
             currentStyle = _checkedStyle;
@@ -109,13 +113,71 @@ public partial class CustomCheckBox : Control
         }
     }
     
-    public override void _GuiInput(InputEvent @event)
+    public override void _Input(InputEvent @event)
     {
-        if (@event is InputEventMouseButton mouseEvent && mouseEvent.Pressed && mouseEvent.ButtonIndex == MouseButton.Left)
+        if (!IsVisibleInTree())
+            return;
+            
+        // Handle screen touch events
+        if (@event is InputEventScreenTouch touchEvent)
         {
-            ButtonPressed = !ButtonPressed;
-            EmitSignal(SignalName.Toggled, ButtonPressed);
-            QueueRedraw();
+            var localPos = GetLocalMousePosition();
+            var rect = new Rect2(Vector2.Zero, Size);
+            
+            if (rect.HasPoint(localPos))
+            {
+                if (touchEvent.Pressed)
+                {
+                    _isPressed = true;
+                    QueueRedraw();
+                }
+                else
+                {
+                    if (_isPressed)
+                    {
+                        ButtonPressed = !ButtonPressed;
+                        EmitSignal(SignalName.Toggled, ButtonPressed);
+                    }
+                    _isPressed = false;
+                    QueueRedraw();
+                }
+                
+                // Accept the event to prevent propagation
+                AcceptEvent();
+            }
+        }
+        // Handle mouse button events
+        else if (@event is InputEventMouseButton mouseEvent && mouseEvent.ButtonIndex == MouseButton.Left)
+        {
+            var localPos = GetLocalMousePosition();
+            var rect = new Rect2(Vector2.Zero, Size);
+            
+            if (rect.HasPoint(localPos))
+            {
+                if (mouseEvent.Pressed)
+                {
+                    _isPressed = true;
+                    QueueRedraw();
+                }
+                else
+                {
+                    if (_isPressed)
+                    {
+                        ButtonPressed = !ButtonPressed;
+                        EmitSignal(SignalName.Toggled, ButtonPressed);
+                    }
+                    _isPressed = false;
+                    QueueRedraw();
+                }
+                
+                // Accept the event to prevent propagation
+                AcceptEvent();
+            }
+            else if (!mouseEvent.Pressed)
+            {
+                _isPressed = false;
+                QueueRedraw();
+            }
         }
     }
     
