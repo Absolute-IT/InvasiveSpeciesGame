@@ -45,6 +45,13 @@ public partial class Gallery : BaseUIControl
     // Navigation
     private Button _homeButton;
     
+    // Audio
+    private AudioStreamPlayer _audioPlayer1;
+    private AudioStreamPlayer _audioPlayer2;
+    private AudioStreamPlayer _currentAudioPlayer;
+    private AudioStreamPlayer _previousAudioPlayer;
+    private Tween _audioFadeTween;
+    
     // Data
     private List<Species> _animals = new();
     private List<Species> _plants = new();
@@ -113,6 +120,9 @@ public partial class Gallery : BaseUIControl
         
         // Add multi-touch debugger
         AddMultiTouchDebugger();
+        
+        // Setup audio players for crossfading
+        SetupAudioPlayers();
     }
     
     private void AddMultiTouchDebugger()
@@ -122,9 +132,25 @@ public partial class Gallery : BaseUIControl
         AddChild(debugger);
     }
     
+    private void SetupAudioPlayers()
+    {
+        // Create two audio players for crossfading
+        _audioPlayer1 = new AudioStreamPlayer();
+        _audioPlayer1.Name = "AudioPlayer1";
+        _audioPlayer1.Bus = "Master";
+        _audioPlayer1.VolumeDb = -80.0f; // Start silent
+        AddChild(_audioPlayer1);
+        
+        _audioPlayer2 = new AudioStreamPlayer();
+        _audioPlayer2.Name = "AudioPlayer2";
+        _audioPlayer2.Bus = "Master";
+        _audioPlayer2.VolumeDb = -80.0f; // Start silent
+        AddChild(_audioPlayer2);
+    }
+    
     private void LoadSpeciesData()
     {
-        var allSpecies = ConfigLoader.Instance.GetAllSpecies();
+        var allSpecies = ConfigLoader.Instance.GetAllEnabledSpecies();
         
         _animals = allSpecies.Where(s => s.Type == "animals").ToList();
         _plants = allSpecies.Where(s => s.Type == "plants").ToList();
@@ -182,11 +208,35 @@ public partial class Gallery : BaseUIControl
         hoverStyle.BorderColor = new Color(0.8f, 0.8f, 0.8f, 1.0f);
         hoverStyle.BgColor = new Color(0.2f, 0.2f, 0.2f, 0.9f);
         
+        // Add an intermediate Control to handle layout
+        var innerContainer = new Control();
+        innerContainer.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        innerContainer.MouseFilter = Control.MouseFilterEnum.Pass;
+        container.AddChild(innerContainer);
+        
+        // Add environment background image
+        if (!string.IsNullOrEmpty(species.EnvironmentImage))
+        {
+            var bgTexture = GD.Load<Texture2D>(species.EnvironmentImage);
+            if (bgTexture != null)
+            {
+                var bgRect = new TextureRect();
+                bgRect.Texture = bgTexture;
+                bgRect.ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize;
+                bgRect.StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered;
+                bgRect.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+                bgRect.MouseFilter = Control.MouseFilterEnum.Ignore;
+                bgRect.Modulate = new Color(1, 1, 1, 0.5f); // Make it subtle
+                innerContainer.AddChild(bgRect);
+            }
+        }
+        
         // Add species image
         var imageRect = new TextureRect();
         imageRect.ExpandMode = TextureRect.ExpandModeEnum.FitWidthProportional;
         imageRect.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
         imageRect.MouseFilter = Control.MouseFilterEnum.Ignore;
+        imageRect.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
         
         // Load texture
         if (!string.IsNullOrEmpty(species.Image))
@@ -198,7 +248,7 @@ public partial class Gallery : BaseUIControl
             }
         }
         
-        container.AddChild(imageRect);
+        innerContainer.AddChild(imageRect);
         
         // Add name label at bottom
         var nameLabel = new Label();
@@ -213,10 +263,10 @@ public partial class Gallery : BaseUIControl
         });
         nameLabel.AddThemeFontSizeOverride("font_size", 32);
         nameLabel.HorizontalAlignment = HorizontalAlignment.Center;
-        nameLabel.VerticalAlignment = VerticalAlignment.Bottom;
+        nameLabel.VerticalAlignment = VerticalAlignment.Center;
         nameLabel.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.BottomWide);
         nameLabel.MouseFilter = Control.MouseFilterEnum.Ignore;
-        container.AddChild(nameLabel);
+        innerContainer.AddChild(nameLabel);
         
         // Handle mouse events
         container.MouseEntered += () =>
@@ -252,6 +302,59 @@ public partial class Gallery : BaseUIControl
     
     private void ShowSpeciesDetail(Species species, int index, bool isAnimal)
     {
+        // If we're already in detail view, animate the transition
+        if (_detailContainer.Visible)
+        {
+            AnimateSpeciesTransition(species, index, isAnimal);
+        }
+        else
+        {
+            // First time showing detail, use the existing logic
+            SetupSpeciesDetail(species, index, isAnimal);
+            ShowDetailView();
+        }
+    }
+    
+    private void AnimateSpeciesTransition(Species species, int index, bool isAnimal)
+    {
+        // Fade out current content
+        var fadeOut = CreateTween();
+        fadeOut.SetParallel(true);
+        fadeOut.TweenProperty(_speciesImage, "modulate:a", 0.0f, 0.2f);
+        fadeOut.TweenProperty(_speciesName, "modulate:a", 0.0f, 0.2f);
+        fadeOut.TweenProperty(_scientificName, "modulate:a", 0.0f, 0.2f);
+        fadeOut.TweenProperty(_contentText, "modulate:a", 0.0f, 0.2f);
+        fadeOut.TweenProperty(_backgroundImage, "modulate:a", 0.5f, 0.2f);
+        
+        // Also fade out photo panels
+        fadeOut.TweenProperty(_photo1, "modulate:a", 0.0f, 0.2f);
+        fadeOut.TweenProperty(_photo2, "modulate:a", 0.0f, 0.2f);
+        fadeOut.TweenProperty(_photo3, "modulate:a", 0.0f, 0.2f);
+        
+        fadeOut.SetParallel(false);
+        fadeOut.TweenCallback(Callable.From(() =>
+        {
+            // Update content
+            SetupSpeciesDetail(species, index, isAnimal);
+            
+            // Fade in new content
+            var fadeIn = CreateTween();
+            fadeIn.SetParallel(true);
+            fadeIn.TweenProperty(_speciesImage, "modulate:a", 1.0f, 0.3f);
+            fadeIn.TweenProperty(_speciesName, "modulate:a", 1.0f, 0.3f);
+            fadeIn.TweenProperty(_scientificName, "modulate:a", 1.0f, 0.3f);
+            fadeIn.TweenProperty(_contentText, "modulate:a", 1.0f, 0.3f);
+            fadeIn.TweenProperty(_backgroundImage, "modulate:a", 1.0f, 0.3f);
+            
+            // Fade in photo panels
+            fadeIn.TweenProperty(_photo1, "modulate:a", 1.0f, 0.3f);
+            fadeIn.TweenProperty(_photo2, "modulate:a", 1.0f, 0.3f);
+            fadeIn.TweenProperty(_photo3, "modulate:a", 1.0f, 0.3f);
+        }));
+    }
+    
+    private void SetupSpeciesDetail(Species species, int index, bool isAnimal)
+    {
         _currentSpecies = species;
         _currentSpeciesIndex = index;
         _isShowingAnimals = isAnimal;
@@ -274,6 +377,16 @@ public partial class Gallery : BaseUIControl
             {
                 _speciesImage.Texture = speciesTexture;
             }
+        }
+        
+        // Apply image scale
+        if (species.ImageScale != 1.0f)
+        {
+            _speciesImage.Scale = Vector2.One * species.ImageScale;
+        }
+        else
+        {
+            _speciesImage.Scale = Vector2.One;
         }
         
         // Set text
@@ -324,11 +437,11 @@ public partial class Gallery : BaseUIControl
         _previousAnimalButton.Visible = index > 0;
         _nextAnimalButton.Visible = index < list.Count - 1;
         
+        // Handle ambience sound
+        PlayAmbienceSound(species);
+        
         // Show overview by default
         ShowContent("overview");
-        
-        // Transition to detail view
-        ShowDetailView();
     }
     
     private void ShowContent(string contentType)
@@ -523,6 +636,9 @@ public partial class Gallery : BaseUIControl
     
     private void OnBackPressed()
     {
+        // Stop ambience when going back to selection
+        StopAllAmbience();
+        
         // Animate transition back to selection
         var tween = CreateTween();
         tween.TweenProperty(_detailContainer, "modulate:a", 0.0f, 0.3f);
@@ -555,6 +671,9 @@ public partial class Gallery : BaseUIControl
     
     private void OnHomePressed()
     {
+        // Stop ambience when leaving gallery
+        StopAllAmbience();
+        
         var tween = CreateTween();
         tween.TweenProperty(this, "modulate:a", 0.0f, 0.3f);
         tween.TweenCallback(Callable.From(() =>
@@ -742,8 +861,117 @@ public partial class Gallery : BaseUIControl
         }
     }
     
+    private void PlayAmbienceSound(Species species)
+    {
+        // Check if we have an ambience sound to play
+        if (string.IsNullOrEmpty(species.AmbienceSound))
+        {
+            // If no ambience sound, fade out any current audio
+            if (_currentAudioPlayer != null && _currentAudioPlayer.Playing)
+            {
+                FadeOutAudio(_currentAudioPlayer);
+                _currentAudioPlayer = null;
+            }
+            return;
+        }
+        
+        // Load the audio stream
+        var audioStream = GD.Load<AudioStream>(species.AmbienceSound);
+        if (audioStream == null)
+        {
+            GD.PrintErr($"Failed to load ambience sound: {species.AmbienceSound}");
+            return;
+        }
+        
+        // Cancel any existing fade tween
+        _audioFadeTween?.Kill();
+        
+        // Determine which player to use
+        AudioStreamPlayer newPlayer = null;
+        if (_currentAudioPlayer == null)
+        {
+            // First time playing audio
+            newPlayer = _audioPlayer1;
+        }
+        else if (_currentAudioPlayer == _audioPlayer1)
+        {
+            // Switch to player 2
+            newPlayer = _audioPlayer2;
+        }
+        else
+        {
+            // Switch to player 1
+            newPlayer = _audioPlayer1;
+        }
+        
+        // Set up the new player
+        newPlayer.Stream = audioStream;
+        newPlayer.VolumeDb = -80.0f; // Start silent
+        newPlayer.Play();
+        
+        // Create crossfade tween
+        _audioFadeTween = CreateTween();
+        _audioFadeTween.SetParallel(true);
+        
+        // Fade in new audio
+        _audioFadeTween.TweenProperty(newPlayer, "volume_db", 0.0f, 3.0f)
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Quad);
+        
+        // Fade out previous audio if playing
+        if (_currentAudioPlayer != null && _currentAudioPlayer.Playing)
+        {
+            var previousPlayer = _currentAudioPlayer;
+            _audioFadeTween.TweenProperty(previousPlayer, "volume_db", -80.0f, 3.0f)
+                .SetEase(Tween.EaseType.In)
+                .SetTrans(Tween.TransitionType.Quad);
+            
+            // Stop the previous player after fade out
+            _audioFadeTween.Chain().TweenCallback(Callable.From(() =>
+            {
+                previousPlayer.Stop();
+            }));
+        }
+        
+        // Update current player reference
+        _previousAudioPlayer = _currentAudioPlayer;
+        _currentAudioPlayer = newPlayer;
+    }
+    
+    private void FadeOutAudio(AudioStreamPlayer player)
+    {
+        if (player == null || !player.Playing) return;
+        
+        var tween = CreateTween();
+        tween.TweenProperty(player, "volume_db", -80.0f, 0.5f)
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Quad);
+        tween.TweenCallback(Callable.From(() => player.Stop()));
+    }
+    
+    private void StopAllAmbience()
+    {
+        _audioFadeTween?.Kill();
+        
+        if (_audioPlayer1 != null && _audioPlayer1.Playing)
+        {
+            FadeOutAudio(_audioPlayer1);
+        }
+        
+        if (_audioPlayer2 != null && _audioPlayer2.Playing)
+        {
+            FadeOutAudio(_audioPlayer2);
+        }
+        
+        _currentAudioPlayer = null;
+        _previousAudioPlayer = null;
+    }
+    
     protected override void OnExitTree()
     {
+        // Stop all audio
+        StopAllAmbience();
+        
         // Clean up signal connections
         if (_homeButton != null) _homeButton.Pressed -= OnHomePressed;
         if (_backButton != null) _backButton.Pressed -= OnBackPressed;

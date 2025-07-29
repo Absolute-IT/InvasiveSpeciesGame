@@ -9,6 +9,7 @@ namespace InvasiveSpeciesAustralia
     public partial class Species : Resource
     {
         public string Id { get; set; }
+        public bool Enabled { get; set; } = true;
         public string Name { get; set; }
         public string ScientificName { get; set; }
         public string Type { get; set; } // "animals" or "plants"
@@ -18,8 +19,10 @@ namespace InvasiveSpeciesAustralia
         public List<string> Identification { get; set; } = new List<string>();
         public List<string> IdentificationImages { get; set; } = new List<string>();
         public string Image { get; set; }
+        public float ImageScale { get; set; } = 1.0f;
         public string EnvironmentImage { get; set; }
         public string CardImage { get; set; }
+        public string AmbienceSound { get; set; }
         public string Wikipedia { get; set; }
         public string AustralianMuseum { get; set; }
         public List<SpeciesReference> References { get; set; } = new List<SpeciesReference>();
@@ -32,6 +35,7 @@ namespace InvasiveSpeciesAustralia
             var clone = new Species
             {
                 Id = Id,
+                Enabled = Enabled,
                 Name = Name,
                 ScientificName = ScientificName,
                 Type = Type,
@@ -39,8 +43,10 @@ namespace InvasiveSpeciesAustralia
                 Habitat = Habitat,
                 Diet = Diet,
                 Image = Image,
+                ImageScale = ImageScale,
                 EnvironmentImage = EnvironmentImage,
                 CardImage = CardImage,
+                AmbienceSound = AmbienceSound,
                 Wikipedia = Wikipedia,
                 AustralianMuseum = AustralianMuseum,
                 Identification = new List<string>(Identification),

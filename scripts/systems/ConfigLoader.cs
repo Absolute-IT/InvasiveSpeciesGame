@@ -76,6 +76,22 @@ namespace InvasiveSpeciesAustralia
         }
 
         /// <summary>
+        /// Gets all enabled species
+        /// </summary>
+        public List<Species> GetAllEnabledSpecies()
+        {
+            return _speciesData.Values.Where(s => s.Enabled).ToList();
+        }
+
+        /// <summary>
+        /// Gets enabled species of a specific type
+        /// </summary>
+        public List<Species> GetEnabledSpeciesByType(string type)
+        {
+            return _speciesData.Values.Where(s => s.Type == type && s.Enabled).ToList();
+        }
+
+        /// <summary>
         /// Gets all menu background paths
         /// </summary>
         public List<string> GetMenuBackgrounds()
@@ -256,6 +272,8 @@ namespace InvasiveSpeciesAustralia
                 // Parse basic string properties
                 if (element.TryGetProperty("id", out var id))
                     species.Id = id.GetString();
+                if (element.TryGetProperty("enabled", out var enabled))
+                    species.Enabled = enabled.GetBoolean();
                 if (element.TryGetProperty("name", out var name))
                     species.Name = name.GetString();
                 if (element.TryGetProperty("scientific_name", out var scientificName))
@@ -270,10 +288,14 @@ namespace InvasiveSpeciesAustralia
                     species.Diet = diet.GetString();
                 if (element.TryGetProperty("image", out var image))
                     species.Image = image.GetString();
+                if (element.TryGetProperty("image_scale", out var imageScale))
+                    species.ImageScale = (float)imageScale.GetDouble();
                 if (element.TryGetProperty("environment_image", out var environmentImage))
                     species.EnvironmentImage = environmentImage.GetString();
                 if (element.TryGetProperty("card_image", out var cardImage))
                     species.CardImage = cardImage.GetString();
+                if (element.TryGetProperty("ambience_sound", out var ambienceSound))
+                    species.AmbienceSound = ambienceSound.GetString();
                 if (element.TryGetProperty("wikipedia", out var wikipedia))
                     species.Wikipedia = wikipedia.GetString();
                 if (element.TryGetProperty("australian_museum", out var australianMuseum))

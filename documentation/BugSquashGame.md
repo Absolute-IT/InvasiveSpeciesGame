@@ -216,3 +216,26 @@ All major issues have been resolved. Click detection should work properly.
    - Post-stage fact screens
    - Links to species gallery
    - Score tracking and achievements 
+
+## Audio System
+
+### Sound Effects
+The game includes an audio system that plays sound effects when entities are interacted with:
+
+- **Boom Sounds**: A collection of 5 boom sound effects (boom-1.wav through boom-5.wav) located in `assets/sounds/bug-squash/boom/`
+- **Random Selection**: The system randomly selects a sound to play, ensuring the same sound doesn't play twice in a row
+- **Spatial Audio**: Uses AudioStreamPlayer2D for positional audio effects
+- **Pitch Variation**: Slightly randomizes pitch (0.9 to 1.1) for added variety
+- **Concurrent Playback**: Each sound plays to completion without being cancelled by new sounds
+
+### Sound Triggers
+Sounds play in the following scenarios:
+- When any entity is tapped/clicked
+- When invasive species take damage (with shockwave effect)
+- When native species are eliminated
+
+### Implementation Details
+- `LoadSounds()`: Loads all boom sounds from the assets folder at startup
+- `PlayRandomBoomSound(Vector2 position)`: Creates a new AudioStreamPlayer2D for each sound, allowing multiple sounds to play simultaneously
+- Prevents repetition by tracking the last played sound index
+- Audio players are automatically cleaned up after sounds finish playing 

@@ -1,0 +1,889 @@
+<REAPER_PROJECT 0.1 "7.39/macOS-arm64" 1753806500
+  <NOTES 0 2
+  >
+  RIPPLE 0 0
+  GROUPOVERRIDE 0 0 0
+  AUTOXFADE 129
+  ENVATTACH 3
+  POOLEDENVATTACH 0
+  MIXERUIFLAGS 11 48
+  ENVFADESZ10 40
+  PEAKGAIN 1
+  FEEDBACK 0
+  PANLAW 1
+  PROJOFFS 0 0 0
+  MAXPROJLEN 0 0
+  GRID 3199 8 1 8 1 0 0 0
+  TIMEMODE 1 5 -1 30 0 0 -1
+  VIDEO_CONFIG 0 0 65792
+  PANMODE 3
+  PANLAWFLAGS 3
+  CURSOR 0.5
+  ZOOM 142142.64309772092 72832 0
+  VZOOMEX 4 0
+  USE_REC_CFG 0
+  RECMODE 1
+  SMPTESYNC 0 30 100 40 1000 300 0 0 1 0 0
+  LOOP 0
+  LOOPGRAN 0 4
+  RECORD_PATH "Media" ""
+  <RECORD_CFG
+    ZXZhdxgAAQ==
+  >
+  <APPLYFX_CFG
+  >
+  RENDER_FILE /Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience-normalised
+  RENDER_PATTERN $item
+  RENDER_FMT 0 1 44100
+  RENDER_1X 0
+  RENDER_RANGE 4 0 0 0 1000
+  RENDER_RESAMPLE 3 0 1
+  RENDER_ADDTOPROJ 0
+  RENDER_STEMS 32
+  RENDER_DITHER 0
+  RENDER_NORMALIZE 266241 0.1 1 0 0 1 1
+  RENDER_TRIM 0 0 0 0
+  TIMELOCKMODE 1
+  TEMPOENVLOCKMODE 1
+  ITEMMIX 1
+  DEFPITCHMODE 589824 0
+  TAKELANE 1
+  SAMPLERATE 44100 0 0
+  <RENDER_CFG
+    ZXZhdxgAAQ==
+  >
+  LOCK 1
+  <METRONOME 6 2
+    VOL 0.25 0.125
+    BEATLEN 4
+    FREQ 1760 880 1
+    SAMPLES "" "" "" ""
+    SPLIGNORE 0 0
+    SPLDEF 2 660 "" 0 ""
+    SPLDEF 3 440 "" 0 ""
+    PATTERN 0 169
+    PATTERNSTR ABBB
+    MULT 1
+  >
+  GLOBAL_AUTO -1
+  TEMPO 120 4 4 0
+  PLAYRATE 1 0 0.25 4
+  SELECTION 0 0
+  SELECTION2 0 0
+  MASTERAUTOMODE 0
+  MASTERTRACKHEIGHT 0 0
+  MASTERPEAKCOL 16576
+  MASTERMUTESOLO 0
+  MASTERTRACKVIEW 0 0.6667 0.5 0.5 0 0 0 0 0 0 0 0 0 0
+  MASTERHWOUT 0 0 1 0 0 0 0 -1
+  MASTER_NCH 2 2
+  MASTER_VOLUME 1 0 -1 -1 1
+  MASTER_PANMODE 3
+  MASTER_PANLAWFLAGS 3
+  MASTER_FX 1
+  MASTER_SEL 0
+  <MASTERPLAYSPEEDENV
+    EGUID {01AF3DA2-865D-594F-9B17-ECA62470C344}
+    ACT 0 -1
+    VIS 0 1 1
+    LANEHEIGHT 0 0
+    ARM 0
+    DEFSHAPE 0 -1 -1
+  >
+  <TEMPOENVEX
+    EGUID {38847305-E70E-EB45-B825-065D787F8353}
+    ACT 0 -1
+    VIS 1 0 1
+    LANEHEIGHT 0 0
+    ARM 0
+    DEFSHAPE 1 -1 -1
+  >
+  <PROJBAY
+  >
+  <TRACK {264EE7C5-E175-F34D-B6AD-5B1DC647071D}
+    NAME afternoon-cicada
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 1 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 1
+    REC 0 0 0 0 0 0 0 0
+    VU 64
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {264EE7C5-E175-F34D-B6AD-5B1DC647071D}
+    PERF 0
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 0.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {5A177FD4-30D9-0845-A1E2-0041EA3B85D7}
+      IID 1
+      NAME afternoon-cicada.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {D7FC3927-3660-D94B-AD3D-317576BFB377}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/afternoon-cicada.wav"
+      >
+    >
+    <ITEM
+      POSITION 0.5
+      SNAPOFFS 0
+      LENGTH 29.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 1
+      IGUID {F29BD835-B336-C04A-AD45-ED3E1C00DF7E}
+      IID 1
+      NAME afternoon-cicada.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0.5
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {1C0627AD-4AC3-1C46-B58C-C0DA623F55BE}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/afternoon-cicada.wav"
+      >
+    >
+  >
+  <TRACK {231C8B84-30C0-8648-8DEB-574B8EF83893}
+    NAME bird-forest
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 3.31920617265701 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 0
+    REC 0 0 0 0 0 0 0 0
+    VU 64
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {231C8B84-30C0-8648-8DEB-574B8EF83893}
+    PERF 0
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 0.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {6D942C07-E960-E445-A4F6-889267C4E11F}
+      IID 2
+      NAME bird-forest.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {FBD56E69-5A96-A74D-9DD4-F313EBD48D6F}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/bird-forest.wav"
+      >
+    >
+    <ITEM
+      POSITION 0.5
+      SNAPOFFS 0
+      LENGTH 8.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 1
+      IGUID {EA9F3A51-2C4C-F842-9EF7-B92ABF5D15E2}
+      IID 2
+      NAME bird-forest.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0.5
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {D4338E73-5BDB-A748-80F0-373BB66EA315}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/bird-forest.wav"
+      >
+    >
+  >
+  <TRACK {74C55003-B763-E648-AB48-2B166538A486}
+    NAME calm-seaside
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 0.58746333409396 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 0
+    REC 0 0 0 0 0 0 0 0
+    VU 64
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {74C55003-B763-E648-AB48-2B166538A486}
+    PERF 0
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 0.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {390FECB6-7BCD-5F4F-A224-C39749DE54AE}
+      IID 3
+      NAME calm-seaside.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {CD1BBC2C-B18A-8545-AAF9-5E1017607C28}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/calm-seaside.wav"
+      >
+    >
+    <ITEM
+      POSITION 0.5
+      SNAPOFFS 0
+      LENGTH 71.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 1
+      IGUID {653B495D-C80B-6D47-99D8-67B40F596220}
+      IID 3
+      NAME calm-seaside.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0.5
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {E6CCA174-B7C1-5743-A7D0-874775A83676}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/calm-seaside.wav"
+      >
+    >
+  >
+  <TRACK {9CF6433F-3E6B-BE40-9D68-F66AFC37259D}
+    NAME farm
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 2.75697775179992 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 0
+    REC 0 0 0 0 0 0 0 0
+    VU 64
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {9CF6433F-3E6B-BE40-9D68-F66AFC37259D}
+    PERF 0
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      WNDRECT 848 119 807 444
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+      BYPASS 0 0 0
+      <VST "VST: ReaEQ (Cockos)" reaeq.vst.dylib 0 "" 1919247729<56535472656571726561657100000000> ""
+        cWVlcu5e7f4CAAAAAQAAAAAAAAACAAAAAAAAAAIAAAABAAAAAAAAAAIAAAAAAAAAzQAAAAEAAAAAABAA
+        IQAAAAUAAAAAAAAAAQAAANOfejJSCmBAKX3pGHfKAUCamZmZmZnpPwEIAAAAAQAAAB10KNhXsHlACagyJujfBEAAAAAAAAAAQAEIAAAAAQAAAMVTL2vZ+ZRATphcqQOI
+        3z8AAAAAAAAAQAEBAAAAAQAAAEU0U2O10bFAHME+Eoh36T+amZmZmZnpPwEEAAAAAAAAAAAAAAAAAFlAAAAAAAAA8D8AAAAAAAAAQAEBAAAAAQAAAAAAAAAAAPA/AAAA
+        AEACAABrAQAAAgAAAA==
+        AAAQAAAA
+      >
+      FLOATPOS 0 0 0 0
+      FXID {8F778BD2-3F9A-CE41-BF5C-2AFEF5B07446}
+      WAK 0 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 0.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {05526FA1-3A2A-284B-B14B-06D203649A96}
+      IID 4
+      NAME farm.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {0B99735F-5CC0-4347-A881-B91033116FA2}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/farm.wav"
+      >
+    >
+    <ITEM
+      POSITION 0.5
+      SNAPOFFS 0
+      LENGTH 33.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 1
+      IGUID {1A225CA0-E8C5-224B-84CA-043497161D6C}
+      IID 4
+      NAME farm.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0.5
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {7A7DDC21-5A5F-B145-99F6-DF1DE74B073B}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/farm.wav"
+      >
+    >
+  >
+  <TRACK {E3AAED14-550D-8B48-9CCC-2CF2FD233D5B}
+    NAME river
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 3.98107170553497 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 0
+    REC 0 0 0 0 0 0 0 0
+    VU 64
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {E3AAED14-550D-8B48-9CCC-2CF2FD233D5B}
+    PERF 0
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 0.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {D3B9895F-D2E6-7D48-B2F4-83A2FDDE9DCF}
+      IID 5
+      NAME river.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {6E195715-7CF6-2645-98C8-EFD994528E11}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/river.wav"
+      >
+    >
+    <ITEM
+      POSITION 0.5
+      SNAPOFFS 0
+      LENGTH 29.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 1
+      IGUID {CC3F58F1-D319-524C-896D-84947DFAD9D3}
+      IID 5
+      NAME river.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0.5
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {82CB834C-578D-004F-B3A3-D8BD6454CF29}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/river.wav"
+      >
+    >
+  >
+  <TRACK {94654EAA-D377-294A-8C3A-5CF77E9A5EE1}
+    NAME tropical
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 3.98107170553497 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 0
+    REC 0 0 0 0 0 0 0 0
+    VU 64
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {94654EAA-D377-294A-8C3A-5CF77E9A5EE1}
+    PERF 0
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      WNDRECT 739 40 807 444
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+      BYPASS 0 0 0
+      <VST "VST: ReaEQ (Cockos)" reaeq.vst.dylib 0 "" 1919247729<56535472656571726561657100000000> ""
+        cWVlcu5e7f4CAAAAAQAAAAAAAAACAAAAAAAAAAIAAAABAAAAAAAAAAIAAAAAAAAAzQAAAAEAAAAAABAA
+        IQAAAAUAAAAAAAAAAQAAAIcXc+1dE1dAUlvaOlhMCUCamZmZmZnpPwEIAAAAAQAAAAAAAAAAwHJAUlvaOlhMCUAAAAAAAAAAQAEIAAAAAQAAAAAAAAAAQI9AUlvaOlhM
+        CUAAAAAAAAAAQAEBAAAAAQAAAAAAAAAAiLNAUlvaOlhMCUCamZmZmZnpPwEEAAAAAAAAAAAAAAAAAFlAUlvaOlhMCUAAAAAAAAAAQAEBAAAAAQAAAAAAAAAAAPA/AAAA
+        AEACAABrAQAAAgAAAA==
+        AAAQAAAA
+      >
+      FLOATPOS 0 0 0 0
+      FXID {F8343EF0-513D-7947-9B2F-4D52B4156E36}
+      WAK 0 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 0.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {A92763C0-443B-8D47-869B-5C2A3CE1D54B}
+      IID 6
+      NAME tropical.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {CADFB67C-BAC6-5444-952F-3F900E176039}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/tropical.wav"
+      >
+    >
+    <ITEM
+      POSITION 0.5
+      SNAPOFFS 0
+      LENGTH 12.625
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 1
+      IGUID {08656136-4CE1-CB48-B560-4C3D8CECDAFC}
+      IID 6
+      NAME tropical.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0.5
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {2BA1E8DA-2A76-A146-B74D-AF7BCD0F3A1E}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/tropical.wav"
+      >
+    >
+  >
+  <TRACK {985903AF-26A2-2841-9822-E9A24C7D4749}
+    NAME urban-seaside
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 0.34483987755952 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 0
+    REC 0 0 0 0 0 0 0 0
+    VU 64
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {985903AF-26A2-2841-9822-E9A24C7D4749}
+    PERF 0
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 0.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {262C1BD3-1D67-EB41-B9DA-CE87F80B1A22}
+      IID 7
+      NAME urban-seaside.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {47E6AB25-316C-A346-ABD7-0A89B100DCD0}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/urban-seaside.wav"
+      >
+    >
+    <ITEM
+      POSITION 0.5
+      SNAPOFFS 0
+      LENGTH 37
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 1
+      IGUID {83800607-ED5C-084E-9440-021DF9F2CD7A}
+      IID 7
+      NAME urban-seaside.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0.5
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {F9680390-D75F-6440-8497-EFA28CCE4F65}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/urban-seaside.wav"
+      >
+    >
+  >
+  <TRACK {0145ED69-AF49-334A-AC1A-C9213BD48CF5}
+    NAME urban
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 1.60394443047111 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 0
+    REC 0 0 0 0 0 0 0 0
+    VU 64
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {0145ED69-AF49-334A-AC1A-C9213BD48CF5}
+    PERF 0
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 0.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {14BD16D5-3603-974C-B868-44B9157C0F91}
+      IID 8
+      NAME urban.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {AC954FCE-367B-6C42-AA34-C60674C69D0C}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/urban.wav"
+      >
+    >
+    <ITEM
+      POSITION 0.5
+      SNAPOFFS 0
+      LENGTH 31.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 1
+      IGUID {823D4A20-1606-2B49-B398-E3A02BEDD583}
+      IID 8
+      NAME urban.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0.5
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {D0A5A833-6EF4-9945-9C96-2D674F63B9F3}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/urban.wav"
+      >
+    >
+  >
+  <TRACK {ACB62181-0E53-B449-B362-35B41735CD3D}
+    NAME warm-forest
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 3.98107170553497 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 0
+    REC 0 0 0 0 0 0 0 0
+    VU 64
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {ACB62181-0E53-B449-B362-35B41735CD3D}
+    PERF 0
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      WNDRECT 820 333 807 444
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+      BYPASS 0 0 0
+      <VST "VST: ReaEQ (Cockos)" reaeq.vst.dylib 0 "" 1919247729<56535472656571726561657100000000> ""
+        cWVlcu5e7f4CAAAAAQAAAAAAAAACAAAAAAAAAAIAAAABAAAAAAAAAAIAAAAAAAAAzQAAAAEAAAAAABAA
+        IQAAAAUAAAAAAAAAAQAAAAAAAAAAAFlAUmDU9rhb+T+amZmZmZnpPwEIAAAAAQAAAAAAAAAAwHJAUmDU9rhb+T8AAAAAAAAAQAEIAAAAAQAAAAAAAAAAQI9AUmDU9rhb
+        +T8AAAAAAAAAQAEBAAAAAQAAAAAAAAAAiLNAUmDU9rhb+T+amZmZmZnpPwEEAAAAAAAAAAAAAAAAAFlAUmDU9rhb+T8AAAAAAAAAQAEBAAAAAQAAAAAAAAAAAPA/AAAA
+        AEACAABrAQAAAgAAAA==
+        AAAQAAAA
+      >
+      FLOATPOS 0 0 0 0
+      FXID {2A26A094-2B10-9946-BC15-9FF6538B63E5}
+      WAK 0 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 0.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {97BCAFDA-614F-3841-B776-1EDB8391E910}
+      IID 9
+      NAME warm-forest.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {24CA856F-095F-0241-9749-92771707EC42}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/warm-forest.wav"
+      >
+    >
+    <ITEM
+      POSITION 0.5
+      SNAPOFFS 0
+      LENGTH 20.359375
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 1
+      IGUID {B3290801-6E00-1C42-8A6B-C3F969292A96}
+      IID 9
+      NAME warm-forest.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0.5
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {75405724-DE17-CD48-9952-0BE419CCCA96}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/warm-forest.wav"
+      >
+    >
+  >
+  <TRACK {88668594-F4F7-BB41-B0C7-8AD4B062C7A5}
+    NAME woodland
+    PEAKCOL 16576
+    BEAT -1
+    AUTOMODE 0
+    PANLAWFLAGS 3
+    VOLPAN 1.54096138720483 0 -1 -1 1
+    MUTESOLO 0 0 0
+    IPHASE 0
+    PLAYOFFS 0 1
+    ISBUS 0 0
+    BUSCOMP 0 0 0 0 0
+    SHOWINMIX 1 0.6667 0.5 1 0.5 0 0 0
+    FIXEDLANES 9 0 0 0 0
+    SEL 0
+    REC 0 0 0 0 0 0 0 0
+    VU 64
+    TRACKHEIGHT 0 0 0 0 0 0 0
+    INQ 0 0 0 0.5 100 0 0 100
+    NCHAN 2
+    FX 1
+    TRACKID {88668594-F4F7-BB41-B0C7-8AD4B062C7A5}
+    PERF 0
+    MIDIOUT -1
+    MAINSEND 1 0
+    <FXCHAIN
+      SHOW 0
+      LASTSEL 0
+      DOCKED 0
+    >
+    <ITEM
+      POSITION 0
+      SNAPOFFS 0
+      LENGTH 0.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 0
+      IGUID {19366F4E-B4D3-444D-BC3D-907E67142FC2}
+      IID 10
+      NAME woodland.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {21FBA5C1-6F33-8448-A57B-4E6B3F212250}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/woodland.wav"
+      >
+    >
+    <ITEM
+      POSITION 0.5
+      SNAPOFFS 0
+      LENGTH 29.5
+      LOOP 1
+      ALLTAKES 0
+      FADEIN 1 0 0 1 0 0 0
+      FADEOUT 1 0 0 1 0 0 0
+      MUTE 0 0
+      SEL 1
+      IGUID {52961BAA-B5F5-A94A-B226-08C45133F99C}
+      IID 10
+      NAME woodland.wav
+      VOLPAN 1 0 1 -1
+      SOFFS 0.5
+      PLAYRATE 1 1 0 -1 0 0.0025
+      CHANMODE 0
+      GUID {0A9CEED0-40A9-ED41-8FC5-8F43821C5C98}
+      <SOURCE WAVE
+        FILE "/Users/matthewscott/Programming/Godot/InvasiveSpeciesAustralia/assets/sounds/ambience/woodland.wav"
+      >
+    >
+  >
+>

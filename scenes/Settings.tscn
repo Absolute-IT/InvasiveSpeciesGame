@@ -9,6 +9,8 @@ layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme = ExtResource("2_theme")
 script = ExtResource("bhy1uns51jap5")
 
@@ -112,6 +114,7 @@ layout_mode = 2
 [node name="FullscreenCheckBox" type="Control" parent="Panel/ContentContainer/VBoxContainer/DisplaySection/SettingsGrid/FullscreenContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+focus_mode = 2
 script = ExtResource("3_custom_checkbox")
 
 [node name="AudioSection" type="VBoxContainer" parent="Panel/ContentContainer/VBoxContainer"]
@@ -186,6 +189,7 @@ vertical_alignment = 1
 [node name="MusicEnabledCheckBox" type="Control" parent="Panel/ContentContainer/VBoxContainer/AudioSection/MusicContainer/MusicRow"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+focus_mode = 2
 script = ExtResource("3_custom_checkbox")
 
 [node name="SfxContainer" type="VBoxContainer" parent="Panel/ContentContainer/VBoxContainer/AudioSection"]
@@ -219,6 +223,7 @@ vertical_alignment = 1
 [node name="SfxEnabledCheckBox" type="Control" parent="Panel/ContentContainer/VBoxContainer/AudioSection/SfxContainer/SfxRow"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+focus_mode = 2
 script = ExtResource("3_custom_checkbox")
 
 [node name="HSeparator3" type="HSeparator" parent="Panel/ContentContainer/VBoxContainer"]
@@ -250,6 +255,7 @@ vertical_alignment = 1
 [node name="TouchDebuggerCheckBox" type="Control" parent="Panel/ContentContainer/VBoxContainer/DebugSection/TouchDebuggerContainer"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+focus_mode = 2
 script = ExtResource("3_custom_checkbox")
 
 [node name="ButtonContainer" type="HBoxContainer" parent="Panel"]

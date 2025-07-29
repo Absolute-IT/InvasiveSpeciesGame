@@ -1,6 +1,7 @@
 [
 	{
 		"id": "black-rat",
+		"enabled": true,
 		"name": "Black Rat",
 		"scientific_name": "Rattus rattus",
 		"type": "animals",
@@ -19,14 +20,16 @@
 			"assets/identification/black-rat-3.jpg"
 		],
 		"image": "assets/art/species-transparent/animals/black-rat.png",
-		"environment_image": "assets/art/environments/hilly-woods.png",
+		"environment_image": "assets/art/environments/urban.webp",
 		"card_image": "assets/art/match-game/cards/black-rat-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/urban.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Black_rat",
 		"australian_museum": "https://australian.museum/learn/animals/mammals/black-rat/",
 		"references": []
 	},
 	{
 		"id": "cane-toad",
+		"enabled": true,
 		"name": "Cane Toad",
 		"scientific_name": "Rhinella marina",
 		"type": "animals",
@@ -40,15 +43,18 @@
 			"Short legs relative to body size",
 			"No webbing between front toes"
 		],
-		"image": "assets/art/species/animals/cane-toad.png",
+		"image": "assets/art/species-transparent/animals/cane-toad.png",
+		"image_scale": 2,
 		"environment_image": "assets/art/environments/wetlands.png",
 		"card_image": "assets/art/match-game/cards/cane-toad-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/warm-forest.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Cane_toad",
 		"australian_museum": "https://australian.museum/learn/animals/amphibians/cane-toad/",
 		"references": []
 	},
 	{
 		"id": "common-carp",
+		"enabled": true,
 		"name": "Common Carp",
 		"scientific_name": "Cyprinus carpio",
 		"type": "animals",
@@ -62,9 +68,10 @@
 			"Color varies from gold to dark brown",
 			"Long dorsal fin with serrated spine"
 		],
-		"image": "assets/art/species/animals/common-carp.png",
-		"environment_image": "assets/art/environments/wetlands.png",
+		"image": "assets/art/species-transparent/animals/common-carp.png",
+		"environment_image": "assets/art/environments/river.webp",
 		"card_image": "assets/art/match-game/cards/common-carp-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/river.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Common_carp",
 		"australian_museum": "",
 		"references": [
@@ -76,6 +83,7 @@
 	},
 	{
 		"id": "european-rabbit",
+		"enabled": true,
 		"name": "European Rabbit",
 		"scientific_name": "Oryctolagus cuniculus",
 		"type": "animals",
@@ -89,15 +97,22 @@
 			"Body length 35-50cm",
 			"White tail underside visible when running"
 		],
-		"image": "assets/art/species/animals/european-rabbit.png",
+		"identification_images": [
+			"assets/identification/european-rabbit-1.jpg",
+			"assets/identification/european-rabbit-2.jpg",
+			"assets/identification/european-rabbit-3.webp"
+		],
+		"image": "assets/art/species-transparent/animals/european-rabbit.png",
 		"environment_image": "assets/art/environments/grasslands.png",
 		"card_image": "assets/art/match-game/cards/european-rabbit-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/woodland.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/European_rabbit",
 		"australian_museum": "",
 		"references": []
 	},
 	{
 		"id": "feral-camel",
+		"enabled": true,
 		"name": "Feral Camel",
 		"scientific_name": "Camelus dromedarius",
 		"type": "animals",
@@ -111,15 +126,17 @@
 			"Sandy brown to dark brown color",
 			"Long curved neck and legs"
 		],
-		"image": "assets/art/species/animals/feral-camel.png",
+		"image": "assets/art/species-transparent/animals/feral-camel.png",
 		"environment_image": "assets/art/environments/desert.png",
 		"card_image": "assets/art/match-game/cards/feral-camel-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/afternoon-cicada.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Australian_feral_camel",
 		"australian_museum": "",
 		"references": []
 	},
 	{
 		"id": "feral-cat",
+		"enabled": true,
 		"name": "Feral Cat",
 		"scientific_name": "Felis catus",
 		"type": "animals",
@@ -133,15 +150,17 @@
 			"Weight typically 3-5kg but can reach 7kg",
 			"Often has scarred ears and face from fighting"
 		],
-		"image": "assets/art/species/animals/feral-cat.png",
-		"environment_image": "assets/art/environments/arid.png",
+		"image": "assets/art/species-transparent/animals/feral-cat.png",
+		"environment_image": "assets/art/environments/grasslands.png",
 		"card_image": "assets/art/match-game/cards/feral-cat-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/woodland.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Feral_cat",
 		"australian_museum": "",
 		"references": []
 	},
 	{
 		"id": "feral-pig",
+		"enabled": true,
 		"name": "Feral Pig",
 		"scientific_name": "Sus scrofa",
 		"type": "animals",
@@ -155,19 +174,26 @@
 			"Tusks visible in adult males",
 			"Straight tail with tuft at end"
 		],
-		"image": "assets/art/species/animals/feral-pig.png",
+		"identification_images": [
+			"assets/identification/feral-pig-1.jpg",
+			"assets/identification/feral-pig-2.jpg",
+			"assets/identification/feral-pig-3.jpg"
+		],
+		"image": "assets/art/species-transparent/animals/feral-pig.png",
 		"environment_image": "assets/art/environments/jungle.png",
 		"card_image": "assets/art/match-game/cards/feral-pig-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/farm.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Feral_pig",
 		"australian_museum": "",
 		"references": []
 	},
 	{
 		"id": "fire-ant",
+		"enabled": true,
 		"name": "Red Imported Fire Ant",
 		"scientific_name": "Solenopsis invicta",
 		"type": "animals",
-		"history": "First detected in Brisbane in 2001. Believed to have arrived in shipping containers from USA. Subject to major eradication program.",
+		"history": "First detected in Brisbane in 2001. Believed to have arrived in shipping containers from USA. Subject to major eradication program. Get a grown up to help you check your yard and playground for fire ants and report possible sitings of fire ants at ants.daf.qld.gov.au",
 		"habitat": "Currently restricted to southeast Queensland due to eradication efforts. Prefers open sunny areas including lawns, parks, and roadsides.",
 		"diet": "Omnivorous, feeding on insects, seeds, honeydew, and small vertebrates. Aggressive foragers that dominate food sources.",
 		"identification": [
@@ -177,16 +203,18 @@
 			"Forms dome-shaped mounds up to 40cm high",
 			"Painful sting causes burning sensation and pustules"
 		],
-		"image": "assets/art/species/animals/fire-ant.png",
+		"image": "assets/art/species-transparent/animals/fire-ant.png",
 		"environment_image": "assets/art/environments/ant-dirt.png",
 		"card_image": "assets/art/match-game/cards/fire-ant-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/afternoon-cicada.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Red_imported_fire_ant",
 		"australian_museum": "",
 		"references": []
 	},
 	{
 		"id": "indian-myna",
-		"name": "Common Myna / Indian Myna",
+		"enabled": true,
+		"name": "Indian Myna",
 		"scientific_name": "Acridotheres tristis",
 		"type": "animals",
 		"history": "Introduced to Melbourne in 1862 to control insects in market gardens. Spread along east coast and voted Australia's most hated pest.",
@@ -199,15 +227,22 @@
 			"Length about 23cm",
 			"Loud, raucous calls"
 		],
-		"image": "assets/art/species/animals/indian-myna.png",
+		"identification_images": [
+			"assets/identification/indian-myna-1.jpg",
+			"assets/identification/indian-myna-2.jpg",
+			"assets/identification/indian-myna-3.jpg"
+		],
+		"image": "assets/art/species-transparent/animals/indian-myna.png",
 		"environment_image": "assets/art/environments/grasslands.png",
 		"card_image": "assets/art/match-game/cards/indian-myna-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/bird-forest.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Common_myna",
 		"australian_museum": "https://australian.museum/learn/animals/birds/common-myna/",
 		"references": []
 	},
 	{
 		"id": "red-fox",
+		"enabled": true,
 		"name": "Red Fox",
 		"scientific_name": "Vulpes vulpes",
 		"type": "animals",
@@ -229,12 +264,47 @@
 		"image": "assets/art/species-transparent/animals/red-fox.png",
 		"environment_image": "assets/art/environments/hilly-woods.png",
 		"card_image": "assets/art/match-game/cards/red-fox-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/woodland.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Red_fox",
 		"australian_museum": "",
 		"references": []
 	},
 	{
+		"id": "feral-deer",
+		"enabled": true,
+		"name": "Feral Deer",
+		"scientific_name": "Cervus elaphus, Rusa timorensis, etc",
+		"type": "animals",
+		"history": "Feral deer have established wild populations throughout Queensland. This is a result of deliberate release, through deer escaping captivity or natural spread from previously established populations. Any deer not kept in a deer-proof enclosure is considered to be feral. There are five species of deer found in Queensland. Red Deer, Fallow Deer, Rusa Deer, Chital Deer and Hog Deer.",
+		"habitat": "They inhabit semi-open forest, scrubland and woodland areas. They graze on pastures and open grassy areas close to cover. Rusa deer have been recorded in front yards and urban streets.",
+		"diet": "Feral deer can cause damage to pastures and crops and compete with livestock for food. They also pose a threat to livestock through the spread of diseases.",
+		"identification": [
+			"Larger deer species, with stags standing up to 120cm at shoulder and weighing up to 220kg, hinds standing around 90cm and weighing up to 100kg.",
+			"Red Deer - Coat is glossy reddish brown to brown in summer, longer and brown to grey in winter.",
+			"Red Deer - Mature red deer have cream to straw-coloured rump patch.",
+			"Red Deer - Calves' coats at birth have white spots that fade and disappear by about 3 months of age.",
+			"Red Deer - Stags carry multi-tined antlers.",
+			"Rusa Deer - Medium-sized deer, with Javan rusa stags standing up to 110cm at shoulder and weighing about 120kg, hinds standing up to 95cm at shoulder and weighing up to 80kg, Moluccan rusa slightly smaller.",
+			"Rusa Deer - Coat varies from greyish to yellowish or reddish-brown, with darker brown on hindquarters and thighs.",
+			"Rusa Deer - Body hair is coarse, sparser than other deer.",
+			"Rusa Deer - Chest and throat are light, chest has line of dark hair visible between forelegs."
+		],
+		"identification_images": [
+			"assets/identification/feral-deer-1.jpg",
+			"assets/identification/feral-deer-2.jpg",
+			"assets/identification/feral-deer-3.jpg"
+		],
+		"image": "assets/art/species-transparent/animals/feral-deer.png",
+		"environment_image": "assets/art/environments/hilly-woods.png",
+		"card_image": "assets/art/match-game/cards/feral-deer-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/warm-forest.wav",
+		"wikipedia": "https://en.wikipedia.org/wiki/Deer",
+		"australian_museum": "https://australian.museum/learn/animals/mammals/rusa-deer/",
+		"references": []
+	},
+	{
 		"id": "bitou-bush",
+		"enabled": true,
 		"name": "Bitou Bush",
 		"scientific_name": "Chrysanthemoides monilifera subsp. rotundata",
 		"type": "plants",
@@ -251,15 +321,17 @@
 		"identification_images": [
 
 		],
-		"image": "assets/art/species/plants/bitou-bush.png",
+		"image": "assets/art/species-transparent/plants/bitou-bush.png",
 		"environment_image": "assets/art/environments/mangroves.png",
 		"card_image": "assets/art/match-game/cards/bitou-bush-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/calm-seaside.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Chrysanthemoides_monilifera",
 		"australian_museum": "",
 		"references": []
 	},
 	{
 		"id": "blackberry",
+		"enabled": true,
 		"name": "Blackberry",
 		"scientific_name": "Rubus fruticosus aggregate",
 		"type": "plants",
@@ -276,15 +348,17 @@
 		"identification_images": [
 			
 		],
-		"image": "assets/art/species/plants/black-berry.png",
+		"image": "assets/art/species-transparent/plants/black-berry.png",
 		"environment_image": "assets/art/environments/vineyards.png",
 		"card_image": "assets/art/match-game/cards/black-berry-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/farm.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Rubus_fruticosus",
 		"australian_museum": "",
 		"references": []
 	},
 	{
 		"id": "boneseed",
+		"enabled": true,
 		"name": "Boneseed",
 		"scientific_name": "Chrysanthemoides monilifera subsp. monilifera",
 		"type": "plants",
@@ -301,15 +375,17 @@
 		"identification_images": [
 			
 		],
-		"image": "assets/art/species/plants/boneseed.png",
+		"image": "assets/art/species-transparent/plants/boneseed.png",
 		"environment_image": "assets/art/environments/hilly-woods.png",
 		"card_image": "assets/art/match-game/cards/boneseed-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/river.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Chrysanthemoides_monilifera",
 		"australian_museum": "",
 		"references": []
 	},
 	{
 		"id": "lantana",
+		"enabled": true,
 		"name": "Lantana",
 		"scientific_name": "Lantana camara",
 		"type": "plants",
@@ -326,15 +402,17 @@
 		"identification_images": [
 			
 		],
-		"image": "assets/art/species/plants/lantana.png",
+		"image": "assets/art/species-transparent/plants/lantana.png",
 		"environment_image": "assets/art/environments/jungle.png",
 		"card_image": "assets/art/match-game/cards/lantana-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/tropical.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Lantana_camara",
 		"australian_museum": "",
 		"references": []
 	},
 	{
 		"id": "prickly-pear",
+		"enabled": true,
 		"name": "Prickly Pear",
 		"scientific_name": "Opuntia species",
 		"type": "plants",
@@ -349,17 +427,21 @@
 			"Height varies by species from 1-5m"
 		],
 		"identification_images": [
-			
+			"assets/identification/prickly-pear-1.jpg",
+			"assets/identification/prickly-pear-2.jpg",
+			"assets/identification/prickly-pear-3.png"
 		],
-		"image": "assets/art/species/plants/prickly-pear.png",
+		"image": "assets/art/species-transparent/plants/prickly-pear.png",
 		"environment_image": "assets/art/environments/arid.png",
 		"card_image": "assets/art/match-game/cards/prickly-pear-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/afternoon-cicada.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Opuntia",
 		"australian_museum": "",
 		"references": []
 	},
 	{
 		"id": "phytophthora",
+		"enabled": true,
 		"name": "Phytophthora Root Rot",
 		"scientific_name": "Phytophthora cinnamomi",
 		"type": "plants",
@@ -376,31 +458,159 @@
 		"identification_images": [
 			
 		],
-		"image": "assets/art/species/plants/phytophthora-blight.png",
+		"image": "assets/art/species-transparent/plants/phytophthora-blight.png",
 		"environment_image": "assets/art/environments/barren-dirt.png",
 		"card_image": "assets/art/match-game/cards/phytophthora-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/farm.wav",
 		"wikipedia": "https://en.wikipedia.org/wiki/Phytophthora_cinnamomi",
 		"australian_museum": "",
 		"references": []
 	},
 	{
 		"id": "dutchmans-pipe",
+		"enabled": true,
 		"name": "Dutchman's Pipe",
 		"scientific_name": "Aristolochia elegans",
 		"type": "plants",
-		"history": "",
-		"habitat": "",
-		"diet": "",
+		"history": "Native to South America and the West Indies, Dutchman's pipe is a fast-growing vine that has been widely promoted as an unusual, easily cultivated ornamental plant. Dutchman's pipe looks similar to native plants that are used by native butterflies for feeding and egg-laying. However, it is poisonous to butterfly larvae that hatch and feed on its leaves.",
+		"habitat": "Common in coastal districts of Southern and Central Queensland, scattered in coastal areas of Northern Queensland. Popular in gardens and suburban backyards. Prefers moist, fertile soils. Prime invader of rainforests.",
+		"diet": "The survival of the rare Richmond birdwing butterfly Ornithoptera richmondia is threatened by Dutchman's pipe.",
 		"identification": [
-			
+			"Fast-growing vine.",
+			"Stems are woody, slender, twine tightly in coils around any supporting structure.",
+			"Leaves are alternate, glossy-green, heart-shaped or broadly triangular, up to 75mm long.",
+			"Leaves grow closely to form dense mat of foliage.",
+			"Flowers are striking, reddish-purple, marked with white and yellow, shaped like traditional.",
+			"Dutchman's pipe up to 10cm wide, 7.5cm long.",
+			"Fruits are capsule-shaped, 6 ribs, split open along these ribs to release seeds.",
+			"Seeds are numerous, brown, 6-7mm long."
 		],
 		"identification_images": [
-			
+			"assets/identification/dutchmans-pipe-1.jpg",
+			"assets/identification/dutchmans-pipe-2.jpg",
+			"assets/identification/dutchmans-pipe-3.jpg"
 		],
-		"image": "assets/art/species/plants/phytophthora-blight.png",
-		"environment_image": "assets/art/environments/barren-dirt.png",
-		"card_image": "assets/art/match-game/cards/phytophthora-card.png",
-		"wikipedia": "https://en.wikipedia.org/wiki/Phytophthora_cinnamomi",
+		"image": "assets/art/species-transparent/plants/dutchmans-pipe.png",
+		"environment_image": "assets/art/environments/jungle.png",
+		"card_image": "assets/art/match-game/cards/dutchmans-pipe-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/urban-seaside.wav",
+		"wikipedia": "https://en.wikipedia.org/wiki/Aristolochia_littoralis",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "fireweed",
+		"enabled": true,
+		"name": "Fireweed",
+		"scientific_name": "Senecio madagascariensis",
+		"type": "plants",
+		"history": "Native to southern Africa, fireweed is a daisy-like herb. Fireweed was first recorded in Australia in the Hunter Valley in 1918. It is thought to have arrived in the ballast of ships trading between Australia and Europe via Cape Town. Fireweed spread slowly at first, but, in the past 30 years, has rapidly increased its range, most likely aided by modern transport and rural practices.",
+		"habitat": "Seeds germinate in mild, warm conditions with light and moisture. It is found along the entire New South Wales coast and scattered across various regions of Queensland.",
+		"diet": "Fireweed competes with pasture and is toxic to livestock.",
+		"identification": [
+			"Flowers are bright yellow, daisy-like, with diameter of about 2cm, producing up to 100 seeds each.",
+			"Plant varies greatly in size and shape depending on conditions.",
+			"In dry harsh conditions, may be less than 20cm tall with narrow leaves, no branching and few flowers.",
+			"Leaves are generally 2–6cm long, alternate, dark green, with serrated margins."
+		],
+		"identification_images": [
+			"assets/identification/fireweed-1.jpg",
+			"assets/identification/fireweed-2.jpg",
+			"assets/identification/fireweed-3.jpg"
+		],
+		"image": "assets/art/species-transparent/plants/fireweed.png",
+		"environment_image": "assets/art/environments/hilly-woods.png",
+		"card_image": "assets/art/match-game/cards/fireweed-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/farm.wav",
+		"wikipedia": "https://en.wikipedia.org/wiki/",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "kahili-ginger",
+		"enabled": true,
+		"name": "Kahili Ginger",
+		"scientific_name": "Hedychium gardnerianum",
+		"type": "plants",
+		"history": "Native to India and Nepal, kahili ginger is a perennial plant known to invade many different types of ecosystems. Kahili ginger has become a major problem in a number of countries, including New Zealand and Hawaii. In Australia, it occurs in New South Wales, Victoria, and Tasmania. Kahili ginger's popularity as a garden plant increases the risk of it establishing and spreading in Queensland. Kahili ginger suppresses growth of native trees and displaces native understorey plants.",
+		"habitat": "Prefers wet habitats and fertile soils between sea level and 1700m. Known to invade rainforests, mountain forests, agricultural areas, coastland, disturbed areas, natural forests, planted forests, range/grasslands, riparian corridors, scrub/shrublands, urban areas and wetlands.",
+		"diet": "Forms dense stands. Suppresses recruitment of native trees and displaces native understorey plants. Changes structure and character of native rainforest vegetation.",
+		"identification": [
+			"Perennial plant 1-2m tall.",
+			"Leaves are alternate, ovate-elliptic, 20-60cm long, 8-18cm wide.",
+			"Flowers are produced in attractive spikes 12-45cm long.",
+			"Flowers are lemon-yellow with conspicuous red stamens.",
+			"Seed heads are bright red when mature, 1.5-1.8cm long."
+		],
+		"identification_images": [
+			"assets/identification/kahili-ginger-1.jpg",
+			"assets/identification/kahili-ginger-2.jpg",
+			"assets/identification/kahili-ginger-3.jpg"
+		],
+		"image": "assets/art/species-transparent/plants/kahili-ginger.png",
+		"environment_image": "assets/art/environments/wetlands.png",
+		"card_image": "assets/art/match-game/cards/kahili-ginger-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/warm-forest.wav",
+		"wikipedia": "https://en.wikipedia.org/wiki/",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "parthenium",
+		"enabled": true,
+		"name": "Parthenium",
+		"scientific_name": "Parthenium hysterophorus",
+		"type": "plants",
+		"history": "Native to North America, parthenium is an annual herb with a deep taproot and an erect stem that becomes woody with age. It invades disturbed bare areas and pastures. Parthenium costs Australia's beef industry $16.5 million per year and cropping industries several million dollars per year.",
+		"habitat": "Grows in most soil types. Most dominant in alkaline, clay and loam soils. Found along roadsides and railway lines, and in pastures and disturbed areas.",
+		"diet": "Invades pastures. Reduces beef production. Costs cropping industries millions of dollars per year. Competes with crops for nutrients and space.",
+		"identification": [
+			"Annual herb up to 1-1.5m tall, developing many branches in its top half when mature.",
+			"Leaves are pale green, up to 2mm long, deeply lobed, covered with fine, soft hairs.",
+			"Flowers are small, creamy-white, on stem tips 4-10mm in a 5-sided shape.",
+			"Flowers have 4-5 wedge-shaped, black seeds, 2mm long with 2 thin, white scales."
+		],
+		"identification_images": [
+			"assets/identification/parthenium-1.jpg",
+			"assets/identification/parthenium-2.jpg",
+			"assets/identification/parthenium-3.webp"
+		],
+		"image": "assets/art/species-transparent/plants/parthenium.png",
+		"environment_image": "assets/art/environments/vineyards.png",
+		"card_image": "assets/art/match-game/cards/parthenium-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/farm.wav",
+		"wikipedia": "https://en.wikipedia.org/wiki/Parthenium_hysterophorus",
+		"australian_museum": "",
+		"references": []
+	},
+	{
+		"id": "groundsel-bush",
+		"enabled": true,
+		"name": "Groundsel Bush",
+		"scientific_name": "Baccharis halimifolia",
+		"type": "plants",
+		"history": "Native to the USA, groundsel bush is a dense, woody shrub particularly suited to moist and coastal areas. Groundsel bush was introduced to the Brisbane region as an ornamental plant before 1900. Now found in coastal parts of Queensland and northern New South Wales, it competes with both native and pasture vegetation and can be a serious weed in young forestry plantations. The spread of groundsel bush threatens the sustainability of agriculture and other land uses.",
+		"habitat": "Particularly suited to moist gullies, saltmarsh areas and wetlands. Found in forests, disturbed sites, pastures and waste areas.",
+		"diet": "Replaces plants and destroys native wildlife habitat. Can become abundant in vegetation along watercourses and in coastal woodlands and forest areas. Competes with pasture species for water and nutrients. Causes allergies induced by airborne pollen and seed fluff.",
+		"identification": [
+			"Densely branched shrub up to 3m tall.",
+			"Stems are green when young, brown and woody when mature.",
+			"Taproots are deep and branching, with numerous fibrous laterals in upper soil.",
+			"Leaves are dull green, alternate, wedge-shaped, 2.5-5cm long, 1-2.5cm wide.",
+			"Male flowers are pale yellow, opening mid- to late March, slightly earlier than female flowers.",
+			"Female flowers are white, inconspicuous, at ends of branches.",
+			"Seeds are brown, 3mm long, with tufts of white hair."
+		],
+		"identification_images": [
+			"assets/identification/groundsel-bush-1.jpg",
+			"assets/identification/groundsel-bush-2.jpg",
+			"assets/identification/groundsel-bush-3.jpg"
+		],
+		"image": "assets/art/species-transparent/plants/groundsel-bush.png",
+		"environment_image": "assets/art/environments/jungle.png",
+		"card_image": "assets/art/match-game/cards/groundsel-bush-card.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/calm-seaside.wav",
+		"wikipedia": "https://en.wikipedia.org/wiki/Baccharis_halimifolia",
 		"australian_museum": "",
 		"references": []
 	}

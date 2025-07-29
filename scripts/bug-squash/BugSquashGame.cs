@@ -15,13 +15,18 @@ namespace InvasiveSpeciesAustralia
         private int _maxFoodCount = 0;
         private float _foodRespawnTimer = 0f;
         private List<BugSquashSpecies> _foodSpecies = new();
+        private bool _isGameOver = false; // Add flag to prevent multiple game over screens
         
         // UI Elements
         private CanvasLayer _uiLayer;
         private Sprite2D _backgroundSprite;
         private Control _instructionScreen;
         private Control _gameScreen;
-        private Label _scoreLabel;
+        private Control _scorePanel;
+        private Label _invasiveLabel;
+        private Label _invasiveCountLabel;
+        private Label _nativeLabel;
+        private Label _nativeCountLabel;
         private Button _homeButton;
         private RichTextLabel _interactionDescLabel;
         private HBoxContainer _speciesContainer;
@@ -34,6 +39,10 @@ namespace InvasiveSpeciesAustralia
         private float _shakeTimer = 0f;
         private float _shakeIntensity = 0f;
         private Vector2 _originalCameraPosition;
+        
+        // Sound system
+        private List<AudioStream> _boomSounds = new();
+        private int _lastSoundIndex = -1;
 
         private const float FOOD_RESPAWN_DELAY = 3f;
         private const float SCREEN_SHAKE_DURATION = 0.3f;
@@ -42,8 +51,39 @@ namespace InvasiveSpeciesAustralia
         public override void _Ready()
         {
             LoadStages();
+            LoadSounds();
             CreateUI();
             ShowInstructionScreen();
+        }
+        
+        private void LoadSounds()
+        {
+            // Load all boom sounds from the boom folder
+            var boomPath = "res://assets/sounds/bug-squash/boom/";
+            var soundFiles = new List<string>
+            {
+                "boom-1.wav",
+                "boom-2.wav",
+                "boom-3.wav",
+                "boom-4.wav",
+                "boom-5.wav"
+            };
+            
+            foreach (var soundFile in soundFiles)
+            {
+                var fullPath = boomPath + soundFile;
+                if (ResourceLoader.Exists(fullPath))
+                {
+                    var sound = GD.Load<AudioStream>(fullPath);
+                    if (sound != null)
+                    {
+                        _boomSounds.Add(sound);
+                        GD.Print($"Loaded sound: {soundFile}");
+                    }
+                }
+            }
+            
+            GD.Print($"Total boom sounds loaded: {_boomSounds.Count}");
         }
 
         private void LoadStages()
@@ -86,13 +126,8 @@ namespace InvasiveSpeciesAustralia
             _gameScreen.MouseFilter = Control.MouseFilterEnum.Pass; // Allow buttons to work
             _uiLayer.AddChild(_gameScreen);
 
-            // Score/status label
-            _scoreLabel = new Label();
-            _scoreLabel.AddThemeStyleboxOverride("normal", new StyleBoxFlat());
-            _scoreLabel.Position = new Vector2(100, 100);
-            _scoreLabel.AddThemeFontSizeOverride("font_size", 64);
-            _scoreLabel.MouseFilter = Control.MouseFilterEnum.Ignore; // Don't block mouse input
-            _gameScreen.AddChild(_scoreLabel);
+            // Score/status panel
+            CreateScorePanel();
 
             // Home button
             _homeButton = new Button();
@@ -116,6 +151,99 @@ namespace InvasiveSpeciesAustralia
             
             _shockwaveEffect = new ShockwaveEffect();
             effectLayer.AddChild(_shockwaveEffect);
+        }
+
+        private void CreateScorePanel()
+        {
+            // Main score container
+            _scorePanel = new Control();
+            _scorePanel.MouseFilter = Control.MouseFilterEnum.Ignore;
+            _scorePanel.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.TopWide);
+            _scorePanel.Position = new Vector2(0, 50);
+            _scorePanel.Size = new Vector2(3840, 200);
+            _gameScreen.AddChild(_scorePanel);
+
+            // Create two score boxes - one for invasive, one for native
+            var invasiveResult = CreateScoreBox(
+                "Invasive Species", 
+                new Color(0.9f, 0.2f, 0.2f), // Red color for invasive
+                new Vector2(3840 - 700, 0),
+                HorizontalAlignment.Center
+            );
+            _scorePanel.AddChild(invasiveResult.Item1);
+            _invasiveCountLabel = invasiveResult.Item2;
+
+            var nativeResult = CreateScoreBox(
+                "Native Species", 
+                new Color(0.2f, 0.8f, 0.3f), // Green color for native
+                new Vector2(100, 0),
+                HorizontalAlignment.Center
+            );
+            _scorePanel.AddChild(nativeResult.Item1);
+            _nativeCountLabel = nativeResult.Item2;
+        }
+
+        private (Control, Label) CreateScoreBox(string title, Color accentColor, Vector2 position, HorizontalAlignment alignment)
+        {
+            var container = new Control();
+            container.Position = position;
+            container.Size = new Vector2(600, 160);
+            container.MouseFilter = Control.MouseFilterEnum.Ignore;
+
+            // Background with blur effect
+            var background = new ColorRect();
+            background.Color = new Color(0.1f, 0.1f, 0.1f, 0.85f);
+            background.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+            background.MouseFilter = Control.MouseFilterEnum.Ignore;
+            
+            // Apply backdrop blur shader
+            var blurShader = GD.Load<Shader>("res://shaders/backdrop_blur.gdshader");
+            var shaderMaterial = new ShaderMaterial();
+            shaderMaterial.Shader = blurShader;
+            shaderMaterial.SetShaderParameter("blur_amount", 5.0f);
+            background.Material = shaderMaterial;
+            
+            container.AddChild(background);
+
+            // Accent border on the bottom
+            var accentBorder = new ColorRect();
+            accentBorder.Color = accentColor;
+            accentBorder.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.BottomWide);
+            accentBorder.Position = new Vector2(0, 156);
+            accentBorder.Size = new Vector2(600, 4);
+            accentBorder.MouseFilter = Control.MouseFilterEnum.Ignore;
+            container.AddChild(accentBorder);
+
+            // Content container
+            var contentBox = new VBoxContainer();
+            contentBox.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+            contentBox.AddThemeConstantOverride("separation", 10);
+            contentBox.MouseFilter = Control.MouseFilterEnum.Ignore;
+            container.AddChild(contentBox);
+
+            // Title label
+            var titleLabel = new Label();
+            titleLabel.Text = title;
+            titleLabel.AddThemeFontSizeOverride("font_size", 42);
+            titleLabel.AddThemeColorOverride("font_color", new Color(0.9f, 0.9f, 0.9f));
+            titleLabel.HorizontalAlignment = alignment;
+            titleLabel.VerticalAlignment = VerticalAlignment.Center;
+            titleLabel.MouseFilter = Control.MouseFilterEnum.Ignore;
+            contentBox.AddChild(titleLabel);
+
+            // Count label
+            var countLabel = new Label();
+            countLabel.Name = "Count";
+            countLabel.Text = "0";
+            countLabel.AddThemeFontSizeOverride("font_size", 72);
+            countLabel.AddThemeColorOverride("font_color", accentColor);
+            countLabel.AddThemeStyleboxOverride("normal", new StyleBoxEmpty());
+            countLabel.HorizontalAlignment = alignment;
+            countLabel.VerticalAlignment = VerticalAlignment.Center;
+            countLabel.MouseFilter = Control.MouseFilterEnum.Ignore;
+            contentBox.AddChild(countLabel);
+
+            return (container, countLabel);
         }
 
         private void AddMultiTouchDebugger()
@@ -326,6 +454,10 @@ namespace InvasiveSpeciesAustralia
             _instructionScreen.Visible = false;
             _gameScreen.Visible = true;
             
+            // Ensure score panel is visible
+            if (_scorePanel != null)
+                _scorePanel.Visible = true;
+            
             GD.Print($"Starting level");
             
             StartStage();
@@ -342,10 +474,13 @@ namespace InvasiveSpeciesAustralia
                 }
             }
 
+            // Reset game state
+            _isGameOver = false;
             _preyCount = 0;
             _predatorCount = 0;
             _foodCount = 0;
             _maxFoodCount = 0;
+            _foodRespawnTimer = 0f;
             _foodSpecies.Clear();
 
             // Spawn initial entities
@@ -439,7 +574,51 @@ namespace InvasiveSpeciesAustralia
                 _shockwaveEffect.TriggerShockwave(entity.GlobalPosition);
             }
             
-            // Play click sound effect if available
+            // Play sound effect
+            PlayRandomBoomSound(entity.GlobalPosition);
+        }
+        
+        private void PlayRandomBoomSound(Vector2 position)
+        {
+            if (_boomSounds.Count == 0) return;
+            
+            int soundIndex;
+            
+            // If only one sound, just play it
+            if (_boomSounds.Count == 1)
+            {
+                soundIndex = 0;
+            }
+            else
+            {
+                // Choose a random sound that's different from the last one
+                do
+                {
+                    soundIndex = GD.RandRange(0, _boomSounds.Count - 1);
+                } while (soundIndex == _lastSoundIndex);
+            }
+            
+            _lastSoundIndex = soundIndex;
+            
+            // Create a new audio player for this sound
+            var audioPlayer = new AudioStreamPlayer2D();
+            audioPlayer.Stream = _boomSounds[soundIndex];
+            audioPlayer.GlobalPosition = position;
+            audioPlayer.Bus = "Master";
+            
+            // Randomize pitch slightly for variety (0.9 to 1.1)
+            audioPlayer.PitchScale = 0.9f + (float)GD.Randf() * 0.2f;
+            
+            // Add to scene
+            AddChild(audioPlayer);
+            
+            // Play the sound
+            audioPlayer.Play();
+            
+            // Clean up the audio player when finished
+            audioPlayer.Finished += () => audioPlayer.QueueFree();
+            
+            GD.Print($"Playing boom sound {soundIndex} at position {position}");
         }
         
         private void StartScreenShake()
@@ -450,19 +629,30 @@ namespace InvasiveSpeciesAustralia
 
         private void UpdateScore()
         {
-            _scoreLabel.Text = $"Invasive Species: {_predatorCount} | Native Species: {_preyCount}";
+            GD.Print($"UpdateScore called - Predator: {_predatorCount}, Prey: {_preyCount}");
+            GD.Print($"Labels - Invasive: {_invasiveCountLabel}, Native: {_nativeCountLabel}");
+            
+            if (_invasiveCountLabel != null)
+                _invasiveCountLabel.Text = _predatorCount.ToString();
+            if (_nativeCountLabel != null)
+                _nativeCountLabel.Text = _preyCount.ToString();
         }
 
         private void CheckWinCondition()
         {
+            // Only check win conditions if game is not already over
+            if (_isGameOver) return;
+            
             if (_preyCount <= 0 && _predatorCount > 0)
             {
                 // Game over - native species extinct
+                _isGameOver = true;
                 ShowGameOver(false);
             }
             else if (_predatorCount <= 0 && _preyCount > 0)
             {
                 // Victory - invasive species eradicated
+                _isGameOver = true;
                 ShowGameOver(true);
             }
         }

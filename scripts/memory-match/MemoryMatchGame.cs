@@ -54,7 +54,7 @@ public partial class MemoryMatchGame : Control
     {
         _configLoader = new ConfigLoader();
         _configLoader.LoadAllConfigs();
-        _allSpecies = _configLoader.GetAllSpecies();
+        _allSpecies = _configLoader.GetAllEnabledSpecies();
         
         // Separate animals and plants
         _animals = _allSpecies.Where(s => s.Type == "animals").ToList();
@@ -586,6 +586,95 @@ public partial class MemoryMatchGame : Control
         
         // Play a positive sound effect here if desired
         GD.Print("Bonus collected! +5 seconds");
+        
+        // Show animated text feedback
+        ShowBonusTextAnimation();
+    }
+    
+    private async void ShowBonusTextAnimation()
+    {
+        // Create a canvas layer to ensure the text appears on top
+        var animationLayer = new CanvasLayer();
+        animationLayer.Layer = 100; // High layer to render on top of everything
+        AddChild(animationLayer);
+        
+        // Get viewport size for positioning
+        var viewportSize = GetViewportRect().Size;
+        
+        // Create background panel (full width, 1/3 height)
+        var backgroundPanel = new ColorRect();
+        backgroundPanel.Color = new Color(0, 0, 0, 0); // Start transparent
+        backgroundPanel.Size = new Vector2(viewportSize.X, viewportSize.Y / 3.0f);
+        backgroundPanel.Position = new Vector2(0, viewportSize.Y / 3.0f); // Center vertically
+        backgroundPanel.MouseFilter = MouseFilterEnum.Ignore; // Allow clicks to pass through
+        animationLayer.AddChild(backgroundPanel);
+        
+        // Create the text label
+        var bonusLabel = new Label();
+        bonusLabel.Text = "+5 Seconds!";
+        bonusLabel.AddThemeColorOverride("font_color", new Color(1.0f, 0.843f, 0.0f)); // Gold color
+        bonusLabel.AddThemeFontSizeOverride("font_size", (int)(viewportSize.Y / 10)); // Large font (about 1/10 of screen height)
+        
+        // Enable font shadow for better visibility
+        bonusLabel.AddThemeColorOverride("font_shadow_color", new Color(0, 0, 0, 0.8f));
+        bonusLabel.AddThemeConstantOverride("shadow_offset_x", 4);
+        bonusLabel.AddThemeConstantOverride("shadow_offset_y", 4);
+        bonusLabel.AddThemeConstantOverride("shadow_outline_size", 20);
+        
+        // Configure label for center alignment
+        bonusLabel.AddThemeStyleboxOverride("normal", new StyleBoxEmpty());
+        bonusLabel.VerticalAlignment = VerticalAlignment.Center;
+        bonusLabel.HorizontalAlignment = HorizontalAlignment.Center;
+        bonusLabel.MouseFilter = MouseFilterEnum.Ignore; // Allow clicks to pass through
+        
+        // Set up as full rect that will slide horizontally
+        bonusLabel.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+        backgroundPanel.AddChild(bonusLabel);
+        
+        // Start with the label off-screen to the left by offsetting its margin
+        bonusLabel.SetOffsetsPreset(Control.LayoutPreset.FullRect);
+        bonusLabel.OffsetLeft = -viewportSize.X;
+        bonusLabel.OffsetRight = -viewportSize.X;
+        
+        // Create the animation sequence
+        var tween = CreateTween();
+        tween.SetParallel(true);
+        
+        // Background fade in (300ms)
+        tween.TweenProperty(backgroundPanel, "color", new Color(0, 0, 0, 0.7f), 0.3f)
+            .SetEase(Tween.EaseType.Out);
+        
+        // Text fly in from left to center (300ms)
+        // Animate both left and right margins to slide the full-width label
+        tween.TweenProperty(bonusLabel, "offset_left", 0, 0.3f)
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Cubic);
+        tween.TweenProperty(bonusLabel, "offset_right", 0, 0.3f)
+            .SetEase(Tween.EaseType.Out)
+            .SetTrans(Tween.TransitionType.Cubic);
+        
+        // Wait for both animations to complete, then hold for 1400ms
+        tween.SetParallel(false);
+        tween.TweenInterval(1.4f);
+        
+        // Start exit animations
+        tween.SetParallel(true);
+        
+        // Text fly out to right (300ms)
+        tween.TweenProperty(bonusLabel, "offset_left", viewportSize.X, 0.3f)
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Cubic);
+        tween.TweenProperty(bonusLabel, "offset_right", viewportSize.X, 0.3f)
+            .SetEase(Tween.EaseType.In)
+            .SetTrans(Tween.TransitionType.Cubic);
+        
+        // Background fade out (300ms) - starts at the same time as text flying out
+        tween.TweenProperty(backgroundPanel, "color", new Color(0, 0, 0, 0), 0.3f)
+            .SetEase(Tween.EaseType.In);
+        
+        // Clean up after animation completes
+        tween.SetParallel(false);
+        tween.TweenCallback(Callable.From(() => animationLayer.QueueFree()));
     }
     
     private void ClearBonusObjects()

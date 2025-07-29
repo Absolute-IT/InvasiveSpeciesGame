@@ -326,16 +326,20 @@ namespace InvasiveSpeciesAustralia
             // Decide behavior based on reproduce timer
             if (_reproduceTimer >= REPRODUCE_COOLDOWN && nearestPredator != null)
             {
-                // Seek another predator to reproduce
-                _currentTarget = nearestPredator;
-                SeekTarget(nearestPredator);
-                
                 // Check if close enough to reproduce
                 if (nearestPredatorDist < ENTITY_RADIUS * 2)
                 {
+                    // Already in breeding range - stop moving and reproduce
+                    _velocity = Vector2.Zero;
                     _reproduceTimer = 0;
                     nearestPredator._reproduceTimer = 0;
                     CallDeferred(nameof(SpawnOffspring));
+                }
+                else
+                {
+                    // Seek another predator to reproduce
+                    _currentTarget = nearestPredator;
+                    SeekTarget(nearestPredator);
                 }
             }
             else if (nearestPrey != null)
@@ -414,7 +418,20 @@ namespace InvasiveSpeciesAustralia
         private void SeekTarget(BugSquashEntity target)
         {
             var direction = (target.Position - Position).Normalized();
-            _velocity = direction * _speed;
+            var distance = Position.DistanceTo(target.Position);
+            
+            // Slow down when getting close to avoid overshooting
+            var arrivalRadius = ENTITY_RADIUS * 3;
+            if (distance < arrivalRadius)
+            {
+                // Linear slowdown as we approach the target
+                var slowFactor = distance / arrivalRadius;
+                _velocity = direction * _speed * slowFactor;
+            }
+            else
+            {
+                _velocity = direction * _speed;
+            }
         }
 
         private void Wander()

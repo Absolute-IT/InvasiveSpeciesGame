@@ -1,6 +1,42 @@
 [
 	{
 		"id": "stage-1",
+		"background_image": "assets/art/bug-squash/backgrounds/woodland2.png",
+		"interaction_description": "Feral cats prey on sugar gliders and other small animals like birds in the wild. They cause millions of deaths a year and are a major threat to our ecosystem. The sugar glider is a native species that helps balance our ecosystem, but it's threatened by the proliferation of feral cats.",
+		"species": [
+			{
+				"id": "feral-cat",
+				"name": "Feral Cat",
+				"image": "assets/art/bug-squash/entities/feral-cat.png",
+				"color": "#f5a142",
+				"behavior": "Predator",
+				"speed": 500,
+				"description": "The feral cat is a domestic cat that has been abandoned or released into the wild. It is a major threat to native wildlife and can compete with native species for resources.",
+				"starting_number": 5
+			},
+			{
+				"id": "sugar-glider",
+				"name": "Sugar Glider",
+				"image": "assets/art/bug-squash/entities/sugar-glider.webp",
+				"color": "#93f542",
+				"behavior": "Prey",
+				"speed": 400,
+				"description": "The sugar glider is a small, grey rodent that lives in the forest. It is a native species that helps balance our ecosystem.",
+				"starting_number": 10
+			},
+			{
+				"id": "tree-sap",
+				"name": "Eucalyptus Tree Sap",
+				"image": "assets/art/bug-squash/entities/tree-sap.png",
+				"color": "#93f542",
+				"behavior": "Food",
+				"description": "Eucalyptus tree sap provides food for the sugar glider to survive.",
+				"starting_number": 3
+			}
+		]
+	},
+	{
+		"id": "stage-2",
 		"background_image": "assets/art/bug-squash/backgrounds/woodland1.png",
 		"interaction_description": "Feral cats prey on bilbies and other small animals like birds in the wild. They cause millions of deaths a year and are a major threat to our ecosystem. The bilbie is a native species that helps balance our ecosystem, but it's threatened by the proliferation of feral cats.",
 		"species": [
