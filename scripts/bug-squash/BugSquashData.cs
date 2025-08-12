@@ -9,7 +9,14 @@ namespace InvasiveSpeciesAustralia
         public string BackgroundImage { get; set; }
         public string AmbienceSound { get; set; }
         public string InteractionDescription { get; set; }
+        public BugSquashLoseCondition LoseCondition { get; set; }
         public List<BugSquashSpecies> Species { get; set; }
+    }
+
+    public class BugSquashLoseCondition
+    {
+        public string Species { get; set; }
+        public int Count { get; set; }
     }
 
     public class BugSquashSpecies
@@ -27,6 +34,8 @@ namespace InvasiveSpeciesAustralia
         public int Health { get; set; } = 1; // Default to 1
         public float SpawnRate { get; set; } = 0f; // Default to 0 (no spawning)
         public string CreatesOnEaten { get; set; } // Entity ID to create when this food is eaten
+        // When true (and Behavior == Food), this species' live count is included in the Native score tally
+        public bool ConsiderNativeSpecies { get; set; } = false;
     }
 
     public class BugSquashGoal

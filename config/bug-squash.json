@@ -1,5 +1,131 @@
 [
 	{
+		"id": "stage-1",
+		"background_image": "assets/art/bug-squash/backgrounds/woodland2.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/woodland.wav",
+		"interaction_description": "Feral cats prey on sugar gliders and other small animals like birds in the wild. They cause millions of deaths a year and are a major threat to our ecosystem. The sugar glider is a native species that helps balance our ecosystem, but it's threatened by the proliferation of feral cats.",
+		"species": [
+			{
+				"id": "feral-cat",
+				"name": "Feral Cat",
+				"image": "assets/art/bug-squash/entities/feral-cat.png",
+				"color": "#f5a142",
+				"behavior": "Predator",
+				"goals": [
+					{
+						"type": "Breed",
+						"target": "feral-cat",
+						"value": 3
+					},
+					{
+						"type": "Kill",
+						"target": "sugar-glider"
+					}
+				],
+				"speed": 500,
+				"size": 100,
+				"description": "The feral cat is a domestic cat that has been abandoned or released into the wild. It is a major threat to native wildlife and can compete with native species for resources.",
+				"starting_number": 7,
+				"health": 3
+			},
+			{
+				"id": "sugar-glider",
+				"name": "Sugar Glider",
+				"image": "assets/art/bug-squash/entities/sugar-glider.webp",
+				"color": "#93f542",
+				"behavior": "Prey",
+				"goals": [
+					{
+						"type": "Eat",
+						"target": "tree-sap"
+					}
+				],
+				"speed": 400,
+				"size": 100,
+				"description": "The sugar glider is a small, grey rodent that lives in the forest. It is a native species that helps balance our ecosystem.",
+				"starting_number": 6,
+				"health": 1
+			},
+			{
+				"id": "tree-sap",
+				"name": "Eucalyptus Tree Sap",
+				"image": "assets/art/bug-squash/entities/tree-sap.png",
+				"color": "#93f542",
+				"behavior": "Food",
+				"goals": [],
+				"size": 100,
+				"description": "Eucalyptus tree sap provides food for the sugar glider to survive.",
+				"starting_number": 3,
+				"spawn_rate": 5,
+				"creates_on_eaten": "sugar-glider",
+				"health": 1
+			}
+		]
+	},
+	{
+		"id": "stage-2",
+		"background_image": "assets/art/bug-squash/backgrounds/woodland1.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/warm-forest.wav",
+		"interaction_description": "Feral cats prey on bilbies and other small animals like birds in the wild. They cause millions of deaths a year and are a major threat to our ecosystem. The bilbie is a native species that helps balance our ecosystem, but it's threatened by the proliferation of feral cats.",
+		"species": [
+			{
+				"id": "feral-cat",
+				"name": "Feral Cat",
+				"image": "assets/art/bug-squash/entities/feral-cat.png",
+				"color": "#f5a142",
+				"behavior": "Predator",
+				"goals": [
+					{
+						"type": "Breed",
+						"target": "feral-cat",
+						"value": 3
+					},
+					{
+						"type": "Kill",
+						"target": "bilbie"
+					}
+				],
+				"speed": 500,
+				"size": 100,
+				"description": "The feral cat is a domestic cat that has been abandoned or released into the wild. It is a major threat to native wildlife and can compete with native species for resources.",
+				"starting_number": 5,
+				"health": 3
+			},
+			{
+				"id": "bilbie",
+				"name": "Bilbie",
+				"image": "assets/art/bug-squash/entities/bilbie.png",
+				"color": "#93f542",
+				"behavior": "Prey",
+				"goals": [
+					{
+						"type": "Eat",
+						"target": "seeds"
+					}
+				],
+				"speed": 350,
+				"size": 100,
+				"description": "The bilbie is a small, brown rodent that lives in the forest. It is a native species that helps balance our ecosystem.",
+				"starting_number": 10,
+				"health": 1
+			},
+			{
+				"id": "seeds",
+				"name": "Seeds",
+				"image": "assets/art/bug-squash/entities/seeds.png",
+				"color": "#93f542",
+				"behavior": "Food",
+				"goals": [],
+				"size": 100,
+				"description": "Seeds and foliage provide food for the bilbie and other animals like it to survive.",
+				"starting_number": 3,
+				"spawn_rate": 5,
+				"creates_on_eaten": "bilbie",
+				"health": 1
+			}
+		]
+	},
+	{
 		"id": "stage-3",
 		"background_image": "assets/art/bug-squash/backgrounds/desert1.webp",
 		"ambience_sound": "assets/sounds/ambience-normalised/afternoon-cicada.wav",
@@ -95,128 +221,109 @@
 		]
 	},
 	{
-		"id": "stage-1",
-		"background_image": "assets/art/bug-squash/backgrounds/woodland2.png",
-		"ambience_sound": "assets/sounds/ambience-normalised/woodland.wav",
-		"interaction_description": "Feral cats prey on sugar gliders and other small animals like birds in the wild. They cause millions of deaths a year and are a major threat to our ecosystem. The sugar glider is a native species that helps balance our ecosystem, but it's threatened by the proliferation of feral cats.",
+		"id": "stage-4",
+		"background_image": "assets/art/bug-squash/backgrounds/urban1.webp",
+		"ambience_sound": "assets/sounds/ambience-normalised/tropical.wav",
+		"interaction_description": "Dutchman's pipe is a weed that spreads rapidly and can get out of control fast. Butterflies and other pollinating insects land on plants like Tea Trees to feed on the nectar. Butterflies mistake Dutchman's pipe for native vines and lay eggs on it, but the catterpillars hatch, take a bite and die from the plant's toxins. The survival of the Richmond birdwing butterfly species is seriously threatened in Queensland.",
 		"species": [
 			{
-				"id": "feral-cat",
-				"name": "Feral Cat",
-				"image": "assets/art/bug-squash/entities/feral-cat.png",
-				"color": "#f5a142",
-				"behavior": "Predator",
-				"goals": [
-					{
-						"type": "Breed",
-						"target": "feral-cat",
-						"value": 5
-					},
-					{
-						"type": "Kill",
-						"target": "sugar-glider"
-					}
-				],
-				"speed": 500,
-				"size": 100,
-				"description": "The feral cat is a domestic cat that has been abandoned or released into the wild. It is a major threat to native wildlife and can compete with native species for resources.",
-				"starting_number": 5,
-				"health": 3
+				"id": "dutchman-pipe",
+				"name": "Dutchman's Pipe",
+				"image": "assets/art/bug-squash/entities/dutchmans-pipe.png",
+				"color": "#EB3455",
+				"behavior": "Weed",
+				"goals": [],
+				"size": 80,
+				"description": "Dutchman's pipe is a weed that spreads rapidly and can get out of control fast. It is a major threat to our ecosystem.",
+				"starting_number": 4,
+				"health": 2,
+				"spawn_rate": 6
 			},
 			{
-				"id": "sugar-glider",
-				"name": "Sugar Glider",
-				"image": "assets/art/bug-squash/entities/sugar-glider.webp",
-				"color": "#93f542",
+				"id": "butterfly",
+				"name": "Richmond Birdwing Butterfly",
+				"image": "assets/art/bug-squash/entities/butterfly.webp",
+				"color": "#DC34EB",
 				"behavior": "Prey",
 				"goals": [
 					{
 						"type": "Eat",
-						"target": "tree-sap"
+						"target": "dutchman-pipe"
+					},
+					{
+						"type": "Eat",
+						"target": "tea-tree"
 					}
 				],
-				"speed": 400,
+				"speed": 150,
 				"size": 100,
-				"description": "The sugar glider is a small, grey rodent that lives in the forest. It is a native species that helps balance our ecosystem.",
-				"starting_number": 10,
+				"description": "The Richmond birdwing butterfly is a native species that helps balance our ecosystem.",
+				"starting_number": 5,
 				"health": 1
 			},
 			{
-				"id": "tree-sap",
-				"name": "Eucalyptus Tree Sap",
-				"image": "assets/art/bug-squash/entities/tree-sap.png",
-				"color": "#93f542",
+				"id": "tea-tree",
+				"name": "Tea Tree",
+				"image": "assets/art/bug-squash/entities/tea-tree.webp",
+				"color": "#34EB8D",
 				"behavior": "Food",
 				"goals": [],
-				"size": 100,
-				"description": "Eucalyptus tree sap provides food for the sugar glider to survive.",
-				"starting_number": 3,
-				"spawn_rate": 5,
-				"creates_on_eaten": "sugar-glider",
+				"size": 80,
+				"description": "Tea tree is a native species that helps balance our ecosystem.",
+				"starting_number": 5,
+				"spawn_rate": 8,
+				"creates_on_eaten": "butterfly",
 				"health": 1
 			}
 		]
 	},
 	{
-		"id": "stage-2",
-		"background_image": "assets/art/bug-squash/backgrounds/woodland1.png",
-		"ambience_sound": "assets/sounds/ambience-normalised/warm-forest.wav",
-		"interaction_description": "Feral cats prey on bilbies and other small animals like birds in the wild. They cause millions of deaths a year and are a major threat to our ecosystem. The bilbie is a native species that helps balance our ecosystem, but it's threatened by the proliferation of feral cats.",
+		"id": "stage-5",
+		"background_image": "assets/art/bug-squash/backgrounds/urban2.webp",
+		"ambience_sound": "assets/sounds/ambience-normalised/urban.wav",
+		"interaction_description": "Black rats feed on human food and trash, and can spread diseases like leptospirosis. They breed very rapidly and cause damage to human society as well as our ecosystems.",
+		"lose_condition": {
+			"species": "black-rat",
+			"count": 30
+		},
 		"species": [
 			{
-				"id": "feral-cat",
-				"name": "Feral Cat",
-				"image": "assets/art/bug-squash/entities/feral-cat.png",
-				"color": "#f5a142",
+				"id": "black-rat",
+				"name": "Black Rat",
+				"image": "assets/art/bug-squash/entities/black-rat.webp",
+				"color": "#A1A1A1",
 				"behavior": "Predator",
 				"goals": [
 					{
 						"type": "Breed",
-						"target": "feral-cat",
-						"value": 5
+						"target": "black-rat",
+						"value": 3
 					},
 					{
-						"type": "Kill",
-						"target": "bilbie"
-					}
-				],
-				"speed": 500,
-				"size": 100,
-				"description": "The feral cat is a domestic cat that has been abandoned or released into the wild. It is a major threat to native wildlife and can compete with native species for resources.",
-				"starting_number": 5,
-				"health": 3
-			},
-			{
-				"id": "bilbie",
-				"name": "Bilbie",
-				"image": "assets/art/bug-squash/entities/bilbie.png",
-				"color": "#93f542",
-				"behavior": "Prey",
-				"goals": [
-					{
 						"type": "Eat",
-						"target": "seeds"
+						"target": "garbage"
 					}
 				],
 				"speed": 400,
 				"size": 100,
-				"description": "The bilbie is a small, brown rodent that lives in the forest. It is a native species that helps balance our ecosystem.",
-				"starting_number": 10,
-				"health": 1
+				"description": "Black rats are disease carriers and breed out of control.",
+				"starting_number": 5,
+				"health": 2
 			},
 			{
-				"id": "seeds",
-				"name": "Seeds",
-				"image": "assets/art/bug-squash/entities/seeds.png",
-				"color": "#93f542",
+				"id": "garbage",
+				"name": "Human Garbage",
+				"image": "assets/art/bug-squash/entities/garbage.webp",
+				"color": "#000000",
 				"behavior": "Food",
+				"consider_native_species": true,
 				"goals": [],
+				"speed": 0,
 				"size": 100,
-				"description": "Seeds and foliage provide food for the bilbie and other animals like it to survive.",
-				"starting_number": 3,
-				"spawn_rate": 5,
-				"creates_on_eaten": "bilbie",
-				"health": 1
+				"description": "Humans littering and discarding garbage inconsiderately harms plant life, and encourages rodents to breed.",
+				"starting_number": 10,
+				"health": 1,
+				"spawn_rate": 1
 			}
 		]
 	}

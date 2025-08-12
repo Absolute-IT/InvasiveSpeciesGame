@@ -117,7 +117,7 @@ namespace InvasiveSpeciesAustralia
             var random = new Random();
             
             // Choose text and color based on behavior
-            if (behavior == EntityBehavior.Predator)
+            if (behavior == EntityBehavior.Predator || behavior == EntityBehavior.Weed)
             {
                 // Aggressive text for successful hits on invasive species
                 _label.Text = PredatorTexts[random.Next(PredatorTexts.Length)];

@@ -12,6 +12,7 @@ namespace InvasiveSpeciesAustralia
         private int _preyCount = 0;
         private int _predatorCount = 0;
         private int _foodCount = 0;
+        private int _weedCount = 0;
         private int _maxFoodCount = 0;
         private float _foodRespawnTimer = 0f;
         private List<BugSquashSpecies> _foodSpecies = new();
@@ -19,6 +20,8 @@ namespace InvasiveSpeciesAustralia
         private Dictionary<string, float> _foodRespawnTimers = new();
         private Dictionary<string, int> _foodLiveCounts = new();
         private Dictionary<string, BugSquashSpecies> _foodSpeciesById = new();
+        // Per-species live counts (all species)
+        private readonly Dictionary<string, int> _liveCountsBySpeciesId = new();
         private bool _isGameOver = false; // Add flag to prevent multiple game over screens
         
         // UI Elements
@@ -54,6 +57,7 @@ namespace InvasiveSpeciesAustralia
         private AudioStreamPlayer _currentAudioPlayer;
         private AudioStreamPlayer _previousAudioPlayer;
         private Tween _audioFadeTween;
+        private bool _isInitializingStage = false;
 
         private const float FOOD_RESPAWN_DELAY = 3f;
         private const float SCREEN_SHAKE_DURATION = 0.3f;
@@ -176,13 +180,13 @@ namespace InvasiveSpeciesAustralia
             CreateScorePanel();
 
             // Home button
-            _homeButton = new Button();
-            _homeButton.Text = "Home";
-            _homeButton.Position = new Vector2(3840 - 400, 2160 - 200);
-            _homeButton.Size = new Vector2(300, 160);
-            _homeButton.AddThemeFontSizeOverride("font_size", 48);
-            _homeButton.Pressed += OnHomePressed;
-            _gameScreen.AddChild(_homeButton);
+            // _homeButton = new Button();
+            // _homeButton.Text = "Home";
+            // _homeButton.Position = new Vector2(3840 - 400, 2160 - 200);
+            // _homeButton.Size = new Vector2(300, 160);
+            // _homeButton.AddThemeFontSizeOverride("font_size", 48);
+            // _homeButton.Pressed += OnHomePressed;
+            // _gameScreen.AddChild(_homeButton);
 
             // Instruction screen
             CreateInstructionScreen();
@@ -553,15 +557,18 @@ namespace InvasiveSpeciesAustralia
 
             // Reset game state
             _isGameOver = false;
+            _isInitializingStage = true;
             _preyCount = 0;
             _predatorCount = 0;
             _foodCount = 0;
+            _weedCount = 0;
             _maxFoodCount = 0;
             _foodRespawnTimer = 0f;
             _foodSpecies.Clear();
             _foodRespawnTimers.Clear();
             _foodLiveCounts.Clear();
             _foodSpeciesById.Clear();
+            _liveCountsBySpeciesId.Clear();
 
             // Spawn initial entities
             foreach (var species in _currentStage.Species)
@@ -589,7 +596,9 @@ namespace InvasiveSpeciesAustralia
                 }
             }
 
+            _isInitializingStage = false;
             UpdateScore();
+            CheckWinCondition();
         }
 
         public BugSquashSpecies GetSpeciesById(string speciesId)
@@ -600,7 +609,7 @@ namespace InvasiveSpeciesAustralia
             return _currentStage.Species.FirstOrDefault(s => s.Id == speciesId);
         }
 
-        public void SpawnEntity(BugSquashSpecies species, Vector2 position)
+        public BugSquashEntity SpawnEntity(BugSquashSpecies species, Vector2 position, bool isGrowthSpawn = false)
         {
             var entity = new BugSquashEntity();
             
@@ -637,11 +646,42 @@ namespace InvasiveSpeciesAustralia
                     _predatorCount++;
                     break;
                 case EntityBehavior.Weed:
-                    _preyCount++;
+                    _weedCount++;
                     break;
             }
 
+            // Track per-species live counts
+            if (species != null)
+            {
+                if (!_liveCountsBySpeciesId.ContainsKey(species.Id))
+                {
+                    _liveCountsBySpeciesId[species.Id] = 0;
+                }
+                _liveCountsBySpeciesId[species.Id] = _liveCountsBySpeciesId[species.Id] + 1;
+            }
+
+            // Handle weed growth behavior: either begin growing (for growth spawns) or start its own growth cycle immediately
+            if (behavior == EntityBehavior.Weed)
+            {
+                if (isGrowthSpawn)
+                {
+                    // Growing child fades in over spawn_rate and only then starts its own cycle
+                    entity.BeginGrowth(species.SpawnRate);
+                }
+                else
+                {
+                    // Mature weed starts producing a new growing weed immediately
+                    entity.StartWeedGrowthCycle();
+                }
+            }
+
             UpdateScore();
+            if (!_isInitializingStage)
+            {
+                CheckWinCondition();
+            }
+
+            return entity;
         }
 
         private void OnEntityDied(BugSquashEntity entity)
@@ -666,8 +706,14 @@ namespace InvasiveSpeciesAustralia
 					_predatorCount--;
 					break;
 				case EntityBehavior.Weed:
-					_preyCount--;
+					_weedCount--;
 					break;
+            }
+
+            // Update per-species live counts
+            if (entity.Species != null && _liveCountsBySpeciesId.ContainsKey(entity.Species.Id))
+            {
+                _liveCountsBySpeciesId[entity.Species.Id] = Mathf.Max(0, _liveCountsBySpeciesId[entity.Species.Id] - 1);
             }
 
             UpdateScore();
@@ -748,10 +794,26 @@ namespace InvasiveSpeciesAustralia
             GD.Print($"UpdateScore called - Predator: {_predatorCount}, Prey: {_preyCount}");
             GD.Print($"Labels - Invasive: {_invasiveCountLabel}, Native: {_nativeCountLabel}");
             
+            var invasiveTotal = _predatorCount + _weedCount;
             if (_invasiveCountLabel != null)
-                _invasiveCountLabel.Text = _predatorCount.ToString();
+                _invasiveCountLabel.Text = invasiveTotal.ToString();
+
+            // Native total includes Prey plus any Food species flagged as consider_native_species
+            int nativeFoodCount = 0;
+            if (_foodLiveCounts != null && _foodSpeciesById != null)
+            {
+                foreach (var kvp in _foodLiveCounts)
+                {
+                    if (_foodSpeciesById.TryGetValue(kvp.Key, out var species) && species != null && species.ConsiderNativeSpecies)
+                    {
+                        nativeFoodCount += kvp.Value;
+                    }
+                }
+            }
+
+            var nativeTotal = _preyCount + nativeFoodCount;
             if (_nativeCountLabel != null)
-                _nativeCountLabel.Text = _preyCount.ToString();
+                _nativeCountLabel.Text = nativeTotal.ToString();
         }
 
         private void CheckWinCondition()
@@ -759,13 +821,54 @@ namespace InvasiveSpeciesAustralia
             // Only check win conditions if game is not already over
             if (_isGameOver) return;
             
-            if (_preyCount <= 0 && _predatorCount > 0)
+            var invasiveTotal = _predatorCount + _weedCount;
+
+            // Native total includes Prey plus any Food species flagged to count as native
+            int nativeFoodCount = 0;
+            if (_foodLiveCounts != null && _foodSpeciesById != null)
+            {
+                foreach (var kvp in _foodLiveCounts)
+                {
+                    if (_foodSpeciesById.TryGetValue(kvp.Key, out var species) && species != null && species.ConsiderNativeSpecies)
+                    {
+                        nativeFoodCount += kvp.Value;
+                    }
+                }
+            }
+            var nativeTotal = _preyCount + nativeFoodCount;
+
+            // Optional alternate lose condition
+            if (_currentStage?.LoseCondition != null)
+            {
+                var lc = _currentStage.LoseCondition;
+                int currentCount = 0;
+                if (!string.IsNullOrEmpty(lc.Species))
+                {
+                    _liveCountsBySpeciesId.TryGetValue(lc.Species, out currentCount);
+                }
+                if (currentCount >= lc.Count)
+                {
+                    _isGameOver = true;
+                    // Build reason text using species display name if available
+                    var speciesName = lc.Species;
+                    var spec = GetSpeciesById(lc.Species);
+                    if (spec != null && !string.IsNullOrEmpty(spec.Name))
+                    {
+                        speciesName = spec.Name;
+                    }
+                    var reason = $"The {speciesName} population got out of control! It's all over.";
+                    ShowGameOver(false, reason);
+                    return;
+                }
+            }
+
+            if (nativeTotal <= 0 && invasiveTotal > 0)
             {
                 // Game over - native species extinct
                 _isGameOver = true;
                 ShowGameOver(false);
             }
-            else if (_predatorCount <= 0 && _preyCount > 0)
+            else if (invasiveTotal <= 0 && (_currentStage?.LoseCondition != null || nativeTotal > 0))
             {
                 // Victory - invasive species eradicated
                 _isGameOver = true;
@@ -773,8 +876,11 @@ namespace InvasiveSpeciesAustralia
             }
         }
 
-        private void ShowGameOver(bool victory)
+        private void ShowGameOver(bool victory, string customLoseMessage = null)
         {
+            // Freeze all entities so they stop moving/processing when the stage ends
+            SetAllEntitiesFrozen(true);
+
             // Create game over overlay
             var overlay = new Control();
             overlay.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
@@ -801,7 +907,7 @@ namespace InvasiveSpeciesAustralia
             var messageLabel = new Label();
             messageLabel.Text = victory ? 
                 "You've successfully eradicated the invasive species!" : 
-                "The native species has gone extinct.";
+                (string.IsNullOrEmpty(customLoseMessage) ? "The native species has gone extinct." : customLoseMessage);
             messageLabel.AddThemeFontSizeOverride("font_size", 48);
             messageLabel.AddThemeColorOverride("font_color", Colors.White);
             messageLabel.AutowrapMode = TextServer.AutowrapMode.WordSmart;
@@ -832,6 +938,17 @@ namespace InvasiveSpeciesAustralia
             homeButton.AddThemeFontSizeOverride("font_size", 48);
             homeButton.Pressed += OnHomePressed;
             buttonContainer.AddChild(homeButton);
+        }
+
+        private void SetAllEntitiesFrozen(bool frozen)
+        {
+            foreach (Node child in GetChildren())
+            {
+                if (child is BugSquashEntity entity)
+                {
+                    entity.SetFrozen(frozen);
+                }
+            }
         }
 
         public override void _Process(double delta)

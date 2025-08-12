@@ -2,6 +2,9 @@
 
 This document contains the prompts used to generate images for the game with Midjourney. The art has a watercolor style and is hand drawn/painted.
 
+All prompts use Midjourney version 6.1 which adds --v 6.1
+Version 7 does not provide the best results.
+
 ## Plants
 
 --ar 5:6
@@ -129,3 +132,15 @@ A piece of art that depicts a fire ant hill. It has a theme of earthy plants and
 ### Bee
 
 A piece of art that depicts a bee. It shows its full body from the side. It has a theme of earthy plants and flying through the sky between flowers. Hand drawn watercolor style with high detail and high resolution. Vivid colours. Video game art
+
+### Butterfly
+
+A piece of art that depicts a butterfly. It shows its full body from the side. It has a theme of earthy plants and flying through the sky between flowers. Hand drawn watercolor style with high detail and high resolution. Vivid colours. Video game art
+
+### Melaleuca Flowers
+
+A piece of art that depicts Melaleuca flowers. It has a theme of earthy plants and Australian arid environment. Hand drawn watercolor style with high detail and high resolution. Vivid colours. Video game art
+
+### Tea Tree
+
+A piece of art that depicts tea tree Leptospermum. It has a theme of earthy plants and Australian lush grassland environment. Hand drawn watercolor style with high detail and high resolution. Vivid colours. Video game art
