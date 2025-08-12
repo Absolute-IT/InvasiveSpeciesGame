@@ -15,6 +15,10 @@ namespace InvasiveSpeciesAustralia
         private int _maxFoodCount = 0;
         private float _foodRespawnTimer = 0f;
         private List<BugSquashSpecies> _foodSpecies = new();
+        // Per-species food respawn state
+        private Dictionary<string, float> _foodRespawnTimers = new();
+        private Dictionary<string, int> _foodLiveCounts = new();
+        private Dictionary<string, BugSquashSpecies> _foodSpeciesById = new();
         private bool _isGameOver = false; // Add flag to prevent multiple game over screens
         
         // UI Elements
@@ -29,7 +33,7 @@ namespace InvasiveSpeciesAustralia
         private Label _nativeCountLabel;
         private Button _homeButton;
         private RichTextLabel _interactionDescLabel;
-        private HBoxContainer _speciesContainer;
+        private HFlowContainer _speciesContainer;
         
         // Effects
         private ShockwaveEffect _shockwaveEffect;
@@ -90,7 +94,6 @@ namespace InvasiveSpeciesAustralia
                     }
                 }
             }
-            
             GD.Print($"Total boom sounds loaded: {_boomSounds.Count}");
         }
         
@@ -308,43 +311,62 @@ namespace InvasiveSpeciesAustralia
             bgRect.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
             _instructionScreen.AddChild(bgRect);
 
-            // Content container
+            // Calculate UI scale relative to a 4K reference
+            var screenSize = GetViewportRect().Size;
+            var uiScale = screenSize.Y / 2160f;
+
+            // Outer margin container to adapt to any resolution
+            var margin = new MarginContainer();
+            margin.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+            margin.AddThemeConstantOverride("margin_left", (int)(180 * uiScale));
+            margin.AddThemeConstantOverride("margin_right", (int)(180 * uiScale));
+            margin.AddThemeConstantOverride("margin_top", (int)(140 * uiScale));
+            margin.AddThemeConstantOverride("margin_bottom", (int)(160 * uiScale));
+            _instructionScreen.AddChild(margin);
+
+            // Content container that fills the margin area
             var container = new VBoxContainer();
-            container.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.Center);
-            container.Position = new Vector2(-1200, -800);
-            container.Size = new Vector2(2400, 1600);
-            container.AddThemeConstantOverride("separation", 60);
-            _instructionScreen.AddChild(container);
+            container.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.FullRect);
+            container.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+            container.SizeFlagsVertical = Control.SizeFlags.ExpandFill;
+            container.AddThemeConstantOverride("separation", (int)(60 * uiScale));
+            margin.AddChild(container);
 
             // Title
             var titleLabel = new Label();
             titleLabel.Text = "How to Play";
-            titleLabel.AddThemeFontSizeOverride("font_size", 96);
+            titleLabel.AddThemeFontSizeOverride("font_size", (int)(96 * uiScale));
             titleLabel.AddThemeColorOverride("font_color", Colors.White);
+            titleLabel.HorizontalAlignment = HorizontalAlignment.Center;
             container.AddChild(titleLabel);
 
             // Interaction description
             _interactionDescLabel = new RichTextLabel();
             _interactionDescLabel.Name = "InteractionDescription";
-            _interactionDescLabel.CustomMinimumSize = new Vector2(2400, 400);
+            _interactionDescLabel.CustomMinimumSize = new Vector2(0, (int)(400 * uiScale));
             _interactionDescLabel.BbcodeEnabled = true;
-            _interactionDescLabel.AddThemeFontSizeOverride("normal_font_size", 56);
+            _interactionDescLabel.AddThemeFontSizeOverride("normal_font_size", (int)(56 * uiScale));
             _interactionDescLabel.AddThemeColorOverride("font_color", Colors.White);
             _interactionDescLabel.AutowrapMode = TextServer.AutowrapMode.WordSmart;
+            _interactionDescLabel.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
             container.AddChild(_interactionDescLabel);
 
-            // Species container
-            _speciesContainer = new HBoxContainer();
+            // Species container (wraps items when too many for one row)
+            _speciesContainer = new HFlowContainer();
             _speciesContainer.Name = "SpeciesContainer";
-            // Increase separation for larger entities
-            _speciesContainer.AddThemeConstantOverride("separation", 220);
+            _speciesContainer.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
+            _speciesContainer.SizeFlagsVertical = Control.SizeFlags.ShrinkEnd;
+            _speciesContainer.Alignment = FlowContainer.AlignmentMode.Center;
+            // Increase separation for larger entities and scale with screen
+            _speciesContainer.AddThemeConstantOverride("h_separation", (int)(220 * uiScale));
+            _speciesContainer.AddThemeConstantOverride("v_separation", (int)(120 * uiScale));
             container.AddChild(_speciesContainer);
 
             // Start button
             var startButton = new Button();
             startButton.Text = "Start Level";
-            startButton.CustomMinimumSize = new Vector2(600, 160);
-            startButton.AddThemeFontSizeOverride("font_size", 64);
+            startButton.CustomMinimumSize = new Vector2((int)(600 * uiScale), (int)(160 * uiScale));
+            startButton.AddThemeFontSizeOverride("font_size", (int)(64 * uiScale));
             startButton.Pressed += OnStartLevel;
             container.AddChild(startButton);
         }
@@ -384,7 +406,8 @@ namespace InvasiveSpeciesAustralia
             // Update interaction description
             if (_interactionDescLabel != null)
             {
-                _interactionDescLabel.Text = _currentStage.InteractionDescription;
+                // Center the paragraph using BBCode since RichTextLabel lacks a direct alignment property
+                _interactionDescLabel.Text = "[center]" + _currentStage.InteractionDescription + "[/center]";
             }
 
             // Clear and populate species display
@@ -410,7 +433,13 @@ namespace InvasiveSpeciesAustralia
 
             // Entity visual
             var entityContainer = new Control();
-            entityContainer.CustomMinimumSize = new Vector2(400, 400);
+            var screenSize = GetViewportRect().Size;
+            var uiScale = screenSize.Y / 2160f;
+            // Scale down for multi-row layouts, but clamp to keep readability
+            var ringSize = Mathf.Clamp((int)(320 * uiScale), 220, 360);
+            var imageSize = ringSize - (int)(ringSize * 0.08f);
+            var halfRing = ringSize / 2f;
+            entityContainer.CustomMinimumSize = new Vector2(ringSize, ringSize);
             container.AddChild(entityContainer);
 
             // Colored ring
@@ -419,21 +448,22 @@ namespace InvasiveSpeciesAustralia
             ring.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
             ring.Modulate = new Color(species.Color);
             ring.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.Center);
-            // Double the size: 400x400 ring
-            ring.Size = new Vector2(400, 400);
-            ring.Position = new Vector2(-200, -200);
+            ring.Size = new Vector2(ringSize, ringSize);
+            ring.Position = new Vector2(-halfRing, -halfRing);
             
             // Create a white circle texture for the ring
-            var image = Image.CreateEmpty(400, 400, false, Image.Format.Rgba8);
-            for (int x = 0; x < 400; x++)
+            var image = Image.CreateEmpty((int)ringSize, (int)ringSize, false, Image.Format.Rgba8);
+            for (int x = 0; x < ringSize; x++)
             {
-                for (int y = 0; y < 400; y++)
+                for (int y = 0; y < ringSize; y++)
                 {
-                    float dx = x - 200;
-                    float dy = y - 200;
+                    float dx = x - halfRing;
+                    float dy = y - halfRing;
                     float dist = Mathf.Sqrt(dx * dx + dy * dy);
-                    // Double the outline thickness: 20px
-                    if (dist < 200 && dist > 180)
+                    // Outline thickness ~20px at 4K, scaled with uiScale
+                    var radius = halfRing;
+                    var inner = halfRing - Mathf.Max(18f * uiScale, 12f);
+                    if (dist < radius && dist > inner)
                     {
                         image.SetPixel(x, y, Colors.White);
                     }
@@ -451,9 +481,9 @@ namespace InvasiveSpeciesAustralia
                 sprite.ExpandMode = TextureRect.ExpandModeEnum.FitWidthProportional;
                 sprite.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
                 sprite.SetAnchorsAndOffsetsPreset(Control.LayoutPreset.Center);
-                // Double the image size to fit the new ring (364x364, 10px border)
-                sprite.Size = new Vector2(370, 370);
-                sprite.Position = new Vector2(-185, -185);
+                // Image size scaled to fit the ring (leave ~10px border at 4K)
+                sprite.Size = new Vector2(imageSize, imageSize);
+                sprite.Position = new Vector2(-imageSize / 2f, -imageSize / 2f);
                 
                 // Apply circular clipping shader to match the in-game entities
                 var clipShaderPath = "res://shaders/circular_clip.gdshader";
@@ -470,23 +500,23 @@ namespace InvasiveSpeciesAustralia
 
             // Add a fixed-size spacer for image-to-label gap
             var imageLabelSpacer = new Control();
-            imageLabelSpacer.CustomMinimumSize = new Vector2(0, 40); // 80px vertical space
+            imageLabelSpacer.CustomMinimumSize = new Vector2(0, (int)(24 * uiScale));
             container.AddChild(imageLabelSpacer);
 
             // Group the name and behaviour labels in their own VBox with small separation
             var labelBox = new VBoxContainer();
-            labelBox.AddThemeConstantOverride("separation", 10); // Small gap between labels
+            labelBox.AddThemeConstantOverride("separation", (int)(6 * uiScale)); // Small gap between labels
 
             var nameLabel = new Label();
             nameLabel.Text = species.Name;
-            nameLabel.AddThemeFontSizeOverride("font_size", 64);
+            nameLabel.AddThemeFontSizeOverride("font_size", Mathf.Clamp((int)(52 * uiScale), 36, 60));
             nameLabel.AddThemeColorOverride("font_color", Colors.White);
             nameLabel.HorizontalAlignment = HorizontalAlignment.Center;
             labelBox.AddChild(nameLabel);
 
             var behaviorLabel = new Label();
             behaviorLabel.Text = $"({species.Behavior})";
-            behaviorLabel.AddThemeFontSizeOverride("font_size", 48);
+            behaviorLabel.AddThemeFontSizeOverride("font_size", Mathf.Clamp((int)(36 * uiScale), 28, 44));
             behaviorLabel.AddThemeColorOverride("font_color", new Color(0.8f, 0.8f, 0.8f));
             behaviorLabel.HorizontalAlignment = HorizontalAlignment.Center;
             labelBox.AddChild(behaviorLabel);
@@ -529,16 +559,27 @@ namespace InvasiveSpeciesAustralia
             _maxFoodCount = 0;
             _foodRespawnTimer = 0f;
             _foodSpecies.Clear();
+            _foodRespawnTimers.Clear();
+            _foodLiveCounts.Clear();
+            _foodSpeciesById.Clear();
 
             // Spawn initial entities
             foreach (var species in _currentStage.Species)
             {
                 var behavior = System.Enum.Parse<EntityBehavior>(species.Behavior);
                 
-                if (behavior == EntityBehavior.Food && species.SpawnRate > 0)
+                if (behavior == EntityBehavior.Food)
                 {
-                    _foodSpecies.Add(species);
-                    _maxFoodCount = species.StartingNumber;
+                    // Track all food species for counts
+                    _foodSpeciesById[species.Id] = species;
+                    _foodLiveCounts[species.Id] = 0; // Will be incremented on spawn
+
+                    // Only food with spawn rate participates in timed respawn
+                    if (species.SpawnRate > 0)
+                    {
+                        _foodSpecies.Add(species);
+                        _foodRespawnTimers[species.Id] = 0f;
+                    }
                 }
 
                 for (int i = 0; i < species.StartingNumber; i++)
@@ -587,6 +628,10 @@ namespace InvasiveSpeciesAustralia
                     break;
                 case EntityBehavior.Food:
                     _foodCount++;
+                    if (species != null && _foodLiveCounts.ContainsKey(species.Id))
+                    {
+                        _foodLiveCounts[species.Id] = _foodLiveCounts[species.Id] + 1;
+                    }
                     break;
                 case EntityBehavior.Nest:
                     _predatorCount++;
@@ -612,12 +657,16 @@ namespace InvasiveSpeciesAustralia
                     break;
                 case EntityBehavior.Food:
                     _foodCount--;
+                    if (entity.Species != null && _foodLiveCounts.ContainsKey(entity.Species.Id))
+                    {
+                        _foodLiveCounts[entity.Species.Id] = Mathf.Max(0, _foodLiveCounts[entity.Species.Id] - 1);
+                    }
                     break;
 				case EntityBehavior.Nest:
 					_predatorCount--;
 					break;
 				case EntityBehavior.Weed:
-					_predatorCount--;
+					_preyCount--;
 					break;
             }
 
@@ -810,19 +859,32 @@ namespace InvasiveSpeciesAustralia
                 }
             }
 
-            // Handle food respawning
-            if (_foodCount < _maxFoodCount && _foodSpecies.Count > 0)
+            // Handle food respawning per species
+            if (_foodSpecies.Count > 0)
             {
-                _foodRespawnTimer += deltaF;
-                
-                // Find a food species with spawn rate
                 foreach (var foodSpecies in _foodSpecies)
                 {
-                    if (_foodRespawnTimer >= foodSpecies.SpawnRate && foodSpecies.SpawnRate > 0)
+                    // Ensure tracking exists
+                    if (!_foodRespawnTimers.ContainsKey(foodSpecies.Id))
                     {
-                        _foodRespawnTimer = 0;
-                        SpawnEntity(foodSpecies, GetRandomPosition());
-                        break;
+                        _foodRespawnTimers[foodSpecies.Id] = 0f;
+                    }
+                    if (!_foodLiveCounts.ContainsKey(foodSpecies.Id))
+                    {
+                        _foodLiveCounts[foodSpecies.Id] = 0;
+                    }
+
+                    // Respawn only if below per-species cap (starting_number)
+                    var currentLive = _foodLiveCounts[foodSpecies.Id];
+                    var maxForSpecies = foodSpecies.StartingNumber;
+                    if (currentLive < maxForSpecies && foodSpecies.SpawnRate > 0)
+                    {
+                        _foodRespawnTimers[foodSpecies.Id] += deltaF;
+                        if (_foodRespawnTimers[foodSpecies.Id] >= foodSpecies.SpawnRate)
+                        {
+                            _foodRespawnTimers[foodSpecies.Id] = 0f;
+                            SpawnEntity(foodSpecies, GetRandomPosition());
+                        }
                     }
                 }
             }
@@ -956,4 +1018,4 @@ namespace InvasiveSpeciesAustralia
             StopAllAmbience();
         }
     }
-} 
+}

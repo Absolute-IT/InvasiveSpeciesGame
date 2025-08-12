@@ -87,8 +87,8 @@
 				"goals": [],
 				"size": 100,
 				"description": "Fire ants feast on dead animals and carrion, which allows them to spread.",
-				"starting_number": 1,
-				"spawn_rate": 3,
+				"starting_number": 2,
+				"spawn_rate": 4,
 				"creates_on_eaten": "ant-hill",
 				"health": 1
 			}

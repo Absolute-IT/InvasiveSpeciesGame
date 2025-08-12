@@ -33,10 +33,19 @@ namespace InvasiveSpeciesAustralia
         private float _behaviorUpdateTimer = 0f;
         private float _baseRadius = 80f; // Base radius, will be scaled by size
         private string _foodCreatesOnEaten = null; // Stores what entity to create after eating food
+        private Vector2 _eatenEntityPosition = Vector2.Zero; // Position where the eaten entity was located
+        private BugSquashEntity _foodBeingEaten = null; // Reference to the food currently being eaten
+        private BugSquashEntity _beingConsumedBy = null; // If this entity is food, tracks the eater that reserved it
 
         private Sprite2D _sprite;
         private Sprite2D _ring;
         private AnimationPlayer _animationPlayer;
+
+        // Status text effect during actions
+        private ActionStatusText _actionStatusText;
+        private enum EntityAction { None, Eating, Breeding }
+        private EntityAction _currentAction = EntityAction.None;
+        private float _currentActionDuration = 0f;
 
         private const float STUN_DURATION = 3f;
         private const float FEEDING_DURATION = 2f;
@@ -47,6 +56,25 @@ namespace InvasiveSpeciesAustralia
         public EntityBehavior Behavior => _behavior;
         public bool IsAlive { get; private set; } = true;
         public float EntityRadius => _baseRadius * (_species?.Size ?? 100f) / 100f;
+        public bool IsBeingConsumed => _beingConsumedBy != null;
+
+        private bool TryReserveForConsumption(BugSquashEntity eater)
+        {
+            if (_beingConsumedBy == null)
+            {
+                _beingConsumedBy = eater;
+                return true;
+            }
+            return _beingConsumedBy == eater;
+        }
+
+        private void ClearConsumptionReservation(BugSquashEntity eater)
+        {
+            if (_beingConsumedBy == eater)
+            {
+                _beingConsumedBy = null;
+            }
+        }
 
         public override void _Ready()
         {
@@ -68,6 +96,37 @@ namespace InvasiveSpeciesAustralia
             InputEvent += OnInputEvent;
             MouseEntered += OnMouseEntered;
             MouseExited += OnMouseExited;
+        }
+
+        public override void _Draw()
+        {
+            // Draw a health bar below the entity when damaged
+            if (!IsAlive || _maxHealth <= 0) return;
+
+            if (_health < _maxHealth)
+            {
+                float healthRatio = Mathf.Clamp((float)_health / (float)_maxHealth, 0f, 1f);
+
+                float barWidth = EntityRadius * 1.6f;
+                float barHeight = Mathf.Max(6f, EntityRadius * 0.15f);
+                float verticalOffset = EntityRadius * 0.25f; // gap below the ring
+
+                float left = -barWidth / 2f;
+                float top = EntityRadius + verticalOffset;
+
+                // Background (missing health) in red
+                DrawRect(new Rect2(left, top, barWidth, barHeight), new Color(0.65f, 0.1f, 0.1f, 0.9f), true);
+
+                // Foreground (current health) in green
+                float greenWidth = barWidth * healthRatio;
+                if (greenWidth > 0)
+                {
+                    DrawRect(new Rect2(left, top, greenWidth, barHeight), new Color(0.15f, 0.8f, 0.2f, 0.95f), true);
+                }
+
+                // Optional subtle border for readability
+                DrawRect(new Rect2(left, top, barWidth, barHeight), new Color(0f, 0f, 0f, 0.7f), false, 2f);
+            }
         }
 
         private void CreateVisuals()
@@ -222,6 +281,8 @@ namespace InvasiveSpeciesAustralia
             InitializeGoalTimers();
             
             GD.Print($"Entity {species.Name} initialized at {Position}, Visible: {Visible}, Size: {species.Size}%, Health: {_health}");
+            // Ensure visuals (including health bar) are drawn once initialized
+            QueueRedraw();
         }
 
         private void InitializeGoalTimers()
@@ -277,6 +338,10 @@ namespace InvasiveSpeciesAustralia
                     _isFeeding = false;
                     CompleteFeedingAndReproduce();
                 }
+                else
+                {
+                    UpdateActionStatusProgress();
+                }
             }
 
             // Update breeding
@@ -287,6 +352,10 @@ namespace InvasiveSpeciesAustralia
                 {
                     _isBreeding = false;
                     CompleteBreeding();
+                }
+                else
+                {
+                    UpdateActionStatusProgress();
                 }
             }
 
@@ -565,6 +634,11 @@ namespace InvasiveSpeciesAustralia
                 {
                     if (entity.Species.Id == targetId)
                     {
+                        // Skip this target if it is already being consumed by another eater
+                        if (entity.IsBeingConsumed && entity._beingConsumedBy != this)
+                        {
+                            continue;
+                        }
                         float dist = Position.DistanceTo(entity.Position);
                         if (dist < nearestDist)
                         {
@@ -671,14 +745,29 @@ namespace InvasiveSpeciesAustralia
 
         private void StartFeeding(BugSquashEntity food)
         {
+            if (food == null || !food.IsAlive)
+            {
+                return;
+            }
+            // Ensure only one eater can consume this food at a time
+            if (!food.TryReserveForConsumption(this))
+            {
+                return;
+            }
+
             _isFeeding = true;
             _feedingTimer = FEEDING_DURATION;
             _velocity = Vector2.Zero;
-            
-            // Store the food's creates_on_eaten property before it dies
+            _foodBeingEaten = food;
+
+            // Setup action status text (Eating) - only if this entity is the initiator
+            // For eating, the eater is the initiator; show one shared status centered between entities
+            BeginActionStatus(EntityAction.Eating, FEEDING_DURATION, "Eating…", partner: food);
+
+            // Store the food's creates_on_eaten property before it is removed
             _foodCreatesOnEaten = food.Species?.CreatesOnEaten;
-            
-            food.Die();
+            // Remember the precise position of the eaten entity so spawns occur exactly there
+            _eatenEntityPosition = food.Position;
         }
 
         private void CompleteFeedingAndReproduce()
@@ -696,6 +785,28 @@ namespace InvasiveSpeciesAustralia
             
             // Clear the stored value
             _foodCreatesOnEaten = null;
+
+            // Finish action status text
+            EndActionStatus();
+
+            // After spawning, remove the eaten food and release the reservation
+            if (_foodBeingEaten != null)
+            {
+                CallDeferred(nameof(FinalizeFoodConsumption));
+            }
+        }
+
+        private void FinalizeFoodConsumption()
+        {
+            if (_foodBeingEaten != null)
+            {
+                _foodBeingEaten.ClearConsumptionReservation(this);
+                if (_foodBeingEaten.IsAlive)
+                {
+                    _foodBeingEaten.Die();
+                }
+                _foodBeingEaten = null;
+            }
         }
 
         private void StartBreeding(bool shouldSpawnOffspring = false)
@@ -705,6 +816,13 @@ namespace InvasiveSpeciesAustralia
             _velocity = Vector2.Zero;
             _breedCooldownTimer = 0; // Reset cooldown
             _shouldSpawnOffspring = shouldSpawnOffspring;
+
+            // Setup action status text (Breeding) only for the initiator
+            if (shouldSpawnOffspring)
+            {
+                // The target was set as _currentTarget by ExecuteBreedGoal; use it as partner
+                BeginActionStatus(EntityAction.Breeding, BREEDING_DURATION, "Breeding…", partner: _currentTarget);
+            }
         }
 
         private void CompleteBreeding()
@@ -715,6 +833,9 @@ namespace InvasiveSpeciesAustralia
                 CallDeferred(nameof(SpawnOffspring));
             }
             _shouldSpawnOffspring = false; // Reset flag
+
+            // Finish action status text
+            EndActionStatus();
         }
 
         private void SpawnOffspring()
@@ -734,7 +855,8 @@ namespace InvasiveSpeciesAustralia
                 var targetSpecies = game.GetSpeciesById(entityId);
                 if (targetSpecies != null)
                 {
-                    var spawnPos = Position + new Vector2(EntityRadius * 2, 0);
+                    // Spawn exactly where the eaten entity was located
+                    var spawnPos = _eatenEntityPosition;
                     game.SpawnEntity(targetSpecies, spawnPos);
                 }
                 else
@@ -799,6 +921,9 @@ namespace InvasiveSpeciesAustralia
                 Modulate = new Color(0.5f, 0.5f, 0.5f, 0.7f);
                 _animationPlayer.Play("default/blink");
             }
+
+            // Update health bar rendering
+            QueueRedraw();
         }
 
         private void OnInputEvent(Node viewport, InputEvent @event, long shapeIdx)
@@ -851,8 +976,22 @@ namespace InvasiveSpeciesAustralia
         {
             if (!IsAlive) return;
 
+            // If this entity dies while consuming food, release the reservation so others can eat it
+            if (_isFeeding && _foodBeingEaten != null)
+            {
+                _foodBeingEaten.ClearConsumptionReservation(this);
+                _foodBeingEaten = null;
+            }
+
             IsAlive = false;
             EmitSignal(SignalName.EntityDied, this);
+            
+            // Finish action status text immediately
+            if (_actionStatusText != null && IsInstanceValid(_actionStatusText))
+            {
+                _actionStatusText.Finish();
+                _actionStatusText = null;
+            }
             
             // Create paint splatter effect before removing entity
             // var splatterEffect = new PaintSplatterEffect();
@@ -864,6 +1003,50 @@ namespace InvasiveSpeciesAustralia
             
             // Queue free after a short delay to ensure splatter effect has captured the entity
             GetTree().CreateTimer(0.1).Timeout += () => QueueFree();
+        }
+
+        private void BeginActionStatus(EntityAction action, float duration, string text, BugSquashEntity partner = null)
+        {
+            // End any existing status first
+            if (_actionStatusText != null && IsInstanceValid(_actionStatusText))
+            {
+                _actionStatusText.Finish();
+                _actionStatusText = null;
+            }
+
+            _currentAction = action;
+            _currentActionDuration = duration;
+
+            var status = new ActionStatusText();
+            AddChild(status);
+            status.Initialize(text);
+            // Follow both entities' midpoint; if partner is null, follow this only
+            status.SetTargets(this, partner, verticalOffset: EntityRadius + 40f);
+            _actionStatusText = status;
+        }
+
+        private void UpdateActionStatusProgress()
+        {
+            if (_actionStatusText == null || !IsInstanceValid(_actionStatusText)) return;
+
+            float remaining = Mathf.Max(_feedingTimer, 0f);
+            float progress = 1f;
+            if (_currentActionDuration > 0f)
+            {
+                progress = 1f - (remaining / _currentActionDuration);
+            }
+            _actionStatusText.SetProgress(progress);
+        }
+
+        private void EndActionStatus()
+        {
+            if (_actionStatusText != null && IsInstanceValid(_actionStatusText))
+            {
+                _actionStatusText.Finish();
+            }
+            _actionStatusText = null;
+            _currentAction = EntityAction.None;
+            _currentActionDuration = 0f;
         }
     }
 } 
