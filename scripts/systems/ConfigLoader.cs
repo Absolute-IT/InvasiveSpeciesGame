@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using InvasiveSpeciesAustralia.Systems;
 
 namespace InvasiveSpeciesAustralia
 {
@@ -30,6 +31,9 @@ namespace InvasiveSpeciesAustralia
         private Dictionary<string, Species> _speciesData = new Dictionary<string, Species>();
         private List<string> _menuBackgrounds = new List<string>();
         
+        // Story data
+        private List<StoryInfo> _stories = new List<StoryInfo>();
+        
         // JSON serialization options
         private JsonSerializerOptions _jsonOptions;
 
@@ -41,6 +45,12 @@ namespace InvasiveSpeciesAustralia
                 WriteIndented = true,
                 Converters = { new JsonStringEnumConverter() }
             };
+        }
+        
+        public override void _Ready()
+        {
+            // Ensure singleton instance is set
+            _instance = this;
         }
 
         /// <summary>
@@ -112,11 +122,39 @@ namespace InvasiveSpeciesAustralia
             // Load menu backgrounds configuration
             LoadMenuBackgroundsConfig();
             
-            // Future config files can be loaded here
-            // LoadLevelsConfig();
-            // LoadStoriesConfig();
+            // Load story data
+            LoadStories();
             
-            GD.Print($"ConfigLoader: Configuration loaded. Species count: {_speciesData.Count}, Menu backgrounds: {_menuBackgrounds.Count}");
+            // Load bug squash levels (static method, already loaded on demand)
+            
+            // Start LibreOffice/Poppler slide generation for stories
+            StartStorySlideGeneration();
+            
+            // Future config files can be loaded here
+            
+            GD.Print("ConfigLoader: Configuration load complete.");
+        }
+        
+        /// <summary>
+        /// Start LibreOffice/Poppler slide generation for loaded stories
+        /// </summary>
+        private void StartStorySlideGeneration()
+        {
+            if (!IsInsideTree())
+            {
+                CallDeferred(nameof(StartStorySlideGeneration));
+                return;
+            }
+
+            var generator = StorySlideGenerator.Instance;
+            if (generator == null)
+            {
+                generator = new StorySlideGenerator();
+                generator.Name = "StorySlideGenerator";
+                GetTree().Root.AddChild(generator);
+            }
+
+            generator.StartGeneration(_stories);
         }
 
         /// <summary>
@@ -501,6 +539,113 @@ namespace InvasiveSpeciesAustralia
             {
                 GD.PrintErr($"ConfigLoader: Error loading menu backgrounds file {path}: {e.Message}");
             }
+        }
+
+        /// <summary>
+        /// Loads story data from stories.json
+        /// </summary>
+        public void LoadStories()
+        {
+            _stories.Clear();
+            string configPath = "res://config/stories.json";
+            
+            try
+            {
+                if (FileAccess.FileExists(configPath))
+                {
+                    using var file = FileAccess.Open(configPath, FileAccess.ModeFlags.Read);
+                    string jsonString = file.GetAsText();
+                    
+                    // Parse the JSON
+                    var json = new Json();
+                    var parseResult = json.Parse(jsonString);
+                    
+                    if (parseResult == Error.Ok)
+                    {
+                        var data = json.Data;
+                        if (data.VariantType == Variant.Type.Array)
+                        {
+                            var storyArray = data.AsGodotArray();
+                            foreach (var item in storyArray)
+                            {
+                                if (item.VariantType == Variant.Type.Dictionary)
+                                {
+                                    var storyDict = item.AsGodotDictionary();
+                                    var story = ParseStoryInfo(storyDict);
+                                    if (story != null)
+                                    {
+                                        _stories.Add(story);
+                                    }
+                                }
+                            }
+                            
+                            GD.Print($"ConfigLoader: Loaded {_stories.Count} stories");
+                        }
+                    }
+                    else
+                    {
+                        GD.PrintErr($"ConfigLoader: Failed to parse stories.json: {parseResult}");
+                    }
+                }
+                else
+                {
+                    GD.PrintErr($"ConfigLoader: stories.json not found at {configPath}");
+                }
+            }
+            catch (System.Exception e)
+            {
+                GD.PrintErr($"ConfigLoader: Error loading stories: {e.Message}");
+            }
+        }
+        
+        /// <summary>
+        /// Parses a story dictionary into StoryInfo object
+        /// </summary>
+        private StoryInfo ParseStoryInfo(Godot.Collections.Dictionary dict)
+        {
+            var story = new StoryInfo();
+
+            // Required fields
+            if (dict.ContainsKey("title"))
+                story.Title = dict["title"].ToString();
+            else
+                return null;
+
+            // Optional fields
+            if (dict.ContainsKey("id"))
+                story.Id = dict["id"].ToString();
+            else
+                story.Id = story.Title.ToLower().Replace(" ", "-");
+
+            if (dict.ContainsKey("description"))
+                story.Description = dict["description"].ToString();
+
+            if (dict.ContainsKey("file"))
+                story.File = dict["file"].ToString();
+
+            if (dict.ContainsKey("thumbnail"))
+                story.Thumbnail = dict["thumbnail"].ToString();
+
+            if (dict.ContainsKey("visible"))
+                story.Visible = (bool)dict["visible"];
+
+            return story;
+        }
+        
+        /// <summary>
+        /// Gets all loaded stories
+        /// </summary>
+        public List<StoryInfo> GetStories()
+        {
+            return new List<StoryInfo>(_stories);
+        }
+        
+        /// <summary>
+        /// Gets a specific story by ID
+        /// </summary>
+        public StoryInfo GetStoryById(string id)
+        {
+            return _stories.Find(s => s.Id == id);
         }
     }
 } 

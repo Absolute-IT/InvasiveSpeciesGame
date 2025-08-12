@@ -43,6 +43,13 @@ namespace InvasiveSpeciesAustralia
         // Sound system
         private List<AudioStream> _boomSounds = new();
         private int _lastSoundIndex = -1;
+        
+        // Ambience audio players for crossfading
+        private AudioStreamPlayer _audioPlayer1;
+        private AudioStreamPlayer _audioPlayer2;
+        private AudioStreamPlayer _currentAudioPlayer;
+        private AudioStreamPlayer _previousAudioPlayer;
+        private Tween _audioFadeTween;
 
         private const float FOOD_RESPAWN_DELAY = 3f;
         private const float SCREEN_SHAKE_DURATION = 0.3f;
@@ -52,6 +59,7 @@ namespace InvasiveSpeciesAustralia
         {
             LoadStages();
             LoadSounds();
+            SetupAudioPlayers();
             CreateUI();
             ShowInstructionScreen();
         }
@@ -85,6 +93,22 @@ namespace InvasiveSpeciesAustralia
             
             GD.Print($"Total boom sounds loaded: {_boomSounds.Count}");
         }
+        
+        private void SetupAudioPlayers()
+        {
+            // Create two audio players for crossfading
+            _audioPlayer1 = new AudioStreamPlayer();
+            _audioPlayer1.Name = "AudioPlayer1";
+            _audioPlayer1.Bus = "Master";
+            _audioPlayer1.VolumeDb = -80.0f; // Start silent
+            AddChild(_audioPlayer1);
+            
+            _audioPlayer2 = new AudioStreamPlayer();
+            _audioPlayer2.Name = "AudioPlayer2";
+            _audioPlayer2.Bus = "Master";
+            _audioPlayer2.VolumeDb = -80.0f; // Start silent
+            AddChild(_audioPlayer2);
+        }
 
         private void LoadStages()
         {
@@ -94,6 +118,25 @@ namespace InvasiveSpeciesAustralia
                 GD.PrintErr("No bug squash stages found!");
                 return;
             }
+            
+            // Shuffle stages into random order
+            ShuffleStages();
+        }
+        
+        private void ShuffleStages()
+        {
+            if (_stages == null || _stages.Count <= 1) return;
+            
+            // Fisher-Yates shuffle algorithm using Godot's random functions
+            for (int i = _stages.Count - 1; i > 0; i--)
+            {
+                int randomIndex = GD.RandRange(0, i);
+                var temp = _stages[i];
+                _stages[i] = _stages[randomIndex];
+                _stages[randomIndex] = temp;
+            }
+            
+            GD.Print($"Shuffled {_stages.Count} stages into random order");
         }
 
         private void CreateUI()
@@ -311,6 +354,7 @@ namespace InvasiveSpeciesAustralia
             if (_currentStageIndex >= _stages.Count)
             {
                 // Game complete
+                StopAllAmbience();
                 GetTree().ChangeSceneToFile("res://scenes/MainMenu.tscn");
                 return;
             }
@@ -318,6 +362,9 @@ namespace InvasiveSpeciesAustralia
             _currentStage = _stages[_currentStageIndex];
             _instructionScreen.Visible = true;
             _gameScreen.Visible = false;
+
+            // Play ambience sound for this stage
+            PlayAmbienceSound(_currentStage);
 
             // Update background
             if (!string.IsNullOrEmpty(_currentStage.BackgroundImage) && _backgroundSprite != null)
@@ -488,7 +535,7 @@ namespace InvasiveSpeciesAustralia
             {
                 var behavior = System.Enum.Parse<EntityBehavior>(species.Behavior);
                 
-                if (behavior == EntityBehavior.Food)
+                if (behavior == EntityBehavior.Food && species.SpawnRate > 0)
                 {
                     _foodSpecies.Add(species);
                     _maxFoodCount = species.StartingNumber;
@@ -502,6 +549,14 @@ namespace InvasiveSpeciesAustralia
             }
 
             UpdateScore();
+        }
+
+        public BugSquashSpecies GetSpeciesById(string speciesId)
+        {
+            if (_currentStage == null || _currentStage.Species == null)
+                return null;
+            
+            return _currentStage.Species.FirstOrDefault(s => s.Id == speciesId);
         }
 
         public void SpawnEntity(BugSquashSpecies species, Vector2 position)
@@ -533,6 +588,12 @@ namespace InvasiveSpeciesAustralia
                 case EntityBehavior.Food:
                     _foodCount++;
                     break;
+                case EntityBehavior.Nest:
+                    _predatorCount++;
+                    break;
+                case EntityBehavior.Weed:
+                    _preyCount++;
+                    break;
             }
 
             UpdateScore();
@@ -552,6 +613,12 @@ namespace InvasiveSpeciesAustralia
                 case EntityBehavior.Food:
                     _foodCount--;
                     break;
+				case EntityBehavior.Nest:
+					_predatorCount--;
+					break;
+				case EntityBehavior.Weed:
+					_predatorCount--;
+					break;
             }
 
             UpdateScore();
@@ -747,11 +814,16 @@ namespace InvasiveSpeciesAustralia
             if (_foodCount < _maxFoodCount && _foodSpecies.Count > 0)
             {
                 _foodRespawnTimer += deltaF;
-                if (_foodRespawnTimer >= FOOD_RESPAWN_DELAY)
+                
+                // Find a food species with spawn rate
+                foreach (var foodSpecies in _foodSpecies)
                 {
-                    _foodRespawnTimer = 0;
-                    var foodSpecies = _foodSpecies[GD.RandRange(0, _foodSpecies.Count - 1)];
-                    SpawnEntity(foodSpecies, GetRandomPosition());
+                    if (_foodRespawnTimer >= foodSpecies.SpawnRate && foodSpecies.SpawnRate > 0)
+                    {
+                        _foodRespawnTimer = 0;
+                        SpawnEntity(foodSpecies, GetRandomPosition());
+                        break;
+                    }
                 }
             }
         }
@@ -764,9 +836,124 @@ namespace InvasiveSpeciesAustralia
             return new Vector2((float)x, (float)y);
         }
 
+        private void PlayAmbienceSound(BugSquashStage stage)
+        {
+            // Check if we have an ambience sound to play
+            if (string.IsNullOrEmpty(stage.AmbienceSound))
+            {
+                // If no ambience sound, fade out any current audio
+                if (_currentAudioPlayer != null && _currentAudioPlayer.Playing)
+                {
+                    FadeOutAudio(_currentAudioPlayer);
+                    _currentAudioPlayer = null;
+                }
+                return;
+            }
+            
+            // Load the audio stream
+            var audioStream = GD.Load<AudioStream>(stage.AmbienceSound);
+            if (audioStream == null)
+            {
+                GD.PrintErr($"Failed to load ambience sound: {stage.AmbienceSound}");
+                return;
+            }
+            
+            // Cancel any existing fade tween
+            _audioFadeTween?.Kill();
+            
+            // Determine which player to use
+            AudioStreamPlayer newPlayer = null;
+            if (_currentAudioPlayer == null)
+            {
+                // First time playing audio
+                newPlayer = _audioPlayer1;
+            }
+            else if (_currentAudioPlayer == _audioPlayer1)
+            {
+                // Switch to player 2
+                newPlayer = _audioPlayer2;
+            }
+            else
+            {
+                // Switch to player 1
+                newPlayer = _audioPlayer1;
+            }
+            
+            // Set up the new player
+            newPlayer.Stream = audioStream;
+            newPlayer.VolumeDb = -80.0f; // Start silent
+            newPlayer.Play();
+            
+            // Create crossfade tween
+            _audioFadeTween = CreateTween();
+            _audioFadeTween.SetParallel(true);
+            
+            // Fade in new audio
+            _audioFadeTween.TweenProperty(newPlayer, "volume_db", 0.0f, 3.0f)
+                .SetEase(Tween.EaseType.Out)
+                .SetTrans(Tween.TransitionType.Quad);
+            
+            // Fade out previous audio if playing
+            if (_currentAudioPlayer != null && _currentAudioPlayer.Playing)
+            {
+                var previousPlayer = _currentAudioPlayer;
+                _audioFadeTween.TweenProperty(previousPlayer, "volume_db", -80.0f, 3.0f)
+                    .SetEase(Tween.EaseType.In)
+                    .SetTrans(Tween.TransitionType.Quad);
+                
+                // Stop the previous player after fade out
+                _audioFadeTween.Chain().TweenCallback(Callable.From(() =>
+                {
+                    previousPlayer.Stop();
+                }));
+            }
+            
+            // Update current player reference
+            _previousAudioPlayer = _currentAudioPlayer;
+            _currentAudioPlayer = newPlayer;
+        }
+        
+        private void FadeOutAudio(AudioStreamPlayer player)
+        {
+            if (player == null || !player.Playing) return;
+            
+            var tween = CreateTween();
+            tween.TweenProperty(player, "volume_db", -80.0f, 0.5f)
+                .SetEase(Tween.EaseType.In)
+                .SetTrans(Tween.TransitionType.Quad);
+            tween.TweenCallback(Callable.From(() => player.Stop()));
+        }
+        
+        private void StopAllAmbience()
+        {
+            _audioFadeTween?.Kill();
+            
+            if (_audioPlayer1 != null && _audioPlayer1.Playing)
+            {
+                FadeOutAudio(_audioPlayer1);
+            }
+            
+            if (_audioPlayer2 != null && _audioPlayer2.Playing)
+            {
+                FadeOutAudio(_audioPlayer2);
+            }
+            
+            _currentAudioPlayer = null;
+            _previousAudioPlayer = null;
+        }
+
         private void OnHomePressed()
         {
+            // Stop ambience when leaving the game
+            StopAllAmbience();
+            
             GetTree().ChangeSceneToFile("res://scenes/MainMenu.tscn");
+        }
+        
+        public override void _ExitTree()
+        {
+            // Stop all audio when exiting
+            StopAllAmbience();
         }
     }
 } 

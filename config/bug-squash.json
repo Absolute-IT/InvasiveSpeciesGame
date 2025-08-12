@@ -1,7 +1,103 @@
 [
 	{
+		"id": "stage-3",
+		"background_image": "assets/art/bug-squash/backgrounds/desert1.webp",
+		"ambience_sound": "assets/sounds/ambience-normalised/afternoon-cicada.wav",
+		"interaction_description": "Fire ants spread rapidly and are increasingly difficult to contain in quarantine zones. They prey on insects, lizards, frogs, ground-nesting birds, and mammals. Pollinators like bees are attacked, which interferes with plant pollination and causes widespread damage to plants. Swarms of fire ants attack newborn livestock, sometimes causing death in calves, lambs and poultry.",
+		"species": [
+			{
+				"id": "fire-ant",
+				"name": "Fire Ant",
+				"image": "assets/art/bug-squash/entities/fire-ant.png",
+				"color": "#FF2B00",
+				"behavior": "Predator",
+				"goals": [
+					{
+						"type": "Kill",
+						"target": "bee"
+					},
+					{
+						"type": "Eat",
+						"target": "carcass"
+					}
+				],
+				"speed": 500,
+				"size": 85,
+				"description": "Viscious swarms of fire ants are a major threat to humans, animals, plants and soil.",
+				"starting_number": 1,
+				"health": 1
+			},
+			{
+				"id": "ant-hill",
+				"name": "Ant Hive",
+				"image": "assets/art/bug-squash/entities/ant-hill.png",
+				"color": "#FF9500",
+				"behavior": "Nest",
+				"goals": [
+					{
+						"type": "Spawn",
+						"target": "fire-ant",
+						"value": 2
+					}
+				],
+				"speed": 400,
+				"size": 125,
+				"description": "The bilbie is a small, brown rodent that lives in the forest. It is a native species that helps balance our ecosystem.",
+				"starting_number": 2,
+				"health": 5
+			},
+			{
+				"id": "bee",
+				"name": "Honey Bees",
+				"image": "assets/art/bug-squash/entities/bee.png",
+				"color": "#C81CE6",
+				"behavior": "Prey",
+				"goals": [
+					{
+						"type": "Eat",
+						"target": "flowers"
+					}
+				],
+				"speed": 300,
+				"size": 100,
+				"description": "Honey bees and other pollinators help plants spread and grow.",
+				"starting_number": 10,
+				"health": 1
+			},
+			{
+				"id": "flowers",
+				"name": "Melaleuca Flowers",
+				"image": "assets/art/bug-squash/entities/melaleuca-flowers.png",
+				"color": "#F719C9",
+				"behavior": "Food",
+				"goals": [],
+				"size": 100,
+				"description": "Melaleuca flowers provide nectar for the honey bees to feed on.",
+				"starting_number": 2,
+				"spawn_rate": 5,
+				"creates_on_eaten": "bee",
+				"health": 1
+			},
+			{
+				"id": "carcass",
+				"name": "Animal Carcass",
+				"image": "assets/art/bug-squash/entities/carcass.png",
+				"color": "#EDC400",
+				"behavior": "Food",
+				"goals": [],
+				"size": 100,
+				"description": "Fire ants feast on dead animals and carrion, which allows them to spread.",
+				"starting_number": 1,
+				"spawn_rate": 3,
+				"creates_on_eaten": "ant-hill",
+				"health": 1
+			}
+		]
+	},
+	{
 		"id": "stage-1",
 		"background_image": "assets/art/bug-squash/backgrounds/woodland2.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/woodland.wav",
 		"interaction_description": "Feral cats prey on sugar gliders and other small animals like birds in the wild. They cause millions of deaths a year and are a major threat to our ecosystem. The sugar glider is a native species that helps balance our ecosystem, but it's threatened by the proliferation of feral cats.",
 		"species": [
 			{
@@ -10,9 +106,22 @@
 				"image": "assets/art/bug-squash/entities/feral-cat.png",
 				"color": "#f5a142",
 				"behavior": "Predator",
+				"goals": [
+					{
+						"type": "Breed",
+						"target": "feral-cat",
+						"value": 5
+					},
+					{
+						"type": "Kill",
+						"target": "sugar-glider"
+					}
+				],
 				"speed": 500,
+				"size": 100,
 				"description": "The feral cat is a domestic cat that has been abandoned or released into the wild. It is a major threat to native wildlife and can compete with native species for resources.",
-				"starting_number": 5
+				"starting_number": 5,
+				"health": 3
 			},
 			{
 				"id": "sugar-glider",
@@ -20,9 +129,17 @@
 				"image": "assets/art/bug-squash/entities/sugar-glider.webp",
 				"color": "#93f542",
 				"behavior": "Prey",
+				"goals": [
+					{
+						"type": "Eat",
+						"target": "tree-sap"
+					}
+				],
 				"speed": 400,
+				"size": 100,
 				"description": "The sugar glider is a small, grey rodent that lives in the forest. It is a native species that helps balance our ecosystem.",
-				"starting_number": 10
+				"starting_number": 10,
+				"health": 1
 			},
 			{
 				"id": "tree-sap",
@@ -30,14 +147,20 @@
 				"image": "assets/art/bug-squash/entities/tree-sap.png",
 				"color": "#93f542",
 				"behavior": "Food",
+				"goals": [],
+				"size": 100,
 				"description": "Eucalyptus tree sap provides food for the sugar glider to survive.",
-				"starting_number": 3
+				"starting_number": 3,
+				"spawn_rate": 5,
+				"creates_on_eaten": "sugar-glider",
+				"health": 1
 			}
 		]
 	},
 	{
 		"id": "stage-2",
 		"background_image": "assets/art/bug-squash/backgrounds/woodland1.png",
+		"ambience_sound": "assets/sounds/ambience-normalised/warm-forest.wav",
 		"interaction_description": "Feral cats prey on bilbies and other small animals like birds in the wild. They cause millions of deaths a year and are a major threat to our ecosystem. The bilbie is a native species that helps balance our ecosystem, but it's threatened by the proliferation of feral cats.",
 		"species": [
 			{
@@ -46,9 +169,22 @@
 				"image": "assets/art/bug-squash/entities/feral-cat.png",
 				"color": "#f5a142",
 				"behavior": "Predator",
+				"goals": [
+					{
+						"type": "Breed",
+						"target": "feral-cat",
+						"value": 5
+					},
+					{
+						"type": "Kill",
+						"target": "bilbie"
+					}
+				],
 				"speed": 500,
+				"size": 100,
 				"description": "The feral cat is a domestic cat that has been abandoned or released into the wild. It is a major threat to native wildlife and can compete with native species for resources.",
-				"starting_number": 5
+				"starting_number": 5,
+				"health": 3
 			},
 			{
 				"id": "bilbie",
@@ -56,9 +192,17 @@
 				"image": "assets/art/bug-squash/entities/bilbie.png",
 				"color": "#93f542",
 				"behavior": "Prey",
+				"goals": [
+					{
+						"type": "Eat",
+						"target": "seeds"
+					}
+				],
 				"speed": 400,
+				"size": 100,
 				"description": "The bilbie is a small, brown rodent that lives in the forest. It is a native species that helps balance our ecosystem.",
-				"starting_number": 10
+				"starting_number": 10,
+				"health": 1
 			},
 			{
 				"id": "seeds",
@@ -66,8 +210,13 @@
 				"image": "assets/art/bug-squash/entities/seeds.png",
 				"color": "#93f542",
 				"behavior": "Food",
+				"goals": [],
+				"size": 100,
 				"description": "Seeds and foliage provide food for the bilbie and other animals like it to survive.",
-				"starting_number": 3
+				"starting_number": 3,
+				"spawn_rate": 5,
+				"creates_on_eaten": "bilbie",
+				"health": 1
 			}
 		]
 	}

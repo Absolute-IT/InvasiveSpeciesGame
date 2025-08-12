@@ -52,8 +52,7 @@ public partial class MemoryMatchGame : Control
     
     public override void _Ready()
     {
-        _configLoader = new ConfigLoader();
-        _configLoader.LoadAllConfigs();
+        _configLoader = ConfigLoader.Instance;
         _allSpecies = _configLoader.GetAllEnabledSpecies();
         
         // Separate animals and plants
@@ -591,7 +590,7 @@ public partial class MemoryMatchGame : Control
         ShowBonusTextAnimation();
     }
     
-    private async void ShowBonusTextAnimation()
+    private void ShowBonusTextAnimation()
     {
         // Create a canvas layer to ensure the text appears on top
         var animationLayer = new CanvasLayer();

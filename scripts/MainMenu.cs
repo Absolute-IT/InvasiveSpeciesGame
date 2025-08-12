@@ -22,7 +22,7 @@ public partial class MainMenu : BaseUIControl
     private const float BackgroundRotationInterval = 30.0f; // 30 seconds
     
     // Scene paths
-    private const string StoriesScenePath = "res://scenes/story/Stories.tscn";
+    private const string StoriesScenePath = "res://scenes/story/StorySelection.tscn";
     private const string SpeciesGuideScenePath = "res://scenes/gallery/Gallery.tscn";
     private const string BugSquashScenePath = "res://scenes/bug-squash/BugSquash.tscn";
     private const string MemoryMatchScenePath = "res://scenes/memory-match/MemoryMatch.tscn";
@@ -74,10 +74,15 @@ public partial class MainMenu : BaseUIControl
         if (!IsInstanceValid(configLoader) || !configLoader.IsInsideTree())
         {
             GetTree().Root.CallDeferred("add_child", configLoader);
+            
+            // Defer loading configs until after ConfigLoader is added to tree
+            configLoader.CallDeferred("LoadAllConfigs");
         }
-        
-        // Load all configuration files
-        configLoader.LoadAllConfigs();
+        else
+        {
+            // ConfigLoader is already in tree, load configs immediately
+            configLoader.LoadAllConfigs();
+        }
         
         // Optional: Copy default config to user directory for easy editing
         // This is useful for development/testing

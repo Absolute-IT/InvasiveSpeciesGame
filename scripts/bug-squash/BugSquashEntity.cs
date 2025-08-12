@@ -1,5 +1,7 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace InvasiveSpeciesAustralia
 {
@@ -13,30 +15,38 @@ namespace InvasiveSpeciesAustralia
 
         private BugSquashSpecies _species;
         private EntityBehavior _behavior;
+        private List<BugSquashGoal> _goals;
         private Vector2 _velocity;
         private float _speed;
-        private int _health = 3;
+        private int _health;
+        private int _maxHealth;
         private bool _isStunned = false;
         private float _stunTimer = 0f;
-        private float _reproduceTimer = 0f;
+        private float _breedCooldownTimer = 0f;
+        private float _spawnTimer = 0f;
         private float _feedingTimer = 0f;
         private bool _isFeeding = false;
+        private bool _isBreeding = false;
+        private bool _shouldSpawnOffspring = false;
         private BugSquashEntity _currentTarget;
+        private Vector2 _damageSourcePosition;
         private float _behaviorUpdateTimer = 0f;
+        private float _baseRadius = 80f; // Base radius, will be scaled by size
+        private string _foodCreatesOnEaten = null; // Stores what entity to create after eating food
 
         private Sprite2D _sprite;
         private Sprite2D _ring;
         private AnimationPlayer _animationPlayer;
 
         private const float STUN_DURATION = 3f;
-        private const float REPRODUCE_COOLDOWN = 10f;
         private const float FEEDING_DURATION = 2f;
+        private const float BREEDING_DURATION = 2f;
         private const float BEHAVIOR_UPDATE_INTERVAL = 0.5f;
-        private const float ENTITY_RADIUS = 80f;
 
         public BugSquashSpecies Species => _species;
         public EntityBehavior Behavior => _behavior;
         public bool IsAlive { get; private set; } = true;
+        public float EntityRadius => _baseRadius * (_species?.Size ?? 100f) / 100f;
 
         public override void _Ready()
         {
@@ -51,35 +61,13 @@ namespace InvasiveSpeciesAustralia
             // Ensure proper Z ordering - above background
             ZIndex = 0; // Default Z-index, will be above background which is -100
             
-            // Set up collision FIRST (Area2D requires this for input)
-            var collisionShape = new CollisionShape2D();
-            var circle = new CircleShape2D();
-            circle.Radius = ENTITY_RADIUS;
-            collisionShape.Shape = circle;
-            collisionShape.Position = Vector2.Zero;
-            collisionShape.DebugColor = new Color(1, 0, 0, 0.3f); // Red debug color
-            AddChild(collisionShape);
-            
-            // Create the visual structure after collision
+            // Create the visual structure first (collision will be set after initialization)
             CreateVisuals();
 
             // Connect input - use regular input event for Area2D
             InputEvent += OnInputEvent;
             MouseEntered += OnMouseEntered;
             MouseExited += OnMouseExited;
-            
-            // Verify collision setup
-            var hasCollision = false;
-            foreach (Node child in GetChildren())
-            {
-                if (child is CollisionShape2D)
-                {
-                    hasCollision = true;
-                    break;
-                }
-            }
-            
-            GD.Print($"Entity ready: InputPickable={InputPickable}, HasCollision={hasCollision}, ZIndex={ZIndex}, Visible={Visible}");
         }
 
         private void CreateVisuals()
@@ -103,12 +91,7 @@ namespace InvasiveSpeciesAustralia
             // Create the colored ring on top using a sprite with a ring texture
             _ring = new Sprite2D();
             _ring.Position = Vector2.Zero;
-            
-            // Create a ring texture programmatically
-            var ringTexture = CreateRingTexture();
-            _ring.Texture = ringTexture;
             _ring.Modulate = Colors.White; // Will be modulated with species color
-            _ring.Scale = Vector2.One; // Ring texture is already the correct size
             
             AddChild(_ring);
 
@@ -116,13 +99,11 @@ namespace InvasiveSpeciesAustralia
             _animationPlayer = new AnimationPlayer();
             AddChild(_animationPlayer);
             CreateBlinkAnimation();
-            
-            GD.Print($"Visuals created - Sprite texture: {_sprite.Texture}, Ring texture: {_ring.Texture}");
         }
         
-        private ImageTexture CreateRingTexture()
+        private ImageTexture CreateRingTexture(float radius)
         {
-            int size = (int)(ENTITY_RADIUS * 2);
+            int size = (int)(radius * 2);
             var image = Image.CreateEmpty(size, size, false, Image.Format.Rgba8);
             
             float center = size / 2f;
@@ -177,6 +158,9 @@ namespace InvasiveSpeciesAustralia
             
             _species = species;
             _speed = species.Speed;
+            _health = species.Health;
+            _maxHealth = species.Health;
+            _goals = species.Goals ?? new List<BugSquashGoal>();
             Position = startPosition;
             
             // Parse behavior
@@ -186,14 +170,32 @@ namespace InvasiveSpeciesAustralia
                 _behavior = EntityBehavior.Food;
             }
 
-            // Set visuals
-            if (!string.IsNullOrEmpty(species.Color) && _ring != null)
+            // Set up collision based on size
+            var collisionShape = new CollisionShape2D();
+            var circle = new CircleShape2D();
+            circle.Radius = EntityRadius;
+            collisionShape.Shape = circle;
+            collisionShape.Position = Vector2.Zero;
+            collisionShape.DebugColor = new Color(1, 0, 0, 0.3f); // Red debug color
+            AddChild(collisionShape);
+
+            // Create and set ring texture based on size
+            if (_ring != null)
             {
-                var color = new Color(species.Color);
-                _ring.Modulate = color;
-                GD.Print($"Set ring color to {species.Color} for {species.Name}");
+                var ringTexture = CreateRingTexture(EntityRadius);
+                _ring.Texture = ringTexture;
+                _ring.Scale = Vector2.One; // Ring texture is already the correct size
+                
+                // Set ring color
+                if (!string.IsNullOrEmpty(species.Color))
+                {
+                    var color = new Color(species.Color);
+                    _ring.Modulate = color;
+                    GD.Print($"Set ring color to {species.Color} for {species.Name}");
+                }
             }
 
+            // Set sprite texture and scale
             if (!string.IsNullOrEmpty(species.Image) && _sprite != null)
             {
                 var texture = GD.Load<Texture2D>(species.Image);
@@ -203,20 +205,43 @@ namespace InvasiveSpeciesAustralia
                 if (texture != null)
                 {
                     var textureSize = texture.GetSize();
-                    var targetSize = ENTITY_RADIUS * 1.8f; // Slightly smaller than full radius
+                    var targetSize = EntityRadius * 1.8f; // Slightly smaller than full radius
                     var scale = targetSize / Mathf.Max(textureSize.X, textureSize.Y);
                     _sprite.Scale = new Vector2(scale, scale);
                     GD.Print($"Set sprite scale to {scale} for {species.Name} (texture size: {textureSize})");
                 }
             }
 
-            // Food doesn't move
-            if (_behavior == EntityBehavior.Food)
+            // Static entities don't move
+            if (_behavior == EntityBehavior.Food || _behavior == EntityBehavior.Nest || _behavior == EntityBehavior.Weed)
             {
                 _speed = 0;
             }
             
-            GD.Print($"Entity {species.Name} initialized at {Position}, Visible: {Visible}, Sprite: {_sprite != null}, Ring: {_ring != null}");
+            // Initialize goal-specific timers
+            InitializeGoalTimers();
+            
+            GD.Print($"Entity {species.Name} initialized at {Position}, Visible: {Visible}, Size: {species.Size}%, Health: {_health}");
+        }
+
+        private void InitializeGoalTimers()
+        {
+            foreach (var goal in _goals)
+            {
+                if (Enum.TryParse<GoalType>(goal.Type, out var goalType))
+                {
+                    switch (goalType)
+                    {
+                        case GoalType.Breed:
+                            // Start with cooldown at 0 so entities must wait before breeding
+                            _breedCooldownTimer = 0f;
+                            break;
+                        case GoalType.Spawn:
+                            _spawnTimer = 0f;
+                            break;
+                    }
+                }
+            }
         }
 
         public override void _Process(double delta)
@@ -237,8 +262,8 @@ namespace InvasiveSpeciesAustralia
                 }
                 else
                 {
-                    // Move away from last click position during stun
-                    var awayDirection = (Position - GetGlobalMousePosition()).Normalized();
+                    // Move away from damage source during stun
+                    var awayDirection = (Position - _damageSourcePosition).Normalized();
                     _velocity = awayDirection * _speed * 0.5f;
                 }
             }
@@ -254,14 +279,22 @@ namespace InvasiveSpeciesAustralia
                 }
             }
 
-            // Update behavior timers
-            if (_behavior == EntityBehavior.Predator)
+            // Update breeding
+            if (_isBreeding)
             {
-                _reproduceTimer += deltaF;
+                _feedingTimer -= deltaF; // Reuse feeding timer for breeding
+                if (_feedingTimer <= 0)
+                {
+                    _isBreeding = false;
+                    CompleteBreeding();
+                }
             }
 
+            // Update goal timers
+            UpdateGoalTimers(deltaF);
+
             // Update AI behavior
-            if (!_isStunned && !_isFeeding)
+            if (!_isStunned && !_isFeeding && !_isBreeding)
             {
                 _behaviorUpdateTimer += deltaF;
                 if (_behaviorUpdateTimer >= BEHAVIOR_UPDATE_INTERVAL)
@@ -272,147 +305,313 @@ namespace InvasiveSpeciesAustralia
             }
 
             // Move
-            if (!_isFeeding)
+            if (!_isFeeding && !_isBreeding && _speed > 0)
             {
                 Position += _velocity * deltaF;
                 KeepInBounds();
             }
         }
 
+        private void UpdateGoalTimers(float delta)
+        {
+            // Update breed cooldown
+            if (_breedCooldownTimer < GetBreedCooldown())
+            {
+                _breedCooldownTimer += delta;
+            }
+
+            // Update spawn timer for Spawn goals
+            var spawnGoal = GetGoal(GoalType.Spawn);
+            if (spawnGoal != null)
+            {
+                _spawnTimer += delta;
+                if (_spawnTimer >= spawnGoal.Value)
+                {
+                    _spawnTimer = 0;
+                    SpawnEntity(spawnGoal.Target);
+                }
+            }
+
+            // Handle Food and Weed spawn mechanics based on behavior
+            if ((_behavior == EntityBehavior.Food || _behavior == EntityBehavior.Weed) && _species.SpawnRate > 0)
+            {
+                // This is handled by the game manager for Food entities
+                // Weed entities spawn nearby entities
+                if (_behavior == EntityBehavior.Weed)
+                {
+                    _spawnTimer += delta;
+                    if (_spawnTimer >= _species.SpawnRate)
+                    {
+                        _spawnTimer = 0;
+                        SpawnNearbyWeed();
+                    }
+                }
+            }
+        }
+
         private void UpdateBehavior()
         {
-            switch (_behavior)
+            // Get current active goal
+            var activeGoal = GetActiveGoal();
+            
+            if (activeGoal != null)
             {
-                case EntityBehavior.Predator:
-                    UpdatePredatorBehavior();
-                    break;
-                case EntityBehavior.Prey:
-                    UpdatePreyBehavior();
-                    break;
-                case EntityBehavior.Food:
-                    // Food doesn't move
-                    break;
+                ExecuteGoal(activeGoal);
+            }
+            else
+            {
+                // Default behavior based on entity type
+                switch (_behavior)
+                {
+                    case EntityBehavior.Predator:
+                    case EntityBehavior.Prey:
+                        Wander();
+                        break;
+                    // Static entities don't have default behavior
+                }
             }
         }
 
-        private void UpdatePredatorBehavior()
+        private BugSquashGoal GetActiveGoal()
+        {
+            // Priority order:
+            // 1. Breed (if cooldown has passed AND there's an available partner)
+            // 2. Kill or Eat (whichever target is nearest)
+            // 3. Spawn (handled separately in timers)
+
+            var breedGoal = GetGoal(GoalType.Breed);
+            if (breedGoal != null && _breedCooldownTimer >= breedGoal.Value)
+            {
+                // Check if there's actually a breeding partner available
+                var (partner, _) = FindNearestBreedingPartner(breedGoal.Target);
+                if (partner != null)
+                {
+                    return breedGoal;
+                }
+            }
+
+            // Get Kill and Eat goals
+            var killGoal = GetGoal(GoalType.Kill);
+            var eatGoal = GetGoal(GoalType.Eat);
+
+            // Find nearest targets for each
+            BugSquashEntity nearestKillTarget = null;
+            BugSquashEntity nearestEatTarget = null;
+            float nearestKillDist = float.MaxValue;
+            float nearestEatDist = float.MaxValue;
+
+            if (killGoal != null)
+            {
+                (nearestKillTarget, nearestKillDist) = FindNearestTarget(killGoal.Target);
+            }
+
+            if (eatGoal != null)
+            {
+                (nearestEatTarget, nearestEatDist) = FindNearestTarget(eatGoal.Target);
+            }
+
+            // Choose the goal with the nearest target
+            if (nearestKillTarget != null && nearestEatTarget != null)
+            {
+                return nearestKillDist < nearestEatDist ? killGoal : eatGoal;
+            }
+            else if (nearestKillTarget != null)
+            {
+                return killGoal;
+            }
+            else if (nearestEatTarget != null)
+            {
+                return eatGoal;
+            }
+
+            return null;
+        }
+
+        private void ExecuteGoal(BugSquashGoal goal)
+        {
+            if (!Enum.TryParse<GoalType>(goal.Type, out var goalType))
+            {
+                return;
+            }
+
+            switch (goalType)
+            {
+                case GoalType.Kill:
+                    ExecuteKillGoal(goal);
+                    break;
+                case GoalType.Eat:
+                    ExecuteEatGoal(goal);
+                    break;
+                case GoalType.Breed:
+                    ExecuteBreedGoal(goal);
+                    break;
+                // Spawn is handled in timer updates
+            }
+        }
+
+        private void ExecuteKillGoal(BugSquashGoal goal)
+        {
+            var (target, distance) = FindNearestTarget(goal.Target);
+            if (target == null) return;
+
+            _currentTarget = target;
+            SeekTarget(target);
+
+            // Check if close enough to attack
+            if (distance < EntityRadius + target.EntityRadius)
+            {
+                // Deal damage
+                target.TakeDamage(Position);
+                
+                // If target died, clear it
+                if (!target.IsAlive)
+                {
+                    _currentTarget = null;
+                }
+            }
+        }
+
+        private void ExecuteEatGoal(BugSquashGoal goal)
+        {
+            var (target, distance) = FindNearestTarget(goal.Target);
+            if (target == null) return;
+
+            _currentTarget = target;
+            
+            // Prey should flee from nearby predators
+            if (_behavior == EntityBehavior.Prey)
+            {
+                var (nearestPredator, predatorDist) = FindNearestPredator();
+                if (nearestPredator != null && predatorDist < 400f)
+                {
+                    // Flee from predator instead
+                    var fleeDirection = (Position - nearestPredator.Position).Normalized();
+                    _velocity = fleeDirection * _speed;
+                    return;
+                }
+            }
+
+            SeekTarget(target);
+
+            // Check if close enough to eat
+            if (distance < EntityRadius + target.EntityRadius)
+            {
+                StartFeeding(target);
+            }
+        }
+
+        private void ExecuteBreedGoal(BugSquashGoal goal)
+        {
+            var (target, distance) = FindNearestBreedingPartner(goal.Target);
+            if (target == null) return;
+
+            _currentTarget = target;
+            SeekTarget(target);
+
+            // Check if close enough to breed
+            if (distance < EntityRadius + target.EntityRadius)
+            {
+                // Both entities should already be ready (checked in FindNearestBreedingPartner)
+                // This entity is the initiator and will spawn the offspring
+                StartBreeding(true);
+                // The target just participates but doesn't spawn
+                target.StartBreeding(false);
+            }
+        }
+
+        private (BugSquashEntity, float) FindNearestBreedingPartner(string targetId)
         {
             var gameNode = GetParent();
-            BugSquashEntity nearestPrey = null;
-            BugSquashEntity nearestPredator = null;
-            float nearestPreyDist = float.MaxValue;
-            float nearestPredatorDist = float.MaxValue;
+            BugSquashEntity nearest = null;
+            float nearestDist = float.MaxValue;
 
-            // Find nearest prey and predator
             foreach (Node child in gameNode.GetChildren())
             {
                 if (child is BugSquashEntity entity && entity != this && entity.IsAlive)
                 {
-                    float dist = Position.DistanceTo(entity.Position);
-                    
-                    if (entity.Behavior == EntityBehavior.Prey && dist < nearestPreyDist)
+                    if (entity.Species.Id == targetId)
                     {
-                        nearestPrey = entity;
-                        nearestPreyDist = dist;
-                    }
-                    else if (entity.Behavior == EntityBehavior.Predator && dist < nearestPredatorDist)
-                    {
-                        nearestPredator = entity;
-                        nearestPredatorDist = dist;
+                        // Check if this entity also has a breed goal and is ready to breed
+                        var targetBreedGoal = entity.GetGoal(GoalType.Breed);
+                        if (targetBreedGoal != null && entity._breedCooldownTimer >= targetBreedGoal.Value)
+                        {
+                            // Also check if they're not already breeding
+                            if (!entity._isBreeding)
+                            {
+                                float dist = Position.DistanceTo(entity.Position);
+                                if (dist < nearestDist)
+                                {
+                                    nearest = entity;
+                                    nearestDist = dist;
+                                }
+                            }
+                        }
                     }
                 }
             }
 
-            // Decide behavior based on reproduce timer
-            if (_reproduceTimer >= REPRODUCE_COOLDOWN && nearestPredator != null)
-            {
-                // Check if close enough to reproduce
-                if (nearestPredatorDist < ENTITY_RADIUS * 2)
-                {
-                    // Already in breeding range - stop moving and reproduce
-                    _velocity = Vector2.Zero;
-                    _reproduceTimer = 0;
-                    nearestPredator._reproduceTimer = 0;
-                    CallDeferred(nameof(SpawnOffspring));
-                }
-                else
-                {
-                    // Seek another predator to reproduce
-                    _currentTarget = nearestPredator;
-                    SeekTarget(nearestPredator);
-                }
-            }
-            else if (nearestPrey != null)
-            {
-                // Hunt prey
-                _currentTarget = nearestPrey;
-                SeekTarget(nearestPrey);
-                
-                // Check if caught prey
-                if (nearestPreyDist < ENTITY_RADIUS * 1.5f)
-                {
-                    nearestPrey.Die();
-                }
-            }
-            else
-            {
-                // Wander
-                Wander();
-            }
+            return (nearest, nearestDist);
         }
 
-        private void UpdatePreyBehavior()
+        private (BugSquashEntity, float) FindNearestTarget(string targetId)
         {
             var gameNode = GetParent();
-            BugSquashEntity nearestPredator = null;
-            BugSquashEntity nearestFood = null;
-            float nearestPredatorDist = float.MaxValue;
-            float nearestFoodDist = float.MaxValue;
+            BugSquashEntity nearest = null;
+            float nearestDist = float.MaxValue;
 
-            // Find nearest predator and food
             foreach (Node child in gameNode.GetChildren())
             {
                 if (child is BugSquashEntity entity && entity != this && entity.IsAlive)
                 {
-                    float dist = Position.DistanceTo(entity.Position);
-                    
-                    if (entity.Behavior == EntityBehavior.Predator && dist < nearestPredatorDist)
+                    if (entity.Species.Id == targetId)
                     {
-                        nearestPredator = entity;
-                        nearestPredatorDist = dist;
-                    }
-                    else if (entity.Behavior == EntityBehavior.Food && dist < nearestFoodDist)
-                    {
-                        nearestFood = entity;
-                        nearestFoodDist = dist;
+                        float dist = Position.DistanceTo(entity.Position);
+                        if (dist < nearestDist)
+                        {
+                            nearest = entity;
+                            nearestDist = dist;
+                        }
                     }
                 }
             }
 
-            // Prioritize escaping from predators
-            if (nearestPredator != null && nearestPredatorDist < 400f)
+            return (nearest, nearestDist);
+        }
+
+        private (BugSquashEntity, float) FindNearestPredator()
+        {
+            var gameNode = GetParent();
+            BugSquashEntity nearest = null;
+            float nearestDist = float.MaxValue;
+
+            foreach (Node child in gameNode.GetChildren())
             {
-                // Flee from predator
-                var fleeDirection = (Position - nearestPredator.Position).Normalized();
-                _velocity = fleeDirection * _speed;
-            }
-            else if (nearestFood != null)
-            {
-                // Seek food
-                _currentTarget = nearestFood;
-                SeekTarget(nearestFood);
-                
-                // Check if reached food
-                if (nearestFoodDist < ENTITY_RADIUS * 1.5f)
+                if (child is BugSquashEntity entity && entity != this && entity.IsAlive)
                 {
-                    StartFeeding(nearestFood);
+                    if (entity.Behavior == EntityBehavior.Predator)
+                    {
+                        float dist = Position.DistanceTo(entity.Position);
+                        if (dist < nearestDist)
+                        {
+                            nearest = entity;
+                            nearestDist = dist;
+                        }
+                    }
                 }
             }
-            else
-            {
-                // Wander
-                Wander();
-            }
+
+            return (nearest, nearestDist);
+        }
+
+        private BugSquashGoal GetGoal(GoalType type)
+        {
+            return _goals.FirstOrDefault(g => g.Type == type.ToString());
+        }
+
+        private float GetBreedCooldown()
+        {
+            var breedGoal = GetGoal(GoalType.Breed);
+            return breedGoal?.Value ?? float.MaxValue;
         }
 
         private void SeekTarget(BugSquashEntity target)
@@ -421,7 +620,7 @@ namespace InvasiveSpeciesAustralia
             var distance = Position.DistanceTo(target.Position);
             
             // Slow down when getting close to avoid overshooting
-            var arrivalRadius = ENTITY_RADIUS * 3;
+            var arrivalRadius = EntityRadius * 3;
             if (distance < arrivalRadius)
             {
                 // Linear slowdown as we approach the target
@@ -445,7 +644,7 @@ namespace InvasiveSpeciesAustralia
         private void KeepInBounds()
         {
             var viewportSize = GetViewportRect().Size;
-            var margin = ENTITY_RADIUS;
+            var margin = EntityRadius;
 
             if (Position.X < margin)
             {
@@ -475,12 +674,47 @@ namespace InvasiveSpeciesAustralia
             _isFeeding = true;
             _feedingTimer = FEEDING_DURATION;
             _velocity = Vector2.Zero;
+            
+            // Store the food's creates_on_eaten property before it dies
+            _foodCreatesOnEaten = food.Species?.CreatesOnEaten;
+            
             food.Die();
         }
 
         private void CompleteFeedingAndReproduce()
         {
-            CallDeferred(nameof(SpawnOffspring));
+            // If the food specified what to create, spawn that entity
+            if (!string.IsNullOrEmpty(_foodCreatesOnEaten))
+            {
+                CallDeferred(nameof(SpawnSpecificEntity), _foodCreatesOnEaten);
+            }
+            else
+            {
+                // Default behavior: spawn offspring of the same type as the eater
+                CallDeferred(nameof(SpawnOffspring));
+            }
+            
+            // Clear the stored value
+            _foodCreatesOnEaten = null;
+        }
+
+        private void StartBreeding(bool shouldSpawnOffspring = false)
+        {
+            _isBreeding = true;
+            _feedingTimer = BREEDING_DURATION; // Reuse feeding timer
+            _velocity = Vector2.Zero;
+            _breedCooldownTimer = 0; // Reset cooldown
+            _shouldSpawnOffspring = shouldSpawnOffspring;
+        }
+
+        private void CompleteBreeding()
+        {
+            // Only spawn offspring if this entity is the initiator
+            if (_shouldSpawnOffspring)
+            {
+                CallDeferred(nameof(SpawnOffspring));
+            }
+            _shouldSpawnOffspring = false; // Reset flag
         }
 
         private void SpawnOffspring()
@@ -488,7 +722,82 @@ namespace InvasiveSpeciesAustralia
             var parent = GetParent();
             if (parent is BugSquashGame game)
             {
-                game.SpawnEntity(_species, Position + new Vector2(ENTITY_RADIUS * 2, 0));
+                game.SpawnEntity(_species, Position + new Vector2(EntityRadius * 2, 0));
+            }
+        }
+
+        private void SpawnSpecificEntity(string entityId)
+        {
+            var parent = GetParent();
+            if (parent is BugSquashGame game)
+            {
+                var targetSpecies = game.GetSpeciesById(entityId);
+                if (targetSpecies != null)
+                {
+                    var spawnPos = Position + new Vector2(EntityRadius * 2, 0);
+                    game.SpawnEntity(targetSpecies, spawnPos);
+                }
+                else
+                {
+                    GD.PrintErr($"Could not find species with ID: {entityId}");
+                }
+            }
+        }
+
+        private void SpawnEntity(string entityId)
+        {
+            var parent = GetParent();
+            if (parent is BugSquashGame game)
+            {
+                // Find the species data for the target entity
+                var targetSpecies = game.GetSpeciesById(entityId);
+                if (targetSpecies != null)
+                {
+                    game.SpawnEntity(targetSpecies, Position);
+                }
+            }
+        }
+
+        private void SpawnNearbyWeed()
+        {
+            var parent = GetParent();
+            if (parent is BugSquashGame game)
+            {
+                // Spawn another weed nearby
+                var angle = GD.Randf() * Mathf.Pi * 2;
+                var distance = EntityRadius * 2.5f + GD.Randf() * EntityRadius;
+                var offset = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * distance;
+                var spawnPos = Position + offset;
+                
+                // Keep within bounds
+                var viewportSize = GetViewportRect().Size;
+                spawnPos.X = Mathf.Clamp(spawnPos.X, EntityRadius, viewportSize.X - EntityRadius);
+                spawnPos.Y = Mathf.Clamp(spawnPos.Y, EntityRadius, viewportSize.Y - EntityRadius);
+                
+                game.SpawnEntity(_species, spawnPos);
+            }
+        }
+
+        public void TakeDamage(Vector2 damageSource)
+        {
+            if (_isStunned) return; // Can't take damage while stunned
+
+            _health--;
+            _damageSourcePosition = damageSource;
+            
+            GD.Print($"{_species?.Name} took damage. Health: {_health}/{_maxHealth}");
+            
+            if (_health <= 0)
+            {
+                Die();
+            }
+            else
+            {
+                // Start stun effect
+                _isStunned = true;
+                _stunTimer = STUN_DURATION;
+                Modulate = new Color(0.5f, 0.5f, 0.5f, 0.7f);
+                _animationPlayer.Play("default/blink");
             }
         }
 
@@ -533,31 +842,9 @@ namespace InvasiveSpeciesAustralia
             
             GD.Print($"Entity clicked: {_species?.Name} ({_behavior})");
             EmitSignal(SignalName.EntityClicked, this);
-
-            if (_behavior == EntityBehavior.Prey || _behavior == EntityBehavior.Food)
-            {
-                // Native species die immediately when clicked
-                GD.Print($"Native species {_species?.Name} dying from click");
-                Die();
-            }
-            else if (_behavior == EntityBehavior.Predator)
-            {
-                // Invasive species take damage
-                _health--;
-                GD.Print($"Invasive species {_species?.Name} hit. Health: {_health}");
-                if (_health <= 0)
-                {
-                    Die();
-                }
-                else
-                {
-                    // Start stun effect
-                    _isStunned = true;
-                    _stunTimer = STUN_DURATION;
-                    Modulate = new Color(0.5f, 0.5f, 0.5f, 0.7f);
-                    _animationPlayer.Play("default/blink");
-                }
-            }
+            
+            // Take damage from player click
+            TakeDamage(GetGlobalMousePosition());
         }
 
         public void Die()

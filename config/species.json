@@ -1,7 +1,7 @@
 [
 	{
 		"id": "black-rat",
-		"enabled": true,
+		"enabled": false,
 		"name": "Black Rat",
 		"scientific_name": "Rattus rattus",
 		"type": "animals",
@@ -29,7 +29,7 @@
 	},
 	{
 		"id": "cane-toad",
-		"enabled": true,
+		"enabled": false,
 		"name": "Cane Toad",
 		"scientific_name": "Rhinella marina",
 		"type": "animals",
@@ -54,7 +54,7 @@
 	},
 	{
 		"id": "common-carp",
-		"enabled": true,
+		"enabled": false,
 		"name": "Common Carp",
 		"scientific_name": "Cyprinus carpio",
 		"type": "animals",
@@ -112,7 +112,7 @@
 	},
 	{
 		"id": "feral-camel",
-		"enabled": true,
+		"enabled": false,
 		"name": "Feral Camel",
 		"scientific_name": "Camelus dromedarius",
 		"type": "animals",
@@ -304,7 +304,7 @@
 	},
 	{
 		"id": "bitou-bush",
-		"enabled": true,
+		"enabled": false,
 		"name": "Bitou Bush",
 		"scientific_name": "Chrysanthemoides monilifera subsp. rotundata",
 		"type": "plants",
@@ -331,7 +331,7 @@
 	},
 	{
 		"id": "blackberry",
-		"enabled": true,
+		"enabled": false,
 		"name": "Blackberry",
 		"scientific_name": "Rubus fruticosus aggregate",
 		"type": "plants",
@@ -358,7 +358,7 @@
 	},
 	{
 		"id": "boneseed",
-		"enabled": true,
+		"enabled": false,
 		"name": "Boneseed",
 		"scientific_name": "Chrysanthemoides monilifera subsp. monilifera",
 		"type": "plants",
@@ -385,7 +385,7 @@
 	},
 	{
 		"id": "lantana",
-		"enabled": true,
+		"enabled": false,
 		"name": "Lantana",
 		"scientific_name": "Lantana camara",
 		"type": "plants",
@@ -441,7 +441,7 @@
 	},
 	{
 		"id": "phytophthora",
-		"enabled": true,
+		"enabled": false,
 		"name": "Phytophthora Root Rot",
 		"scientific_name": "Phytophthora cinnamomi",
 		"type": "plants",
