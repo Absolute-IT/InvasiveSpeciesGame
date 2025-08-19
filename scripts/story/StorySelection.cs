@@ -11,6 +11,7 @@ public partial class StorySelection : BaseUIControl
     private ScrollContainer _scrollContainer;
     private GridContainer _storyGrid;
     private Button _homeButton;
+        private Timer _thumbnailRefreshTimer;
     
     // Story data
     private List<StoryInfo> _stories;
@@ -52,6 +53,17 @@ public partial class StorySelection : BaseUIControl
         
         // Load and display stories
         LoadStories();
+
+            // Start a lightweight refresher so newly generated slides update thumbnails
+            _thumbnailRefreshTimer = new Timer
+            {
+                WaitTime = 1.0,
+                OneShot = false,
+                Autostart = true,
+                ProcessCallback = Timer.TimerProcessCallback.Idle
+            };
+            AddChild(_thumbnailRefreshTimer);
+            _thumbnailRefreshTimer.Timeout += OnThumbnailRefresh;
     }
     
     private void LoadStories()
@@ -118,6 +130,8 @@ public partial class StorySelection : BaseUIControl
 
         var card = new Control();
         card.CustomMinimumSize = new Vector2(BaseCardWidth * scale, BaseCardHeight * scale);
+        card.SetMeta("story_id", story.Id);
+        bool hasThumbnail = false;
         
         // Create panel background
         var panel = new Panel();
@@ -176,7 +190,9 @@ public partial class StorySelection : BaseUIControl
             thumbnailRect.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
             thumbnailRect.CustomMinimumSize = new Vector2(0, 420 * scale);
             thumbnailRect.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
+            thumbnailRect.Name = "ThumbnailRect";
             vbox.AddChild(thumbnailRect);
+            hasThumbnail = true;
         }
         // Otherwise try generated thumbnail in user:// if present
         else if (FileAccess.FileExists($"user://stories/{story.Id}/thumbnail.png"))
@@ -194,7 +210,9 @@ public partial class StorySelection : BaseUIControl
             thumbnailRect.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
             thumbnailRect.CustomMinimumSize = new Vector2(0, 420 * scale);
             thumbnailRect.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
+            thumbnailRect.Name = "ThumbnailRect";
             vbox.AddChild(thumbnailRect);
+            hasThumbnail = true;
         }
         else if (!string.IsNullOrEmpty(story.Thumbnail) && ResourceLoader.Exists(story.Thumbnail))
         {
@@ -204,7 +222,9 @@ public partial class StorySelection : BaseUIControl
             thumbnailRect.StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered;
             thumbnailRect.CustomMinimumSize = new Vector2(0, 420 * scale);
             thumbnailRect.SizeFlagsVertical = Control.SizeFlags.ShrinkCenter;
+            thumbnailRect.Name = "ThumbnailRect";
             vbox.AddChild(thumbnailRect);
+            hasThumbnail = true;
         }
         else
         {
@@ -212,8 +232,10 @@ public partial class StorySelection : BaseUIControl
             var placeholder = new ColorRect();
             placeholder.Color = new Color(0.3f, 0.3f, 0.3f, 0.5f);
             placeholder.CustomMinimumSize = new Vector2(0, 420 * scale);
+            placeholder.Name = "ThumbnailPlaceholder";
             vbox.AddChild(placeholder);
         }
+        card.SetMeta("has_thumbnail", hasThumbnail);
         
         // Create title
         var titleLabel = new Label();
@@ -264,6 +286,70 @@ public partial class StorySelection : BaseUIControl
         // Add to grid
         _storyGrid.AddChild(card);
     }
+
+    private void OnThumbnailRefresh()
+    {
+        // Replace placeholders with generated slide-1.png thumbnails when they appear
+        foreach (var child in _storyGrid.GetChildren())
+        {
+            if (child is not Control card) continue;
+            if (!card.HasMeta("story_id")) continue;
+
+            bool hasThumb = card.HasMeta("has_thumbnail") && card.GetMeta("has_thumbnail").AsBool();
+            if (hasThumb) continue;
+
+            string storyId = card.GetMeta("story_id").AsString();
+            string userSlide1Path = $"user://stories/{storyId}/slide-1.png";
+            if (!FileAccess.FileExists(userSlide1Path)) continue;
+
+            // Find the VBoxContainer inside the card to insert the thumbnail at the top
+            VBoxContainer vbox = null;
+            foreach (var c in card.GetChildren())
+            {
+                if (c is MarginContainer mc)
+                {
+                    foreach (var inner in mc.GetChildren())
+                    {
+                        if (inner is VBoxContainer vb)
+                        {
+                            vbox = vb;
+                            break;
+                        }
+                    }
+                }
+                if (vbox != null) break;
+            }
+            if (vbox == null) continue;
+
+            // Remove placeholder if present
+            var firstChild = vbox.GetChildCount() > 0 ? vbox.GetChild(0) : null;
+            if (firstChild is ColorRect || (firstChild != null && firstChild.Name == "ThumbnailPlaceholder"))
+            {
+                firstChild.QueueFree();
+            }
+
+            var image = new Image();
+            var loadErr = image.Load(userSlide1Path);
+            if (loadErr != Error.Ok) continue;
+            var tex = ImageTexture.CreateFromImage(image);
+
+            var scale = GetUIScale();
+            var thumbnailRect = new TextureRect
+            {
+                Texture = tex,
+                ExpandMode = TextureRect.ExpandModeEnum.FitWidthProportional,
+                StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered,
+                CustomMinimumSize = new Vector2(0, 420 * scale),
+                SizeFlagsVertical = Control.SizeFlags.ShrinkCenter,
+                Name = "ThumbnailRect"
+            };
+
+            vbox.AddChild(thumbnailRect, true);
+            vbox.MoveChild(thumbnailRect, 0);
+
+            card.SetMeta("has_thumbnail", true);
+        }
+    }
     
     private void ShowNoStoriesMessage()
     {
@@ -309,6 +395,11 @@ public partial class StorySelection : BaseUIControl
         if (_homeButton != null)
         {
             _homeButton.Pressed -= OnHomePressed;
+        }
+
+        if (_thumbnailRefreshTimer != null)
+        {
+            _thumbnailRefreshTimer.Timeout -= OnThumbnailRefresh;
         }
     }
 } 

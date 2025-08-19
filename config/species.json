@@ -150,6 +150,11 @@
 			"Weight typically 3-5kg but can reach 7kg",
 			"Often has scarred ears and face from fighting"
 		],
+		"identification_images": [
+			"assets/identification/feral-cat-1.jpg",
+			"assets/identification/feral-cat-2.jpg",
+			"assets/identification/feral-cat-3.jpg"
+		],
 		"image": "assets/art/species-transparent/animals/feral-cat.png",
 		"environment_image": "assets/art/environments/grasslands.png",
 		"card_image": "assets/art/match-game/cards/feral-cat-card.png",
@@ -202,6 +207,11 @@
 			"Aggressive behavior when disturbed",
 			"Forms dome-shaped mounds up to 40cm high",
 			"Painful sting causes burning sensation and pustules"
+		],
+		"identification_images": [
+			"assets/identification/fire-ant-1.jpg",
+			"assets/identification/fire-ant-2.png",
+			"assets/identification/fire-ant-3.jpg"
 		],
 		"image": "assets/art/species-transparent/animals/fire-ant.png",
 		"environment_image": "assets/art/environments/ant-dirt.png",

@@ -1,0 +1,52 @@
+[
+	{
+		"id": "stage-5",
+		"background_image": "assets/art/bug-squash/backgrounds/urban2.webp",
+		"ambience_sound": "assets/sounds/ambience-normalised/urban.wav",
+		"interaction_description": "Black rats feed on human food and trash, and can spread diseases like leptospirosis. They breed very rapidly and cause damage to human society as well as our ecosystems.",
+		"lose_condition": {
+			"species": "black-rat",
+			"count": 30
+		},
+		"species": [
+			{
+				"id": "black-rat",
+				"name": "Black Rat",
+				"image": "assets/art/bug-squash/entities/black-rat.webp",
+				"color": "#A1A1A1",
+				"behavior": "Predator",
+				"goals": [
+					{
+						"type": "Breed",
+						"target": "black-rat",
+						"value": 3
+					},
+					{
+						"type": "Eat",
+						"target": "garbage"
+					}
+				],
+				"speed": 400,
+				"size": 100,
+				"description": "Black rats are disease carriers and breed out of control.",
+				"starting_number": 5,
+				"health": 2
+			},
+			{
+				"id": "garbage",
+				"name": "Human Garbage",
+				"image": "assets/art/bug-squash/entities/garbage.webp",
+				"color": "#000000",
+				"behavior": "Food",
+				"consider_native_species": true,
+				"goals": [],
+				"speed": 0,
+				"size": 100,
+				"description": "Humans littering and discarding garbage inconsiderately harms plant life, and encourages rodents to breed.",
+				"starting_number": 10,
+				"health": 1,
+				"spawn_rate": 1
+			}
+		]
+	}
+]

@@ -5,5 +5,19 @@
 		"description": "The real reason rabbits don't make great pets.",
 		"file": "assets/stories/the-great-escape.pptx",
 		"visible": true
+	},
+	{
+		"id": "butterfly-effect",
+		"title": "Butterfly Effect",
+		"description": "How an innocent mistake can have big consequences.",
+		"file": "assets/stories/butterfly-effect.pptx",
+		"visible": true
+	},
+	{
+		"id": "native-friends",
+		"title": "Native Friends",
+		"description": "The best way to bring native species to your backyard.",
+		"file": "assets/stories/native-friends.pptx",
+		"visible": true
 	}
 ]
